@@ -170,7 +170,7 @@ export default function CourseDetail() {
                         </Link>
                       ) : (
                         <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-                          Coming in Phase 2
+                          Roadmap: Scheduled
                         </span>
                       )}
                     </div>

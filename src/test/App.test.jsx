@@ -45,26 +45,28 @@ describe('Dev-root Application Routing & Pages', () => {
     expect(screen.getByText(/Dev-root Learning Platform/i)).toBeInTheDocument();
   });
 
-  it('renders the Courses catalogue with 16 paths and filter chips', () => {
+  it('renders the Courses catalogue with courses and filter chips', () => {
     renderWithProviders(['/courses']);
     expect(screen.getByRole('heading', { name: /Course Catalogue/i })).toBeInTheDocument();
-    expect(screen.getByText(/Web & Internet Fundamentals/i)).toBeInTheDocument();
+    expect(screen.getByText(/Course 1: Understanding the Web/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Search courses/i)).toBeInTheDocument();
   });
 
   it('renders CourseDetail page for a valid course slug', () => {
     renderWithProviders(['/courses/web-internet-fundamentals']);
-    expect(screen.getByRole('heading', { name: /Web & Internet Fundamentals/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Course 1: Understanding the Web/i })).toBeInTheDocument();
     expect(screen.getByText(/Course Syllabus/i)).toBeInTheDocument();
-    expect(screen.getByText(/How Websites Work/i)).toBeInTheDocument();
+    expect(screen.getByText(/How Websites Work: Clients, Servers & The Web/i)).toBeInTheDocument();
   });
 
-  it('renders LessonView for a beginner lesson with objectives and takeaways', () => {
+  it('renders LessonView for a beginner lesson with objectives, quiz, and exercise', () => {
     renderWithProviders(['/lessons/how-websites-work']);
-    expect(screen.getByRole('heading', { name: /How Websites Work/i })).toBeInTheDocument();
-    expect(screen.getByText(/Learning Objectives/i)).toBeInTheDocument();
-    expect(screen.getByText(/The Client-Server Dialogue/i)).toBeInTheDocument();
-    const markButtons = screen.getAllByRole('button', { name: /Mark as Complete/i });
+    expect(screen.getByRole('heading', { name: /How Websites Work: Clients, Servers & The Web/i })).toBeInTheDocument();
+    expect(screen.getByText(/What You Will Learn/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/1. The Client-Server Dialogue/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Knowledge Check Quiz/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Inspecting the Client-Server Dialogue/i).length).toBeGreaterThan(0);
+    const markButtons = screen.getAllByRole('button', { name: /Mark.*Complete/i });
     expect(markButtons.length).toBeGreaterThan(0);
   });
 

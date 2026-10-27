@@ -1,11 +1,25 @@
 import React, { useEffect } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import { CheckCircle2, Circle, ArrowLeft, ArrowRight, Clock, BookOpen, ExternalLink, Lightbulb, Code2 } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import {
+  CheckCircle2,
+  Circle,
+  ArrowLeft,
+  ArrowRight,
+  Clock,
+  BookOpen,
+  ExternalLink,
+  Lightbulb,
+  AlertTriangle,
+  ListOrdered
+} from 'lucide-react';
 import { LESSONS } from '../data/lessons';
 import { useProgress } from '../context/ProgressContext';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Badge from '../components/Badge';
 import CodeBlock from '../components/CodeBlock';
+import MarkdownRenderer from '../components/MarkdownRenderer';
+import Quiz from '../components/Quiz';
+import Exercise from '../components/Exercise';
 
 export default function LessonView() {
   const { slug } = useParams();
@@ -37,7 +51,7 @@ export default function LessonView() {
   const isCompleted = isLessonComplete(lesson.id);
 
   return (
-    <div className="lesson-view-page" style={{ paddingTop: '1.5rem' }}>
+    <div className="lesson-view-page" style={{ paddingTop: '1.5rem', paddingBottom: '4rem' }}>
       <div className="container-narrow">
         {/* Navigation Breadcrumb */}
         <Breadcrumbs
@@ -49,8 +63,8 @@ export default function LessonView() {
         />
 
         {/* Lesson Header */}
-        <div style={{ marginBottom: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--color-border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
+        <header style={{ marginBottom: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--color-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
             <Link to={`/courses/${lesson.courseSlug}`}>
               <Badge variant="cyan">{lesson.courseTitle}</Badge>
             </Link>
@@ -60,7 +74,7 @@ export default function LessonView() {
             </span>
           </div>
 
-          <h1 style={{ fontSize: '2.25rem', marginBottom: '1rem', lineHeight: 1.2 }}>
+          <h1 style={{ fontSize: '2.25rem', marginBottom: '1rem', lineHeight: 1.25 }}>
             {lesson.title}
           </h1>
 
@@ -80,20 +94,76 @@ export default function LessonView() {
               {isCompleted ? (
                 <>
                   <CheckCircle2 size={18} aria-hidden="true" />
-                  <span>Completed (Click to Reopen)</span>
+                  <span>Lesson Completed (Click to Reopen)</span>
                 </>
               ) : (
                 <>
                   <Circle size={18} aria-hidden="true" />
-                  <span>Mark as Complete</span>
+                  <span>Mark Lesson Complete</span>
                 </>
               )}
             </button>
           </div>
-        </div>
+        </header>
+
+        {/* Quick Table of Contents for smooth scanning */}
+        <nav className="lesson-toc" aria-label="Lesson Table of Contents">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text-primary)' }}>
+            <ListOrdered size={16} style={{ color: 'var(--color-brand-primary)' }} aria-hidden="true" />
+            <span>In this lesson:</span>
+          </div>
+          <ul className="lesson-toc-list">
+            <li>
+              <a href="#objectives" className="lesson-toc-link">
+                <span>• Learning Objectives</span>
+              </a>
+            </li>
+            {lesson.sections.map((sec, idx) => (
+              <li key={idx}>
+                <a href={`#section-${idx}`} className="lesson-toc-link">
+                  <span>• {sec.heading}</span>
+                </a>
+              </li>
+            ))}
+            {lesson.commonMistakes && lesson.commonMistakes.length > 0 && (
+              <li>
+                <a href="#common-mistakes" className="lesson-toc-link">
+                  <span>• Common Beginner Mistakes</span>
+                </a>
+              </li>
+            )}
+            {lesson.guidedExercise && (
+              <li>
+                <a href="#guided-exercise" className="lesson-toc-link">
+                  <span>• Hands-On Practice Exercise</span>
+                </a>
+              </li>
+            )}
+            {lesson.quiz && lesson.quiz.length > 0 && (
+              <li>
+                <a href="#knowledge-check" className="lesson-toc-link">
+                  <span>• Knowledge Check Quiz</span>
+                </a>
+              </li>
+            )}
+            <li>
+              <a href="#takeaways" className="lesson-toc-link">
+                <span>• Key Takeaways</span>
+              </a>
+            </li>
+            {lesson.caseStudyReference && (
+              <li>
+                <a href="#case-study" className="lesson-toc-link">
+                  <span>• Real-World Case Study</span>
+                </a>
+              </li>
+            )}
+          </ul>
+        </nav>
 
         {/* Learning Objectives Box */}
-        <div
+        <section
+          id="objectives"
           className="card"
           style={{
             marginBottom: '2.5rem',
@@ -101,43 +171,35 @@ export default function LessonView() {
             borderLeft: '4px solid var(--color-brand-primary)'
           }}
         >
-          <h3 style={{ fontSize: '1.05rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Lightbulb size={18} style={{ color: 'var(--color-brand-primary)' }} aria-hidden="true" />
-            <span>Learning Objectives</span>
-          </h3>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.95rem', color: 'var(--color-text-secondary)' }}>
+          <h2 style={{ fontSize: '1.15rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Lightbulb size={20} style={{ color: 'var(--color-brand-primary)' }} aria-hidden="true" />
+            <span>What You Will Learn</span>
+          </h2>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.95rem', color: 'var(--color-text-secondary)', padding: 0 }}>
             {lesson.objectives.map((obj, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: 1.5 }}>
                 <span style={{ color: 'var(--color-brand-primary)', fontWeight: 700 }}>✓</span>
                 <span>{obj}</span>
               </li>
             ))}
           </ul>
-        </div>
+        </section>
 
         {/* Lesson Body Content Sections */}
         <article className="lesson-content" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
           {lesson.sections.map((section, idx) => (
-            <section key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <h2 style={{ fontSize: '1.5rem', color: 'var(--color-text-primary)' }}>
+            <section id={`section-${idx}`} key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <h2 style={{ fontSize: '1.5rem', color: 'var(--color-text-primary)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.4rem' }}>
                 {section.heading}
               </h2>
 
-              <div
-                style={{
-                  fontSize: '1.05rem',
-                  lineHeight: 1.8,
-                  color: 'var(--color-text-secondary)',
-                  whiteSpace: 'pre-line'
-                }}
-              >
-                {section.content}
-              </div>
+              {/* Render Markdown cleanly without raw ** or backticks */}
+              <MarkdownRenderer content={section.content} />
 
-              {/* ASCII Diagram if present */}
+              {/* ASCII Architecture Flow Diagram if present */}
               {section.diagram && (
                 <div style={{ margin: '1rem 0' }}>
-                  <CodeBlock code={section.diagram} language="diagram" filename="Architecture Flow" />
+                  <CodeBlock code={section.diagram} language="diagram" filename="Architecture Flow Diagram" />
                 </div>
               )}
 
@@ -151,20 +213,91 @@ export default function LessonView() {
           ))}
         </article>
 
+        {/* Common Mistakes & Troubleshooting */}
+        {lesson.commonMistakes && lesson.commonMistakes.length > 0 && (
+          <section id="common-mistakes" style={{ marginTop: '3rem', marginBottom: '2.5rem' }}>
+            <h2 style={{ fontSize: '1.35rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-warning-text)' }}>
+              <AlertTriangle size={20} aria-hidden="true" />
+              <span>Common Beginner Mistakes to Avoid</span>
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {lesson.commonMistakes.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="card"
+                  style={{
+                    backgroundColor: 'var(--color-bg-subtle)',
+                    borderLeft: '4px solid var(--color-warning)',
+                    padding: '1.25rem'
+                  }}
+                >
+                  <h4 style={{ fontSize: '1rem', color: 'var(--color-text-primary)', marginBottom: '0.4rem' }}>
+                    {idx + 1}. {item.mistake}
+                  </h4>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '0.5rem' }}>
+                    <strong>Why it happens:</strong> {item.whyItHappens}
+                  </p>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--color-brand-text)', lineHeight: 1.5, margin: 0, fontWeight: 500 }}>
+                    <strong>How to fix it:</strong> {item.howToFix}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Interactive Guided Practice Exercise */}
+        {lesson.guidedExercise && (
+          <div id="guided-exercise">
+            <Exercise {...lesson.guidedExercise} />
+          </div>
+        )}
+
+        {/* Interactive Knowledge Check Quiz */}
+        {lesson.quiz && lesson.quiz.length > 0 && (
+          <div id="knowledge-check">
+            <Quiz lessonId={lesson.id} questions={lesson.quiz} />
+          </div>
+        )}
+
+        {/* Key Takeaways */}
+        <section
+          id="takeaways"
+          className="card"
+          style={{
+            marginTop: '2.5rem',
+            marginBottom: '2.5rem',
+            backgroundColor: 'var(--color-bg-surface)',
+            border: '1px solid var(--color-brand-border)'
+          }}
+        >
+          <h3 style={{ fontSize: '1.2rem', marginBottom: '0.75rem', color: 'var(--color-brand-primary)' }}>
+            Key Takeaways
+          </h3>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.95rem', color: 'var(--color-text-primary)', padding: 0 }}>
+            {lesson.takeaways.map((takeaway, i) => (
+              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: 1.5 }}>
+                <span style={{ color: 'var(--color-brand-primary)', fontWeight: 700 }}>•</span>
+                <span>{takeaway}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         {/* Case Study Reference Card */}
         {lesson.caseStudyReference && (
-          <div
+          <section
+            id="case-study"
             className="card"
             style={{
-              marginTop: '3rem',
-              marginBottom: '2.5rem',
+              marginBottom: '3rem',
               borderLeft: '4px solid var(--color-accent-purple)',
               background: 'linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-subtle) 100%)'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
               <Badge variant="cyan">Real-World Case Study</Badge>
-              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>CRP India Reference</span>
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Grounded Reference</span>
             </div>
             <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>
               {lesson.caseStudyReference.title}
@@ -176,7 +309,7 @@ export default function LessonView() {
               <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.4rem' }}>
                 Relevant Reference Codebase Files:
               </span>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem', padding: 0 }}>
                 {lesson.caseStudyReference.files.map((file, i) => (
                   <li key={i}>
                     <code style={{ fontSize: '0.85rem', color: 'var(--color-brand-primary)', backgroundColor: 'var(--color-bg-surface)', padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}>
@@ -192,51 +325,12 @@ export default function LessonView() {
                 <ExternalLink size={14} aria-hidden="true" />
               </Link>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Key Takeaways */}
-        <div
-          className="card"
-          style={{
-            marginBottom: '3rem',
-            backgroundColor: 'var(--color-bg-surface)',
-            border: '1px solid var(--color-brand-border)'
-          }}
-        >
-          <h3 style={{ fontSize: '1.15rem', marginBottom: '0.75rem', color: 'var(--color-brand-primary)' }}>
-            Key Takeaways
-          </h3>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.95rem', color: 'var(--color-text-primary)' }}>
-            {lesson.takeaways.map((takeaway, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                <span style={{ color: 'var(--color-brand-primary)', fontWeight: 700 }}>•</span>
-                <span>{takeaway}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Interactive Practice Sandbox Placeholder (Phase 2 Roadmap item) */}
-        <div
-          className="card"
-          style={{
-            marginBottom: '3rem',
-            padding: '1.5rem',
-            backgroundColor: 'var(--color-bg-subtle)',
-            border: '1px dashed var(--color-border-subtle)',
-            textAlign: 'center'
-          }}
-        >
-          <Code2 size={28} style={{ color: 'var(--color-text-muted)', margin: '0 auto 0.5rem' }} aria-hidden="true" />
-          <h4 style={{ fontSize: '1rem', marginBottom: '0.25rem' }}>Interactive Exercise Sandbox</h4>
-          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', maxWidth: '480px', margin: '0 auto' }}>
-            In-browser code execution and automated unit test verifiers for this lesson will activate in <strong>Phase 2</strong>.
-          </p>
-        </div>
-
         {/* Previous / Next Lesson Footer Navigation */}
-        <div
+        <nav
+          aria-label="Lesson Pagination"
           style={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -278,7 +372,7 @@ export default function LessonView() {
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
           )}
-        </div>
+        </nav>
       </div>
     </div>
   );

@@ -68,7 +68,7 @@ export default function Home() {
 
               <Link to="/courses" className="btn btn-secondary btn-lg">
                 <BookOpen size={18} aria-hidden="true" />
-                <span>Explore All 16 Paths</span>
+                <span>Explore All {COURSES.length} Courses</span>
               </Link>
             </div>
 
@@ -105,9 +105,9 @@ export default function Home() {
                 <Compass size={18} style={{ color: 'var(--color-accent-cyan)' }} aria-hidden="true" />
               </div>
               <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--color-text-primary)' }}>
-                16 <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Learning Paths</span>
+                {COURSES.length} <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Courses</span>
               </div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>From HTML to Full-Stack Deployment</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>From Absolute Zero to Full-Stack</span>
             </div>
 
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -267,7 +267,7 @@ export default function Home() {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
             <div>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>The Complete 16-Step Curriculum</h2>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>The Complete Curriculum Progression</h2>
               <p style={{ fontSize: '0.95rem' }}>From absolute beginner foundations to deployed full-stack capstone projects.</p>
             </div>
             <Link to="/courses" className="btn btn-primary btn-sm">

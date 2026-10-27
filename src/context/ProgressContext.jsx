@@ -15,6 +15,8 @@ export function ProgressProvider({ children }) {
         return {
           completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [],
           lastOpenedLesson: typeof parsed.lastOpenedLesson === 'string' ? parsed.lastOpenedLesson : null,
+          quizScores: parsed.quizScores && typeof parsed.quizScores === 'object' ? parsed.quizScores : {},
+          completedExercises: parsed.completedExercises && typeof parsed.completedExercises === 'object' ? parsed.completedExercises : {},
           lastUpdated: parsed.lastUpdated || Date.now()
         };
       }
@@ -24,6 +26,8 @@ export function ProgressProvider({ children }) {
     return {
       completedLessons: [],
       lastOpenedLesson: null,
+      quizScores: {},
+      completedExercises: {},
       lastUpdated: Date.now()
     };
   });
@@ -66,10 +70,45 @@ export function ProgressProvider({ children }) {
     });
   }, []);
 
+  const recordQuizScore = useCallback((lessonId, score, total) => {
+    setProgress((prev) => ({
+      ...prev,
+      quizScores: {
+        ...prev.quizScores,
+        [lessonId]: { score, total, updatedAt: Date.now() }
+      },
+      lastUpdated: Date.now()
+    }));
+  }, []);
+
+  const getQuizScore = useCallback((lessonId) => {
+    return progress.quizScores ? progress.quizScores[lessonId] || null : null;
+  }, [progress.quizScores]);
+
+  const toggleExerciseComplete = useCallback((exerciseId) => {
+    setProgress((prev) => {
+      const current = !!prev.completedExercises[exerciseId];
+      return {
+        ...prev,
+        completedExercises: {
+          ...prev.completedExercises,
+          [exerciseId]: !current
+        },
+        lastUpdated: Date.now()
+      };
+    });
+  }, []);
+
+  const isExerciseComplete = useCallback((exerciseId) => {
+    return progress.completedExercises ? !!progress.completedExercises[exerciseId] : false;
+  }, [progress.completedExercises]);
+
   const resetProgress = useCallback(() => {
     setProgress({
       completedLessons: [],
       lastOpenedLesson: null,
+      quizScores: {},
+      completedExercises: {},
       lastUpdated: Date.now()
     });
   }, []);
@@ -106,9 +145,15 @@ export function ProgressProvider({ children }) {
       value={{
         completedLessons: progress.completedLessons,
         lastOpenedLesson: progress.lastOpenedLesson,
+        quizScores: progress.quizScores,
+        completedExercises: progress.completedExercises,
         toggleLessonComplete,
         isLessonComplete,
         setLastOpenedLesson,
+        recordQuizScore,
+        getQuizScore,
+        toggleExerciseComplete,
+        isExerciseComplete,
         getCourseProgress,
         getOverallProgress,
         resetProgress

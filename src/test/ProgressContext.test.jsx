@@ -61,8 +61,8 @@ describe('ProgressContext', () => {
 
     const courseProg = result.current.getCourseProgress('web-internet-fundamentals');
     expect(courseProg.completed).toBe(2);
-    expect(courseProg.total).toBe(3); // 3 available lessons in course 1
-    expect(courseProg.percent).toBe(67);
+    expect(courseProg.total).toBe(4); // 4 available lessons in course 1
+    expect(courseProg.percent).toBe(50);
   });
 
   it('updates and persists lastOpenedLesson', () => {
@@ -75,5 +75,38 @@ describe('ProgressContext', () => {
     });
 
     expect(result.current.lastOpenedLesson).toBe('how-websites-work');
+  });
+
+  it('records and retrieves quiz scores', () => {
+    const { result } = renderHook(() => useProgress(), {
+      wrapper: ProgressProvider
+    });
+
+    act(() => {
+      result.current.recordQuizScore('lesson-1-1', 3, 3);
+    });
+
+    const score = result.current.getQuizScore('lesson-1-1');
+    expect(score).not.toBeNull();
+    expect(score.score).toBe(3);
+    expect(score.total).toBe(3);
+  });
+
+  it('toggles and tracks exercise completion', () => {
+    const { result } = renderHook(() => useProgress(), {
+      wrapper: ProgressProvider
+    });
+
+    expect(result.current.isExerciseComplete('ex-1-1')).toBe(false);
+
+    act(() => {
+      result.current.toggleExerciseComplete('ex-1-1');
+    });
+    expect(result.current.isExerciseComplete('ex-1-1')).toBe(true);
+
+    act(() => {
+      result.current.toggleExerciseComplete('ex-1-1');
+    });
+    expect(result.current.isExerciseComplete('ex-1-1')).toBe(false);
   });
 });

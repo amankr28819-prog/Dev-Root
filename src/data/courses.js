@@ -1,317 +1,363 @@
 /**
  * Dev-root Course Catalogue Data Definition
- * Contains the 16 full-stack curriculum paths, structured by level and category.
+ * Contains the comprehensive curriculum paths (Courses 1 to 17 + Case Studies),
+ * progressing from absolute beginner foundations to full-stack production architecture.
  */
 
 export const COURSES = [
   {
     id: 'course-1',
     slug: 'web-internet-fundamentals',
-    title: 'Web & Internet Fundamentals',
+    title: 'Course 1: Understanding the Web',
     category: 'Fundamentals',
     level: 'Beginner',
     duration: '4 Lessons • 2 Hours',
-    description: 'Learn the foundational machinery of the internet: client-server architecture, DNS resolution, HTTP/HTTPS protocols, and the mechanics of web browsers.',
-    status: 'available', // Lessons ready in Phase 1
+    description: 'Start here with zero prior technical knowledge. Learn what the internet is, how clients and servers talk, DNS lookups, HTTP requests and responses, and how browsers draw web pages.',
+    status: 'available',
     objectives: [
-      'Understand client-server architecture and how browsers communicate with remote servers.',
-      'Trace what happens under the hood when a URL is entered into a browser.',
-      'Distinguish frontend client responsibilities from backend server operations.',
-      'Learn HTTP methods, request headers, status codes, and JSON payload serialization.'
+      'Understand the difference between the Internet and the World Wide Web.',
+      'Trace the end-to-end journey of typing a URL into a browser to seeing pixels on screen.',
+      'Distinguish client-side responsibilities (browser) from server-side responsibilities.',
+      'Master HTTP methods, status codes, request headers, and JSON payloads.'
     ],
-    prerequisites: 'None. Suitable for absolute beginners starting their coding journey.',
+    prerequisites: 'None. Assumes absolute zero prior technical or programming knowledge.',
     lessons: [
-      { id: 'lesson-1-1', slug: 'how-websites-work', title: 'How Websites Work', duration: '20 min', status: 'available' },
-      { id: 'lesson-1-2', slug: 'frontend-vs-backend', title: 'Frontend vs. Backend', duration: '25 min', status: 'available' },
+      { id: 'lesson-1-1', slug: 'how-websites-work', title: 'How Websites Work: Clients, Servers & The Web', duration: '20 min', status: 'available' },
+      { id: 'lesson-1-2', slug: 'frontend-vs-backend', title: 'Frontend vs. Backend: Runtimes & Trust Boundaries', duration: '25 min', status: 'available' },
       { id: 'lesson-1-3', slug: 'what-happens-when-you-open-a-website', title: 'What Happens When You Open a Website?', duration: '30 min', status: 'available' },
-      { id: 'lesson-1-4', slug: 'http-and-json-foundations', title: 'HTTP, Status Codes & JSON Payloads', duration: '25 min', status: 'planned' }
+      { id: 'lesson-1-4', slug: 'http-requests-and-responses', title: 'HTTP Methods, Status Codes & JSON Payloads', duration: '25 min', status: 'available' }
     ]
   },
   {
     id: 'course-2',
-    slug: 'html-foundations',
-    title: 'Semantic HTML & Document Structure',
-    category: 'Frontend',
+    slug: 'developer-setup-and-tools',
+    title: 'Course 2: Developer Setup & Essential Tools',
+    category: 'Tooling',
     level: 'Beginner',
-    duration: '6 Lessons • 3 Hours',
-    description: 'Master semantic markup, forms, accessibility standards (ARIA), head metadata, and document hierarchies that modern search engines and screen readers rely on.',
-    status: 'planned',
+    duration: '2 Lessons • 1.5 Hours',
+    description: 'Learn how software engineers prepare their computer: directories, file extensions, the command line terminal, code editors, and browser DevTools.',
+    status: 'available',
     objectives: [
-      'Structure documents with semantic HTML5 elements (<main>, <nav>, <article>, <section>).',
-      'Build accessible web forms with associated labels, fieldsets, and validation attributes.',
-      'Implement proper viewport and accessibility tags for responsive displays.'
+      'Master file paths, project folder structures, and common web file extensions.',
+      'Navigate directories and execute fundamental commands using the terminal.',
+      'Use VS Code efficiently and inspect live DOM/network traffic in browser Developer Tools.',
+      'Understand how to identify, isolate, and debug common beginner syntax errors.'
     ],
-    prerequisites: 'Web & Internet Fundamentals',
+    prerequisites: 'Course 1: Understanding the Web',
     lessons: [
-      { id: 'lesson-2-1', slug: 'semantic-html-hierarchy', title: 'Semantic Tags & Document Trees', duration: '25 min', status: 'planned' },
-      { id: 'lesson-2-2', slug: 'accessible-forms-and-inputs', title: 'Accessible Web Forms & Input Types', duration: '30 min', status: 'planned' }
+      { id: 'lesson-2-1', slug: 'terminal-and-file-fundamentals', title: 'Files, Folders & The Developer Terminal', duration: '25 min', status: 'available' },
+      { id: 'lesson-2-2', slug: 'code-editors-and-devtools', title: 'Code Editors & Browser Developer Tools', duration: '30 min', status: 'available' }
     ]
   },
   {
     id: 'course-3',
-    slug: 'css-responsive-design',
-    title: 'CSS & Responsive Design',
+    slug: 'html-foundations',
+    title: 'Course 3: HTML from Zero',
     category: 'Frontend',
     level: 'Beginner',
-    duration: '8 Lessons • 4 Hours',
-    description: 'Design responsive, accessible layouts using modern CSS: Flexbox, CSS Grid, custom properties (CSS variables), light/dark theming, and fluid typography.',
-    status: 'planned',
+    duration: '2 Lessons • 2 Hours',
+    description: 'Learn HTML as the structural skeleton of the web: tags, elements, document hierarchy, semantic sections, accessible forms, inputs, and validation.',
+    status: 'available',
     objectives: [
-      'Master the CSS Box Model, specificity, and cascading mechanics.',
-      'Build responsive layouts using modern Flexbox and auto-fit CSS Grid.',
-      'Implement light and dark mode design systems with CSS custom properties.'
+      'Construct valid HTML5 documents with semantic elements (<header>, <nav>, <main>, <article>, <section>, <footer>).',
+      'Build accessible web forms with associated labels, validation attributes, and various input types.',
+      'Understand how accessibility trees and screen readers interpret semantic document structures.'
     ],
-    prerequisites: 'HTML Foundations',
+    prerequisites: 'Course 2: Developer Setup & Essential Tools',
     lessons: [
-      { id: 'lesson-3-1', slug: 'css-box-model-and-tokens', title: 'Box Model & CSS Variables', duration: '30 min', status: 'planned' },
-      { id: 'lesson-3-2', slug: 'flexbox-and-grid-layouts', title: 'Modern Grid & Flexbox Systems', duration: '35 min', status: 'planned' }
+      { id: 'lesson-3-1', slug: 'html-document-structure-and-semantics', title: 'Semantic HTML & Document Hierarchy', duration: '30 min', status: 'available' },
+      { id: 'lesson-3-2', slug: 'html-forms-and-accessible-inputs', title: 'Accessible Forms, Inputs & Data Entry', duration: '35 min', status: 'available' }
     ]
   },
   {
     id: 'course-4',
-    slug: 'javascript-fundamentals',
-    title: 'JavaScript Fundamentals',
-    category: 'Programming',
+    slug: 'css-responsive-design',
+    title: 'Course 4: CSS from Zero',
+    category: 'Frontend',
     level: 'Beginner',
-    duration: '10 Lessons • 6 Hours',
-    description: 'Learn core programming constructs: variables, data types, functions, control flow, loops, arrays, objects, and foundational problem solving.',
-    status: 'planned',
+    duration: '2 Lessons • 2 Hours',
+    description: 'Style web pages systematically: the CSS Box Model, specificity, selectors, fluid layouts with Flexbox and Grid, CSS variables, and mobile-first responsive design.',
+    status: 'available',
     objectives: [
-      'Write clean, modular JavaScript using let/const, arrow functions, and destructuring.',
-      'Manipulate complex arrays and objects with modern methods (.map, .filter, .reduce).',
-      'Understand lexical scope, closures, and the call stack.'
+      'Master the CSS Box Model (content, padding, border, margin, box-sizing: border-box).',
+      'Build responsive layouts using modern Flexbox alignment and auto-fit CSS Grid.',
+      'Use CSS custom properties (variables) to implement consistent light and dark design tokens.'
     ],
-    prerequisites: 'Web & Internet Fundamentals',
+    prerequisites: 'Course 3: HTML from Zero',
     lessons: [
-      { id: 'lesson-4-1', slug: 'variables-types-operators', title: 'Variables, Data Types & Operators', duration: '25 min', status: 'planned' },
-      { id: 'lesson-4-2', slug: 'functions-and-scope', title: 'Functions, Scope & Execution Context', duration: '35 min', status: 'planned' }
+      { id: 'lesson-4-1', slug: 'css-box-model-and-selectors', title: 'The CSS Box Model, Selectors & Cascade', duration: '30 min', status: 'available' },
+      { id: 'lesson-4-2', slug: 'css-flexbox-and-grid', title: 'Responsive Layouts with Flexbox & CSS Grid', duration: '35 min', status: 'available' }
     ]
   },
   {
     id: 'course-5',
-    slug: 'advanced-javascript',
-    title: 'Advanced JavaScript & Async Programming',
+    slug: 'javascript-fundamentals',
+    title: 'Course 5: JavaScript Fundamentals',
     category: 'Programming',
-    level: 'Intermediate',
-    duration: '8 Lessons • 5 Hours',
-    description: 'Deep dive into asynchronous JavaScript, Promises, async/await, event loops, closures, prototypes, and ES module architecture.',
-    status: 'planned',
+    level: 'Beginner',
+    duration: '2 Lessons • 2.5 Hours',
+    description: 'Learn computational thinking and core programming constructs: variables, data types, conditional branching, loops, functions, arguments, return values, and scope.',
+    status: 'available',
     objectives: [
-      'Demystify the JavaScript Event Loop, microtasks, and macrotasks.',
-      'Master asynchronous code orchestration with Promises and async/await.',
-      'Handle errors defensively with try/catch and custom Error classes.'
+      'Write clean JavaScript using let and const, primitive data types, and logical operators.',
+      'Declare and invoke functions with parameters, default arguments, and return values.',
+      'Understand variable scope (global, function, block) and avoid variable shadowing bugs.'
     ],
-    prerequisites: 'JavaScript Fundamentals',
+    prerequisites: 'Course 4: CSS from Zero',
     lessons: [
-      { id: 'lesson-5-1', slug: 'event-loop-and-promises', title: 'The Event Loop & Promises', duration: '40 min', status: 'planned' }
+      { id: 'lesson-5-1', slug: 'javascript-variables-types-and-logic', title: 'Variables, Data Types & Control Flow', duration: '35 min', status: 'available' },
+      { id: 'lesson-5-2', slug: 'javascript-functions-and-scope', title: 'Functions, Parameters, Return Values & Scope', duration: '40 min', status: 'available' }
     ]
   },
   {
     id: 'course-6',
-    slug: 'git-and-github',
-    title: 'Git Version Control & GitHub',
-    category: 'Tooling',
+    slug: 'browser-and-dom',
+    title: 'Course 6: The Browser and the DOM',
+    category: 'Frontend',
     level: 'Beginner',
-    duration: '5 Lessons • 3 Hours',
-    description: 'Track changes like a professional software engineer: commits, branching strategies, merge conflicts, pull requests, and collaborative repository workflows.',
-    status: 'planned',
+    duration: '1 Lesson • 40 Minutes',
+    description: 'Transform static web pages into interactive applications: Document Object Model (DOM) traversal, element creation, event listeners, and form submission.',
+    status: 'available',
     objectives: [
-      'Understand the 3 trees of Git: working directory, staging index, and repository.',
-      'Create clean, descriptive atomic commits adhering to conventional standards.',
-      'Resolve merge conflicts calmly and inspect history with git log.'
+      'Understand how HTML is parsed into the live in-memory Document Object Model (DOM).',
+      'Select elements with querySelector and update text, attributes, and CSS class lists dynamically.',
+      'Listen for user actions using addEventListener and handle event objects without page reloads.'
     ],
-    prerequisites: 'None',
+    prerequisites: 'Course 5: JavaScript Fundamentals',
     lessons: [
-      { id: 'lesson-6-1', slug: 'git-mental-model', title: 'The Git Mental Model', duration: '30 min', status: 'planned' }
+      { id: 'lesson-6-1', slug: 'dom-manipulation-and-events', title: 'Selecting Elements, Modifying Content & Events', duration: '40 min', status: 'available' }
     ]
   },
   {
     id: 'course-7',
-    slug: 'react-foundations',
-    title: 'React Components, State & Hooks',
-    category: 'Frontend',
+    slug: 'modern-javascript',
+    title: 'Course 7: Modern JavaScript',
+    category: 'Programming',
     level: 'Intermediate',
-    duration: '10 Lessons • 7 Hours',
-    description: 'Build dynamic Single Page Applications (SPAs) using React 19: components, unidirectional data flow (props), state management, hooks, and context.',
+    duration: '4 Lessons • 3 Hours',
+    description: 'Advance to modern ES6+ capabilities: arrow functions, array iteration methods (.map, .filter, .reduce), Promises, async/await, Fetch API, and ES Modules.',
     status: 'planned',
     objectives: [
-      'Understand JSX compilation, the Virtual DOM, and component reconciliation.',
-      'Manage component state with useState and handle side effects with useEffect.',
-      'Architect global application state using the React Context API.'
+      'Manipulate complex datasets declaratively with higher-order array methods.',
+      'Master asynchronous flow control with Promises, async/await, and try/catch.',
+      'Fetch JSON from remote endpoints and handle loading and error states gracefully.'
     ],
-    prerequisites: 'JavaScript Fundamentals & CSS',
+    prerequisites: 'Course 6: The Browser and the DOM',
     lessons: [
-      { id: 'lesson-7-1', slug: 'jsx-and-components', title: 'JSX & Component Composition', duration: '35 min', status: 'planned' }
+      { id: 'lesson-7-1', slug: 'es6-syntax-and-array-methods', title: 'ES6+ Syntax, Destructuring & Array Methods', duration: '35 min', status: 'planned' },
+      { id: 'lesson-7-2', slug: 'promises-and-async-await', title: 'Promises, Async/Await & The Event Loop', duration: '40 min', status: 'planned' }
     ]
   },
   {
     id: 'course-8',
-    slug: 'apis-and-async-communication',
-    title: 'APIs & Asynchronous Communication',
-    category: 'Full-Stack',
-    level: 'Intermediate',
-    duration: '6 Lessons • 4 Hours',
-    description: 'Connect frontend interfaces to backend servers: the Fetch API, HTTP headers, Bearer tokens, multipart uploads, and error interceptors.',
-    status: 'planned',
+    slug: 'git-and-github',
+    title: 'Course 8: Git, GitHub, and Collaboration',
+    category: 'Tooling',
+    level: 'Beginner',
+    duration: '1 Lesson • 35 Minutes',
+    description: 'Track changes like a professional software engineer: working directory vs staging area, atomic commits, branches, GitHub remotes, and merge conflicts.',
+    status: 'available',
     objectives: [
-      'Write modular HTTP client services handling all CRUD operations.',
-      'Manage loading, success, and error states gracefully in UI components.',
-      'Transmit multipart file uploads with FormData.'
+      'Understand the three Git trees: working directory, staging area, and repository history.',
+      'Initialize repositories, stage modifications, and craft descriptive atomic commit messages.',
+      'Connect local repositories to remote GitHub hosts and push updates safely.'
     ],
-    prerequisites: 'React Foundations & Advanced JavaScript',
+    prerequisites: 'Course 2: Developer Setup & Essential Tools',
     lessons: [
-      { id: 'lesson-8-1', slug: 'fetch-api-and-interceptors', title: 'Building a Production Fetch Client', duration: '35 min', status: 'planned' }
+      { id: 'lesson-8-1', slug: 'git-fundamentals-and-commits', title: 'Git Mental Model, Repositories & Commits', duration: '35 min', status: 'available' }
     ]
   },
   {
     id: 'course-9',
-    slug: 'nodejs-and-express',
-    title: 'Node.js & Express Backend Development',
-    category: 'Backend',
+    slug: 'react-foundations',
+    title: 'Course 9: React from Zero',
+    category: 'Frontend',
     level: 'Intermediate',
-    duration: '8 Lessons • 5 Hours',
-    description: 'Build scalable backend services using Node.js and Express: routing, request-response pipelines, custom middleware, and server security.',
+    duration: '6 Lessons • 5 Hours',
+    description: 'Build modern Single Page Applications using React: JSX, component composition, props, state with useState, side effects with useEffect, and forms.',
     status: 'planned',
     objectives: [
-      'Understand the Node.js runtime environment, event-driven I/O, and modules.',
-      'Construct modular Express applications with routes, controllers, and services.',
-      'Build custom middleware for logging, rate limiting, and input sanitization.'
+      'Understand declarative UI rendering and how React synchronizes the Virtual DOM.',
+      'Manage local component state with useState and lift state up across parent-child trees.',
+      'Execute network requests safely inside useEffect and manage loading and error banners.'
     ],
-    prerequisites: 'JavaScript Fundamentals & Git',
+    prerequisites: 'Course 7: Modern JavaScript',
     lessons: [
-      { id: 'lesson-9-1', slug: 'express-server-and-middleware', title: 'Express Anatomy & Middleware Chains', duration: '40 min', status: 'planned' }
+      { id: 'lesson-9-1', slug: 'react-components-and-jsx', title: 'Components, JSX & Props Data Flow', duration: '35 min', status: 'planned' },
+      { id: 'lesson-9-2', slug: 'react-state-and-lifecycle', title: 'State Management with useState & useEffect', duration: '40 min', status: 'planned' }
     ]
   },
   {
     id: 'course-10',
-    slug: 'rest-api-development',
-    title: 'RESTful API Architecture & Design',
+    slug: 'nodejs-and-express',
+    title: 'Course 10: Backend Development with Node.js',
     category: 'Backend',
     level: 'Intermediate',
-    duration: '7 Lessons • 4 Hours',
-    description: 'Design production-grade REST APIs: resource modeling, status codes, query filtering, pagination, search, and centralized error handling.',
+    duration: '6 Lessons • 4 Hours',
+    description: 'Move to server-side engineering: Node.js runtime, package.json dependencies, Express servers, routing, middleware chains, status codes, and CORS.',
     status: 'planned',
     objectives: [
-      'Design clean, intuitive URL schemas adhering to RESTful standards.',
-      'Implement defensive input validation and consistent JSON response envelopes.',
-      'Build search, sorting, and pagination into database-backed endpoints.'
+      'Understand JavaScript outside the browser and asynchronous I/O in Node.js.',
+      'Construct Express web servers with structured route handlers and controllers.',
+      'Build modular middleware pipelines for logging, request parsing, and error interception.'
     ],
-    prerequisites: 'Node.js & Express Backend Development',
+    prerequisites: 'Course 7: Modern JavaScript & Course 1: Understanding the Web',
     lessons: [
-      { id: 'lesson-10-1', slug: 'rest-principles-and-status-codes', title: 'REST Resource Modeling & Status Codes', duration: '35 min', status: 'planned' }
+      { id: 'lesson-10-1', slug: 'nodejs-runtime-and-modules', title: 'The Node.js Runtime & NPM Ecosystem', duration: '30 min', status: 'planned' },
+      { id: 'lesson-10-2', slug: 'express-servers-and-middleware', title: 'Express Routing & Middleware Architecture', duration: '40 min', status: 'planned' }
     ]
   },
   {
     id: 'course-11',
     slug: 'mongodb-and-mongoose',
-    title: 'MongoDB & Mongoose Data Modeling',
+    title: 'Course 11: Databases and MongoDB',
     category: 'Database',
     level: 'Intermediate',
-    duration: '8 Lessons • 5 Hours',
-    description: 'Model application data with MongoDB and Mongoose: document schemas, validation, embedded subdocuments, indexes, references, and aggregation pipelines.',
+    duration: '5 Lessons • 4 Hours',
+    description: 'Store and query persistent data: relational SQL vs document NoSQL databases, MongoDB collections, Mongoose schemas, CRUD operations, and indexes.',
     status: 'planned',
     objectives: [
-      'Design flexible NoSQL schemas with embedded subdocuments and references.',
-      'Implement Mongoose pre-save middleware for automated operations.',
-      'Write analytical queries using the MongoDB Aggregation Framework.'
+      'Compare relational table schemas with flexible document collections.',
+      'Define strongly-typed schemas, default values, and validators using Mongoose.',
+      'Execute CRUD queries (create, read, update, delete) and protect database credentials.'
     ],
-    prerequisites: 'Node.js & Express Backend Development',
+    prerequisites: 'Course 10: Backend Development with Node.js',
     lessons: [
-      { id: 'lesson-11-1', slug: 'mongoose-schemas-and-validation', title: 'Mongoose Schemas & Schema Validation', duration: '35 min', status: 'planned' }
+      { id: 'lesson-11-1', slug: 'database-concepts-and-mongodb', title: 'Database Foundations & MongoDB Collections', duration: '35 min', status: 'planned' },
+      { id: 'lesson-11-2', slug: 'mongoose-schemas-and-crud', title: 'Mongoose Schemas, Validation & CRUD Queries', duration: '40 min', status: 'planned' }
     ]
   },
   {
     id: 'course-12',
     slug: 'authentication-and-web-security',
-    title: 'Authentication & Web Security',
+    title: 'Course 12: Authentication and Authorization',
     category: 'Security',
     level: 'Advanced',
-    duration: '8 Lessons • 6 Hours',
-    description: 'Secure full-stack applications: JWT token lifecycles, bcrypt password hashing, Role-Based Access Control (RBAC), OAuth 2.0, CORS, Helmet, and rate limiting.',
+    duration: '5 Lessons • 4 Hours',
+    description: 'Master application security: user registration, bcrypt password hashing, stateless JWT tokens, protected routes, and Role-Based Access Control (RBAC).',
     status: 'planned',
     objectives: [
-      'Implement stateless authentication using signed JSON Web Tokens (JWT).',
-      'Enforce Role-Based Access Control (RBAC) across protected routes.',
-      'Harden Express APIs against NoSQL injection, XSS, and volumetric attacks.'
+      'Distinguish authentication (who you are) from authorization (what you can do).',
+      'Hash passwords with bcrypt before persistence and verify them during login.',
+      'Sign and verify JSON Web Tokens (JWT) and enforce server-side role authorization.'
     ],
-    prerequisites: 'REST API Development & MongoDB',
+    prerequisites: 'Course 10: Backend Development & Course 11: Databases',
     lessons: [
-      { id: 'lesson-12-1', slug: 'jwt-and-bcrypt-architecture', title: 'JWT Lifecycles & Cryptographic Hashing', duration: '40 min', status: 'planned' }
+      { id: 'lesson-12-1', slug: 'auth-principles-and-bcrypt', title: 'Authentication Foundations & Password Hashing', duration: '35 min', status: 'planned' },
+      { id: 'lesson-12-2', slug: 'jwt-and-role-based-access', title: 'JWT Tokens & Role-Based Access Control (RBAC)', duration: '40 min', status: 'planned' }
     ]
   },
   {
     id: 'course-13',
-    slug: 'testing-and-debugging',
-    title: 'Testing & Debugging Full-Stack Apps',
-    category: 'Quality',
-    level: 'Advanced',
-    duration: '6 Lessons • 4 Hours',
-    description: 'Write automated unit and integration tests with Vitest and Testing Library. Debug client and server applications using browser DevTools and Node inspectors.',
+    slug: 'full-stack-integration',
+    title: 'Course 13: Full-Stack Integration',
+    category: 'Full-Stack',
+    level: 'Intermediate',
+    duration: '4 Lessons • 3 Hours',
+    description: 'Unite frontend and backend: connecting React forms to Express APIs, managing global authentication tokens, optimistic UI updates, and error handling.',
     status: 'planned',
     objectives: [
-      'Write comprehensive unit tests for UI components and utility functions.',
-      'Simulate user interactions and test asynchronous state changes.',
-      'Debug runtime errors and network requests systematically.'
+      'Wire React forms to backend REST endpoints via authenticated fetch requests.',
+      'Persist auth tokens in client storage and inject Bearer headers across API calls.',
+      'Handle network disconnections and server validation errors gracefully in user interfaces.'
     ],
-    prerequisites: 'React Foundations & Node.js',
+    prerequisites: 'Course 9: React from Zero & Course 12: Authentication',
     lessons: [
-      { id: 'lesson-13-1', slug: 'vitest-and-component-testing', title: 'Vitest & React Component Testing', duration: '35 min', status: 'planned' }
+      { id: 'lesson-13-1', slug: 'connecting-react-to-express', title: 'Connecting React UI to Express REST Endpoints', duration: '40 min', status: 'planned' }
     ]
   },
   {
     id: 'course-14',
-    slug: 'deployment-and-production',
-    title: 'Deployment & Production Operations',
-    category: 'DevOps',
+    slug: 'apis-and-async-communication',
+    title: 'Course 14: File Uploads, External APIs & Advanced Features',
+    category: 'Full-Stack',
     level: 'Advanced',
-    duration: '6 Lessons • 4 Hours',
-    description: 'Deploy web apps to production: static hosting (Render/Vercel), environment variable management, build optimizations, and zero-downtime releases.',
+    duration: '4 Lessons • 3 Hours',
+    description: 'Implement complex features: multipart file uploads (Multer), cloud storage, external REST API integrations, pagination, search, and rate limiting.',
     status: 'planned',
     objectives: [
-      'Configure Single Page Application (SPA) rewrite rules for cloud hosting.',
-      'Secure environment variables across local, staging, and production environments.',
-      'Monitor application health and implement graceful process teardowns.'
+      'Handle file uploads with Multer, validating MIME types and enforcing size ceilings.',
+      'Implement server-side search, filtering, and page-based pagination for large datasets.',
+      'Integrate third-party services securely without exposing API keys in client bundles.'
     ],
-    prerequisites: 'Full-Stack Foundations',
+    prerequisites: 'Course 13: Full-Stack Integration',
     lessons: [
-      { id: 'lesson-14-1', slug: 'spa-hosting-and-render-config', title: 'SPA Routing Rewrites & Cloud Deployment', duration: '35 min', status: 'planned' }
+      { id: 'lesson-14-1', slug: 'file-uploads-and-cloud-storage', title: 'Multipart File Uploads & Cloud Asset Storage', duration: '40 min', status: 'planned' }
     ]
   },
   {
     id: 'course-15',
-    slug: 'full-stack-projects',
-    title: 'Full-Stack Capstone Projects',
-    category: 'Full-Stack',
+    slug: 'testing-and-debugging',
+    title: 'Course 15: Testing, Security & Code Quality',
+    category: 'Quality',
     level: 'Advanced',
-    duration: '4 Projects • 12 Hours',
-    description: 'Combine frontend, backend, database, authentication, and deployment into complete real-world web applications built from scratch.',
+    duration: '4 Lessons • 3 Hours',
+    description: 'Ensure software reliability: unit testing with Vitest, React Testing Library, API integration tests, XSS/NoSQL injection prevention, and CORS defense.',
     status: 'planned',
     objectives: [
-      'Architect a full-stack project from initial database schema to deployed URL.',
-      'Connect a React frontend to an authenticated Express REST API.',
-      'Deliver production-ready user experiences with proper validation and feedback.'
+      'Write automated unit and component tests that verify business logic and user flows.',
+      'Sanitize user inputs to prevent Cross-Site Scripting (XSS) and NoSQL injection attacks.',
+      'Understand CORS as a browser security mechanism rather than server authorization.'
     ],
-    prerequisites: 'All prior core modules',
+    prerequisites: 'Course 13: Full-Stack Integration',
     lessons: [
-      { id: 'lesson-15-1', slug: 'project-architecture-scaffolding', title: 'Full-Stack Scaffolding & Specifications', duration: '45 min', status: 'planned' }
+      { id: 'lesson-15-1', slug: 'vitest-and-automated-testing', title: 'Automated Testing with Vitest & Testing Library', duration: '35 min', status: 'planned' }
     ]
   },
   {
     id: 'course-16',
+    slug: 'deployment-and-production',
+    title: 'Course 16: Deployment and Production',
+    category: 'DevOps',
+    level: 'Advanced',
+    duration: '4 Lessons • 3 Hours',
+    description: 'Ship applications to the world: production build optimization, environment variables, Single Page Application redirect rules, cloud hosting, and monitoring.',
+    status: 'planned',
+    objectives: [
+      'Build optimized production bundles with Vite and understand tree-shaking.',
+      'Configure SPA rewrite rules so client-side routing works on static hosts.',
+      'Deploy full-stack applications with production environment variables and HTTPS.'
+    ],
+    prerequisites: 'Course 15: Testing, Security & Code Quality',
+    lessons: [
+      { id: 'lesson-16-1', slug: 'production-builds-and-cloud-hosting', title: 'Production Builds & Cloud Deployment Hosting', duration: '35 min', status: 'planned' }
+    ]
+  },
+  {
+    id: 'course-17',
+    slug: 'full-stack-projects',
+    title: 'Course 17: Full-Stack Projects & Professional Practice',
+    category: 'Full-Stack',
+    level: 'Advanced',
+    duration: '10 Projects • 15 Hours',
+    description: 'Build 10 graduated real-world capstone projects: from simple profile cards and responsive websites to full-stack authenticated database-backed applications.',
+    status: 'planned',
+    objectives: [
+      'Build 10 complete applications with progressive complexity from HTML to full-stack.',
+      'Follow professional project structures, documentation standards, and git hygiene.',
+      'Deliver working production-ready applications with test coverage and deployed links.'
+    ],
+    prerequisites: 'All prior courses (Courses 1 through 16)',
+    lessons: [
+      { id: 'lesson-17-1', slug: 'capstone-projects-overview', title: 'The 10 Capstone Projects Blueprint & Specifications', duration: '45 min', status: 'planned' }
+    ]
+  },
+  {
+    id: 'course-18',
     slug: 'crp-india-case-studies',
-    title: 'CRP India Real-World Case Studies',
+    title: 'Course 18: CRP India Real-World Case Studies',
     category: 'Case Studies',
     level: 'Comprehensive',
     duration: '8 Case Studies • 6 Hours',
     description: 'Deconstruct the complete CRP India civic reporting platform: study real-world code for multi-role auth, GPS tracking, dual file uploads, and MongoDB aggregation.',
-    status: 'available', // Dedicated overview available in Phase 1
+    status: 'available',
     objectives: [
       'Analyze how a full-stack civic platform operates in production.',
       'Inspect actual Mongoose schemas for status timelines and atomic sequence generators.',
       'Examine custom Multer streaming to Cloudinary and local disk fallbacks.',
       'Explore executive municipal analytics and departmental scoping.'
     ],
-    prerequisites: 'Web & Internet Fundamentals (Accessible now as an architectural reference)',
+    prerequisites: 'Course 1: Understanding the Web (Accessible now as an architectural reference)',
     lessons: [
       { id: 'case-study-overview', slug: 'crp-india-architecture-deep-dive', title: 'CRP India Architecture Deep Dive', duration: '35 min', status: 'available' }
     ]
@@ -326,6 +372,8 @@ export const CATEGORIES = [
   'Database',
   'Security',
   'Tooling',
+  'Quality',
+  'DevOps',
   'Full-Stack',
   'Case Studies'
 ];

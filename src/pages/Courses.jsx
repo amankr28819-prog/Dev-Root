@@ -30,7 +30,7 @@ export default function Courses() {
         <div style={{ maxWidth: '780px', marginBottom: '2.5rem' }}>
           <h1 style={{ marginBottom: '0.5rem' }}>Course Catalogue</h1>
           <p style={{ fontSize: '1.05rem', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
-            Browse the 16 full-stack curriculum paths. Each path builds directly upon preceding concepts,
+            Browse all {COURSES.length} structured curriculum courses. Each path builds directly upon preceding concepts,
             progressing from fundamental mental models to advanced production architecture.
           </p>
         </div>
