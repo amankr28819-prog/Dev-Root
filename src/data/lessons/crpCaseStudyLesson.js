@@ -242,5 +242,144 @@ console.log(isTransitionPermitted('pending', 'assigned'));    // True`,
         'reference-projects/CRP-India/backend/src/models/Grievance.js'
       ]
     }
+  },
+
+  'capstone-projects-overview': {
+    id: 'lesson-17-1',
+    slug: 'capstone-projects-overview',
+    courseId: 'course-17',
+    courseSlug: 'full-stack-projects',
+    courseTitle: 'Course 17: Full-Stack Real-World Projects & Capstones',
+    title: 'The 10 Capstone Projects Blueprint & Specifications',
+    category: 'Full-Stack',
+    estimatedTime: '45 min read & practice',
+    objectives: [
+      'Understand the progressive 10-tier project methodology designed to build production readiness.',
+      'Navigate the enhanced Project Workspace: milestones, starter templates, testing checklists, and project notes.',
+      'Understand the connection between Dev-root academic lessons and practical application milestones.',
+      'Review the evaluation criteria for full-stack capstone projects: architecture, testing, security, and deployment.'
+    ],
+    sections: [
+      {
+        heading: 'The 10-Tier Progressive Project Path',
+        content: `Software engineering cannot be mastered solely through passive reading. Real competence is built when you confront an empty editor, plan a solution, write code, debug failures, test edge cases, and deploy a live URL.
+
+Dev-root provides a structured 10-tier project curriculum that progresses in strict prerequisite order:
+
+\`\`\`
+  Tier 1:  Personal Profile Page          (HTML5 Semantic Structure & Typography)
+  Tier 2:  Responsive Product Landing     (CSS Flexbox, Grid & Media Queries)
+  Tier 3:  Interactive Web Calculator      (JavaScript Control Flow & Arithmetic)
+  Tier 4:  Task Manager Application       (DOM Events & LocalStorage Persistence)
+  Tier 5:  Civic Weather & Data Dashboard (Fetch API, Promises & Async/Await)
+  Tier 6:  React Redressal Portal         (Component Design, Props, Hooks & State)
+  Tier 7:  Node & Express REST API        (Routing, Controllers & Middleware Chains)
+  Tier 8:  Database-Connected Service     (MongoDB Atlas & Mongoose Data Modeling)
+  Tier 9:  Production Auth & Security     (bcrypt, JWT, RBAC & Protected Routes)
+  Tier 10: CRP India Municipal Capstone   (Complete Full-Stack Integrated System)
+\`\`\``
+      },
+      {
+        heading: 'How to Use the Enhanced Project Workspace',
+        content: `Every project has a dedicated **Project Workspace** featuring:
+* **Prerequisites & Learning Objectives:** What concepts you should master before starting.
+* **Step-by-Step Milestones:** Manageable stages with clear sub-tasks.
+* **Helpful Lessons & Coding Challenges:** Direct links to Dev-root lessons and practice challenges to review.
+* **Starter Files & Architecture Diagrams:** Clean boilerplate templates to get started quickly.
+* **Interactive Testing Verification Checklist:** Detailed self-testing items to verify functionality.
+* **Learner Project Notes:** Persistent private workspace notes to record architectural decisions and local commands.`
+      },
+      {
+        heading: 'Acceptance Testing & Production Deployment Criteria',
+        content: `Before submitting any project for final completion, you must pass the **Interactive Testing Checklist**:
+* **Functional Verification:** Form validations behave properly; empty states and loading skeletons appear as expected.
+* **Accessibility Audit:** Keyboard tab order is logical with visible :focus-visible outlines, valid ARIA tags, and compliant contrast ratios.
+* **Code Cleanliness:** Clean code formatted without debugger statements or stray console logs.
+* **Documentation & README:** Production-grade README with problem statement, architecture diagrams, and local setup guide.`
+      }
+    ],
+    crpIndiaConnection: 'The 10-tier path culminates in Project 10: the CRP India Municipal Redressal Capstone, uniting frontend React, backend Node.js, MongoDB database schemas, authentication, and cloud deployment.',
+    codeExample: `// Sample project milestone completion verification helper
+export function evaluateProjectReadiness(projectProgress, testingChecklist) {
+  const allMilestonesDone = projectProgress.percent === 100;
+  const testsVerified = testingChecklist.verifiedCount >= testingChecklist.totalCount;
+
+  return {
+    isReadyForSubmission: allMilestonesDone && testsVerified,
+    status: allMilestonesDone ? (testsVerified ? 'completed' : 'needs_revision') : 'in_progress'
+  };
+}`,
+    commonMistakes: [
+      {
+        mistake: 'Jumping directly to Project 10 (Full-Stack Capstone) without completing JavaScript and backend prerequisites.',
+        fix: 'Follow the progressive tiers in order. Each project reinforces skills required by the next tier.'
+      },
+      {
+        mistake: 'Relying only on visual inspection without completing the project testing checklist.',
+        fix: 'Work through the interactive testing checklist in the workspace to test edge cases, keyboard navigation, and form validation.'
+      }
+    ],
+    exercise: {
+      instruction: 'Review the Project Catalog at /projects, select your target project tier, and write your first milestone action plan.',
+      prompt: 'Review the Project Catalog at /projects, select your target project tier, and write your first milestone action plan.',
+      solution: `export const personalProjectPlan = {
+  tier: 1,
+  targetProject: 'Personal Profile Page',
+  currentMilestone: 'Milestone 1: Semantic HTML5 Structure',
+  nextActions: [
+    'Create index.html with meta viewport and head tags.',
+    'Add semantic header, main, section, and footer elements.',
+    'Verify heading hierarchy (h1 -> h2) without skipping levels.'
+  ]
+};`,
+      solutionCode: `export const personalProjectPlan = {
+  tier: 1,
+  targetProject: 'Personal Profile Page',
+  currentMilestone: 'Milestone 1: Semantic HTML5 Structure',
+  nextActions: [
+    'Create index.html with meta viewport and head tags.',
+    'Add semantic header, main, section, and footer elements.',
+    'Verify heading hierarchy (h1 -> h2) without skipping levels.'
+  ]
+};`,
+      hint: 'Choose a project tier appropriate for your current curriculum progress.'
+    },
+    quiz: [
+      {
+        question: 'What is the primary benefit of dividing projects into sequential milestones?',
+        options: [
+          'It makes projects take longer to build.',
+          'It prevents cognitive overload by breaking complex application architecture into manageable, testable stages.',
+          'It reduces the amount of CSS needed.',
+          'It replaces the need for a database.'
+        ],
+        correctIndex: 1,
+        answer: 1,
+        explanation: 'Milestones break large systems into focused steps (e.g. structure -> styles -> state -> persistence), allowing incremental testing at each phase.'
+      },
+      {
+        question: 'What should you do before marking a project completed in your workspace?',
+        options: [
+          'Just refresh the browser.',
+          'Complete all step milestones and verify each requirement in the interactive testing checklist.',
+          'Delete your repository.',
+          'Turn off CSS.'
+        ],
+        correctIndex: 1,
+        answer: 1,
+        explanation: 'Thorough verification against the acceptance checklist guarantees that the application meets real-world functionality and accessibility standards.'
+      }
+    ],
+    takeaways: [
+      'Dev-root provides 10 graduated project tiers from basic semantic HTML to full-stack municipal capstones.',
+      'Use the enhanced Project Workspace to track milestones, review linked lessons, test edge cases, and take notes.',
+      'Always verify your project against the testing checklist before marking it completed.'
+    ],
+    keyTakeaways: [
+      'Dev-root provides 10 graduated project tiers from basic semantic HTML to full-stack municipal capstones.',
+      'Use the enhanced Project Workspace to track milestones, review linked lessons, test edge cases, and take notes.',
+      'Always verify your project against the testing checklist before marking it completed.'
+    ]
   }
 };
+

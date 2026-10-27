@@ -259,97 +259,113 @@ export const COURSES = [
   },
   {
     id: 'course-13',
-    slug: 'full-stack-integration',
-    title: 'Course 13: Full-Stack Integration',
-    category: 'Full-Stack',
-    level: 'Intermediate',
+    slug: 'full-stack-testing-and-qa',
+    title: 'Course 13: Full-Stack Testing & Quality Assurance',
+    category: 'Quality',
+    level: 'Advanced',
     duration: '4 Lessons • 3 Hours',
-    description: 'Unite frontend and backend: connecting React forms to Express APIs, managing global authentication tokens, optimistic UI updates, and error handling.',
-    status: 'planned',
+    description: 'Master automated software verification: Vitest unit testing, React Testing Library component testing, Supertest API testing, and Playwright end-to-end user journeys.',
+    status: 'available',
     objectives: [
-      'Wire React forms to backend REST endpoints via authenticated fetch requests.',
-      'Persist auth tokens in client storage and inject Bearer headers across API calls.',
-      'Handle network disconnections and server validation errors gracefully in user interfaces.'
+      'Write deterministic unit tests using the AAA pattern and Vitest assertions.',
+      'Test React components through user-centric queries and simulated events with React Testing Library.',
+      'Execute integration tests on Express REST endpoints and Mongoose models using Supertest.',
+      'Build resilient End-to-End browser test automation suites using Microsoft Playwright.'
     ],
-    prerequisites: 'Course 9: React from Zero & Course 12: Authentication',
+    prerequisites: 'Course 9: React from Zero & Course 10: Backend Development with Node.js',
     lessons: [
-      { id: 'lesson-13-1', slug: 'connecting-react-to-express', title: 'Connecting React UI to Express REST Endpoints', duration: '40 min', status: 'planned' }
+      { id: 'lesson-13-1', slug: 'testing-fundamentals-and-vitest', title: 'Testing Foundations, Assertions & Unit Testing with Vitest', duration: '45 min', status: 'available' },
+      { id: 'lesson-13-2', slug: 'component-and-rtl-testing', title: 'React Component Testing with React Testing Library', duration: '45 min', status: 'available' },
+      { id: 'lesson-13-3', slug: 'api-and-integration-testing', title: 'Backend API & Integration Testing with Supertest', duration: '45 min', status: 'available' },
+      { id: 'lesson-13-4', slug: 'e2e-testing-and-test-strategy', title: 'End-to-End Testing with Playwright & Testing Strategy', duration: '45 min', status: 'available' }
     ]
   },
   {
     id: 'course-14',
-    slug: 'apis-and-async-communication',
-    title: 'Course 14: File Uploads, External APIs & Advanced Features',
-    category: 'Full-Stack',
+    slug: 'professional-debugging-and-troubleshooting',
+    title: 'Course 14: Professional Debugging & Troubleshooting',
+    category: 'Debugging',
     level: 'Advanced',
     duration: '4 Lessons • 3 Hours',
-    description: 'Implement complex features: multipart file uploads (Multer), cloud storage, external REST API integrations, pagination, search, and rate limiting.',
-    status: 'planned',
+    description: 'Diagnose and fix real-world software defects like a senior engineer: browser DevTools, runtime stack traces, breakpoints, server logs, database failures, and distributed tracing.',
+    status: 'available',
     objectives: [
-      'Handle file uploads with Multer, validating MIME types and enforcing size ceilings.',
-      'Implement server-side search, filtering, and page-based pagination for large datasets.',
-      'Integrate third-party services securely without exposing API keys in client bundles.'
+      'Deconstruct the Chrome and Firefox DevTools: Elements, Computed Styles, Console, and Network panels.',
+      'Master conditional breakpoints, step-through debugging, and asynchronous race condition detection.',
+      'Diagnose Express middleware hanging bugs, double headers, and MongoDB connection timeouts.',
+      'Trace failures across the entire distributed full-stack lifecycle: UI to Database.'
     ],
-    prerequisites: 'Course 13: Full-Stack Integration',
+    prerequisites: 'Course 9: React from Zero & Course 11: Databases and MongoDB',
     lessons: [
-      { id: 'lesson-14-1', slug: 'file-uploads-and-cloud-storage', title: 'Multipart File Uploads & Cloud Asset Storage', duration: '40 min', status: 'planned' }
+      { id: 'lesson-14-1', slug: 'frontend-and-devtools-debugging', title: 'Frontend Browser DevTools: DOM, Styles, Network & Console', duration: '45 min', status: 'available' },
+      { id: 'lesson-14-2', slug: 'javascript-runtime-and-logic-debugging', title: 'JavaScript Runtime, Logic Errors & DevTools Breakpoints', duration: '45 min', status: 'available' },
+      { id: 'lesson-14-3', slug: 'backend-and-database-debugging', title: 'Backend Diagnostics: Server Logs, Express Routes & Database Errors', duration: '45 min', status: 'available' },
+      { id: 'lesson-14-4', slug: 'fullstack-distributed-tracing', title: 'Full-Stack Distributed Tracing: Browser to Database', duration: '45 min', status: 'available' }
     ]
   },
   {
     id: 'course-15',
-    slug: 'testing-and-debugging',
-    title: 'Course 15: Testing, Security & Code Quality',
-    category: 'Quality',
+    slug: 'production-deployment-and-devops',
+    title: 'Course 15: Production Deployment, Cloud & DevOps',
+    category: 'DevOps',
     level: 'Advanced',
     duration: '4 Lessons • 3 Hours',
-    description: 'Ensure software reliability: unit testing with Vitest, React Testing Library, API integration tests, XSS/NoSQL injection prevention, and CORS defense.',
-    status: 'planned',
+    description: 'Ship and operate applications in production: Vite build pipelines, content hashing, environment secrets hygiene, static CDNs, cloud API hosting, DNS, HTTPS, and SRE reliability.',
+    status: 'available',
     objectives: [
-      'Write automated unit and component tests that verify business logic and user flows.',
-      'Sanitize user inputs to prevent Cross-Site Scripting (XSS) and NoSQL injection attacks.',
-      'Understand CORS as a browser security mechanism rather than server authorization.'
+      'Deconstruct the Vite/Rollup production build pipeline: minification, tree-shaking, and SPA rewrites.',
+      'Protect application secrets, configure cloud environment variables, and prevent credential leaks.',
+      'Deploy decoupled full-stack systems: static frontends on Vercel, APIs on Render, and MongoDB Atlas.',
+      'Implement health check monitors, automated alerting, graceful shutdown, and instant rollbacks.'
     ],
-    prerequisites: 'Course 13: Full-Stack Integration',
+    prerequisites: 'Course 12: Authentication and Authorization & Course 13: Full-Stack Testing',
     lessons: [
-      { id: 'lesson-15-1', slug: 'vitest-and-automated-testing', title: 'Automated Testing with Vitest & Testing Library', duration: '35 min', status: 'planned' }
+      { id: 'lesson-15-1', slug: 'development-vs-production-and-builds', title: 'Development vs Production & The Modern Build Pipeline', duration: '45 min', status: 'available' },
+      { id: 'lesson-15-2', slug: 'environment-secrets-and-cloud-config', title: 'Environment Secrets, Configuration & Avoiding Leaks', duration: '45 min', status: 'available' },
+      { id: 'lesson-15-3', slug: 'hosting-static-apis-and-databases', title: 'Hosting Architectures: Static Frontends, APIs & Cloud Databases', duration: '45 min', status: 'available' },
+      { id: 'lesson-15-4', slug: 'production-monitoring-and-reliability', title: 'Production Reliability: Monitoring, Logging, Backups & Rollbacks', duration: '45 min', status: 'available' }
     ]
   },
   {
     id: 'course-16',
-    slug: 'deployment-and-production',
-    title: 'Course 16: Deployment and Production',
-    category: 'DevOps',
-    level: 'Advanced',
+    slug: 'career-readiness-and-interview-mastery',
+    title: 'Course 16: Career Readiness & Technical Interview Mastery',
+    category: 'Career',
+    level: 'Comprehensive',
     duration: '4 Lessons • 3 Hours',
-    description: 'Ship applications to the world: production build optimization, environment variables, Single Page Application redirect rules, cloud hosting, and monitoring.',
-    status: 'planned',
+    description: 'Bridge the gap from code to career: building high-impact portfolio projects, writing production-grade READMEs, mastering full-stack technical interviews, and system design thinking.',
+    status: 'available',
     objectives: [
-      'Build optimized production bundles with Vite and understand tree-shaking.',
-      'Configure SPA rewrite rules so client-side routing works on static hosts.',
-      'Deploy full-stack applications with production environment variables and HTTPS.'
+      'Architect a recruiter-ready portfolio centered around 2 to 3 deep full-stack applications.',
+      'Author comprehensive GitHub READMEs with architecture diagrams, setup guides, and trade-off matrices.',
+      'Master high-frequency full-stack interview questions: Event Loop, closures, Virtual DOM, and indexing.',
+      'Apply system design fundamentals: horizontal scaling, stateless servers, caching, and background job queues.'
     ],
-    prerequisites: 'Course 15: Testing, Security & Code Quality',
+    prerequisites: 'All core courses (Courses 1 through 15)',
     lessons: [
-      { id: 'lesson-16-1', slug: 'production-builds-and-cloud-hosting', title: 'Production Builds & Cloud Deployment Hosting', duration: '35 min', status: 'planned' }
+      { id: 'lesson-16-1', slug: 'portfolio-strategy-and-documentation', title: 'High-Impact Portfolios & Professional Documentation', duration: '45 min', status: 'available' },
+      { id: 'lesson-16-2', slug: 'explaining-technical-decisions', title: 'Articulating Technical Decisions & Engineering Communication', duration: '45 min', status: 'available' },
+      { id: 'lesson-16-3', slug: 'fullstack-technical-interview-mastery', title: 'Full-Stack Technical Interview Mastery: Core Concepts', duration: '45 min', status: 'available' },
+      { id: 'lesson-16-4', slug: 'system-design-thinking-fundamentals', title: 'System Design Thinking for Junior & Mid Full-Stack Engineers', duration: '45 min', status: 'available' }
     ]
   },
   {
     id: 'course-17',
     slug: 'full-stack-projects',
-    title: 'Course 17: Full-Stack Projects & Professional Practice',
+    title: 'Course 17: Full-Stack Real-World Projects & Capstones',
     category: 'Full-Stack',
     level: 'Advanced',
     duration: '10 Projects • 15 Hours',
-    description: 'Build 10 graduated real-world capstone projects: from simple profile cards and responsive websites to full-stack authenticated database-backed applications.',
-    status: 'planned',
+    description: 'Build 10 graduated real-world capstone projects: from accessible personal profile pages and interactive DOM apps to database-connected REST services and full-stack municipal redressal systems.',
+    status: 'available',
     objectives: [
       'Build 10 complete applications with progressive complexity from HTML to full-stack.',
       'Follow professional project structures, documentation standards, and git hygiene.',
-      'Deliver working production-ready applications with test coverage and deployed links.'
+      'Deliver working production-ready applications with test coverage, testing checklists, and deployed links.'
     ],
     prerequisites: 'All prior courses (Courses 1 through 16)',
     lessons: [
-      { id: 'lesson-17-1', slug: 'capstone-projects-overview', title: 'The 10 Capstone Projects Blueprint & Specifications', duration: '45 min', status: 'planned' }
+      { id: 'lesson-17-1', slug: 'capstone-projects-overview', title: 'The 10 Capstone Projects Blueprint & Specifications', duration: '45 min', status: 'available' }
     ]
   },
   {

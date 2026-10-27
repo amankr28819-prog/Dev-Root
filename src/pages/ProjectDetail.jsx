@@ -1,17 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { projects } from '../data/projects';
+import { PROJECT_SCAFFOLDING } from '../data/projectScaffolding';
 import { useProgress } from '../context/ProgressContext';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
-  const { toggleProjectMilestone, isProjectMilestoneComplete, getProjectProgress } = useProgress();
-  const [activeTab, setActiveTab] = useState('milestones'); // 'milestones', 'overview', 'architecture', 'starter', 'testing'
+  const {
+    toggleProjectMilestone,
+    isProjectMilestoneComplete,
+    getProjectProgress,
+    getProjectStatus,
+    setProjectStatus,
+    getProjectNote,
+    setProjectNote,
+    toggleProjectTestItem,
+    isProjectTestItemVerified
+  } = useProgress();
+
+  const [activeTab, setActiveTab] = useState('milestones'); // 'milestones', 'overview', 'lessons', 'architecture', 'starter', 'testing', 'notes'
   const [revealedHints, setRevealedHints] = useState({});
   const [revealedSolutions, setRevealedSolutions] = useState({});
   const [copiedKey, setCopiedKey] = useState(null);
+  const [noteContent, setNoteContent] = useState('');
+  const [noteSavedFeedback, setNoteSavedFeedback] = useState(false);
 
   const project = projects.find((p) => p.slug === slug);
+  const scaffolding = project ? (PROJECT_SCAFFOLDING[project.id] || {
+    helpfulLessons: [],
+    relatedChallenges: [],
+    testingChecklist: []
+  }) : null;
+
+  // Load existing notes from ProgressContext
+  useEffect(() => {
+    if (project) {
+      setNoteContent(getProjectNote(project.id));
+    }
+  }, [project, getProjectNote]);
 
   if (!project) {
     return (
@@ -31,6 +57,12 @@ export default function ProjectDetail() {
   }
 
   const progress = getProjectProgress(project.id, project.milestones?.length || 0);
+  const currentStatus = getProjectStatus(project.id, project.milestones?.length || 0);
+
+  // Find first uncompleted milestone as the current milestone
+  const milestones = project.milestones || [];
+  const currentMilestoneIndex = milestones.findIndex((m) => !isProjectMilestoneComplete(project.id, m.id));
+  const currentMilestone = currentMilestoneIndex !== -1 ? milestones[currentMilestoneIndex] : null;
 
   const toggleHint = (mId) => {
     setRevealedHints((prev) => ({ ...prev, [mId]: !prev[mId] }));
@@ -46,10 +78,24 @@ export default function ProjectDetail() {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
+  const handleSaveNotes = () => {
+    setProjectNote(project.id, noteContent);
+    setNoteSavedFeedback(true);
+    setTimeout(() => setNoteSavedFeedback(false), 2000);
+  };
+
   // Find next/prev project
   const currentIndex = projects.findIndex((p) => p.id === project.id);
   const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : null;
   const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
+
+  // Status badge styling
+  const statusConfig = {
+    not_started: { label: 'Not Started', bg: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700' },
+    in_progress: { label: 'In Progress', bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60' },
+    completed: { label: 'Completed', bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60' },
+    needs_revision: { label: 'Needs Revision', bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/60' }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -65,7 +111,7 @@ export default function ProjectDetail() {
       {/* Header Banner */}
       <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
               Tier {project.tier}
             </span>
@@ -78,11 +124,22 @@ export default function ProjectDetail() {
             }`}>
               {project.difficulty}
             </span>
-            {progress.percent === 100 && (
-              <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 flex items-center gap-1.5">
-                ✓ Project Completed
-              </span>
-            )}
+
+            {/* Interactive Status Selector */}
+            <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900/80 px-2.5 py-1 rounded-xl border border-gray-200 dark:border-gray-700 text-xs">
+              <span className="text-gray-500 font-medium">Status:</span>
+              <select
+                value={currentStatus}
+                onChange={(e) => setProjectStatus(project.id, e.target.value)}
+                className="bg-transparent font-bold text-gray-800 dark:text-gray-200 focus:outline-none cursor-pointer"
+                aria-label="Project Status"
+              >
+                <option value="not_started">Not Started</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="needs_revision">Needs Revision</option>
+              </select>
+            </div>
           </div>
 
           <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -130,11 +187,13 @@ export default function ProjectDetail() {
       {/* Tabs Navigation */}
       <div className="flex border-b border-gray-200 dark:border-gray-700 mb-8 overflow-x-auto scrollbar-none">
         {[
-          { id: 'milestones', label: `Step-by-Step Milestones (${project.milestones?.length || 0})` },
+          { id: 'milestones', label: `Milestones (${project.milestones?.length || 0})` },
           { id: 'overview', label: 'Requirements & Features' },
+          { id: 'lessons', label: 'Helpful Lessons & Practice' },
           { id: 'architecture', label: 'Architecture & Schema' },
-          { id: 'starter', label: 'Starter Files & Templates' },
-          { id: 'testing', label: 'Testing & Checklist' }
+          { id: 'starter', label: 'Starter Templates' },
+          { id: 'testing', label: `Testing Checklist (${scaffolding?.testingChecklist?.length || 0})` },
+          { id: 'notes', label: 'Project Notes' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -153,11 +212,37 @@ export default function ProjectDetail() {
       {/* Tab 1: Milestones */}
       {activeTab === 'milestones' && (
         <div className="space-y-6 mb-12">
-          <div className="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/60 rounded-2xl p-5 text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed">
-            💡 <strong>How to complete this project:</strong> Work through each milestone in order. Mark milestones complete as you implement and verify them. If you get stuck, expand the <em>Progressive Hint</em> before revealing the <em>Solution Walkthrough</em>.
+          {/* Active Milestone Highlight Card */}
+          {currentMilestone && (
+            <div className="bg-indigo-50 dark:bg-indigo-950/40 border-2 border-indigo-500/60 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                  Current Active Milestone
+                </span>
+                <span className="text-xs font-mono font-bold text-indigo-500">
+                  Step {currentMilestoneIndex + 1} of {milestones.length}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-indigo-950 dark:text-indigo-100">
+                {currentMilestone.title}
+              </h3>
+              <p className="text-sm text-indigo-800 dark:text-indigo-300 mt-1">
+                {currentMilestone.description}
+              </p>
+            </div>
+          )}
+
+          <div className="bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex items-center justify-between">
+            <span>
+              💡 <strong>Guidance:</strong> Complete each milestone step-by-step. Toggle the checkbox once verified. Reveal hints or reference solutions when needed.
+            </span>
+            <span className="font-semibold text-gray-500">
+              {progress.total - progress.completed} remaining tasks
+            </span>
           </div>
 
-          {project.milestones?.map((milestone, idx) => {
+          {milestones.map((milestone, idx) => {
             const isDone = isProjectMilestoneComplete(project.id, milestone.id);
             const hintRevealed = revealedHints[milestone.id];
             const solRevealed = revealedSolutions[milestone.id];
@@ -304,10 +389,80 @@ export default function ProjectDetail() {
               ))}
             </ul>
           </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Final Completion Criteria</h3>
+            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-sm space-y-2">
+              <p className="font-semibold text-slate-800 dark:text-slate-200">
+                To complete this project and advance to the next tier, ensure:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
+                <li>All step-by-step milestones are implemented and verified.</li>
+                <li>All items in the interactive Testing Checklist are checked.</li>
+                <li>Code is formatted cleanly, free of syntax errors and unhandled promise rejections.</li>
+                <li>The project is documented with a clean README and deployed to a live URL if full-stack.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Tab 3: Suggested Architecture */}
+      {/* Tab 3: Helpful Lessons & Practice Challenges */}
+      {activeTab === 'lessons' && (
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-700 mb-12 space-y-8">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Recommended Dev-Root Lessons
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-5">
+              Review these focused academic lessons to master the concepts needed for this project tier.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {scaffolding?.helpfulLessons?.map((lesson, i) => (
+                <Link
+                  key={i}
+                  to={`/lessons/${lesson.slug}`}
+                  className="p-4 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 bg-gray-50 dark:bg-gray-900/50 transition-all group block"
+                >
+                  <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                    {lesson.courseTitle}
+                  </span>
+                  <h4 className="text-base font-bold text-gray-900 dark:text-white mt-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                    {lesson.title} →
+                  </h4>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Related Coding Challenges
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-5">
+              Practice specific algorithmic and DOM manipulation problems in the sandbox before building the full project.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {scaffolding?.relatedChallenges?.map((ch, i) => (
+                <Link
+                  key={i}
+                  to={`/challenges/${ch.slug}`}
+                  className="p-4 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 bg-gray-50 dark:bg-gray-900/50 transition-all group block"
+                >
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    Interactive Challenge
+                  </span>
+                  <h4 className="text-base font-bold text-gray-900 dark:text-white mt-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                    {ch.title} ⚡
+                  </h4>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 4: Suggested Architecture */}
       {activeTab === 'architecture' && (
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-700 mb-12">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Suggested Architecture</h3>
@@ -315,12 +470,12 @@ export default function ProjectDetail() {
             Recommended directory structure and module separation following industry production patterns.
           </p>
           <pre className="p-5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-sm overflow-x-auto leading-relaxed border border-slate-700">
-            <code>{project.suggestedArchitecture.trim()}</code>
+            <code>{project.suggestedArchitecture?.trim()}</code>
           </pre>
         </div>
       )}
 
-      {/* Tab 4: Starter Files */}
+      {/* Tab 5: Starter Files */}
       {activeTab === 'starter' && (
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-700 mb-12 space-y-6">
           <div className="flex items-center justify-between">
@@ -351,18 +506,45 @@ export default function ProjectDetail() {
         </div>
       )}
 
-      {/* Tab 5: Testing & Acceptance Checklist */}
+      {/* Tab 6: Interactive Testing & Acceptance Checklist */}
       {activeTab === 'testing' && (
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-700 mb-12 space-y-8">
           <div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Acceptance Testing Criteria</h3>
-            <div className="space-y-2">
-              {project.testingInstructions?.map((inst, i) => (
-                <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/50 text-sm text-gray-700 dark:text-gray-300">
-                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">🧪</span>
-                  <span>{inst}</span>
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Interactive Acceptance Testing Checklist
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Self-verify each feature locally. Toggling items updates your persistent project quality score.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3 mt-4">
+              {scaffolding?.testingChecklist?.map((item) => {
+                const verified = isProjectTestItemVerified(project.id, item.id);
+                return (
+                  <label
+                    key={item.id}
+                    className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${
+                      verified
+                        ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800'
+                        : 'bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 hover:border-indigo-300'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={verified}
+                      onChange={() => toggleProjectTestItem(project.id, item.id)}
+                      className="mt-1 w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 cursor-pointer"
+                    />
+                    <span className={`text-sm ${verified ? 'text-emerald-900 dark:text-emerald-200 font-medium' : 'text-gray-700 dark:text-gray-300'}`}>
+                      {item.label}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
@@ -388,6 +570,39 @@ export default function ProjectDetail() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 7: Learner Project Notes */}
+      {activeTab === 'notes' && (
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-700 mb-12 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Personal Project Notes</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Record your local server ports, database connection notes, difficult bugs encountered, and architectural thoughts.
+              </p>
+            </div>
+            <button
+              onClick={handleSaveNotes}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+            >
+              {noteSavedFeedback ? '✓ Notes Saved' : 'Save Notes'}
+            </button>
+          </div>
+
+          <textarea
+            value={noteContent}
+            onChange={(e) => setNoteContent(e.target.value)}
+            placeholder="Type your personal implementation notes here (e.g., local setup commands, API routes, design decisions)..."
+            rows={12}
+            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-200 font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none leading-relaxed"
+          />
+
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <span>Notes persist automatically in local storage across browser sessions.</span>
+            <span>{noteContent.length} characters</span>
           </div>
         </div>
       )}

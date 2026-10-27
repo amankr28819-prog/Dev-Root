@@ -24,6 +24,12 @@ export function ProgressProvider({ children }) {
           completedChallenges: Array.isArray(parsed.completedChallenges) ? parsed.completedChallenges : [],
           challengeAttempts: parsed.challengeAttempts && typeof parsed.challengeAttempts === 'object' ? parsed.challengeAttempts : {},
           projectMilestones: parsed.projectMilestones && typeof parsed.projectMilestones === 'object' ? parsed.projectMilestones : {},
+          projectNotes: parsed.projectNotes && typeof parsed.projectNotes === 'object' ? parsed.projectNotes : {},
+          projectStatusOverride: parsed.projectStatusOverride && typeof parsed.projectStatusOverride === 'object' ? parsed.projectStatusOverride : {},
+          projectTestingChecklist: parsed.projectTestingChecklist && typeof parsed.projectTestingChecklist === 'object' ? parsed.projectTestingChecklist : {},
+          productionChecklist: parsed.productionChecklist && typeof parsed.productionChecklist === 'object' ? parsed.productionChecklist : {},
+          interviewAttempts: parsed.interviewAttempts && typeof parsed.interviewAttempts === 'object' ? parsed.interviewAttempts : {},
+          portfolioProject: parsed.portfolioProject && typeof parsed.portfolioProject === 'object' ? parsed.portfolioProject : null,
           bookmarkedLessons: Array.isArray(parsed.bookmarkedLessons) ? parsed.bookmarkedLessons : [],
           flaggedQuestions: Array.isArray(parsed.flaggedQuestions) ? parsed.flaggedQuestions : [],
           assessmentScores: parsed.assessmentScores && typeof parsed.assessmentScores === 'object' ? parsed.assessmentScores : {},
@@ -42,6 +48,12 @@ export function ProgressProvider({ children }) {
       completedChallenges: [],
       challengeAttempts: {},
       projectMilestones: {},
+      projectNotes: {},
+      projectStatusOverride: {},
+      projectTestingChecklist: {},
+      productionChecklist: {},
+      interviewAttempts: {},
+      portfolioProject: null,
       bookmarkedLessons: [],
       flaggedQuestions: [],
       assessmentScores: {},
@@ -224,6 +236,128 @@ export function ProgressProvider({ children }) {
     };
   }, [progress.projectMilestones]);
 
+  // Project Notes (Phase 6)
+  const setProjectNote = useCallback((projectId, text) => {
+    setProgress((prev) => ({
+      ...prev,
+      projectNotes: {
+        ...prev.projectNotes,
+        [projectId]: text
+      },
+      lastUpdated: Date.now()
+    }));
+  }, []);
+
+  const getProjectNote = useCallback((projectId) => {
+    return progress.projectNotes[projectId] || '';
+  }, [progress.projectNotes]);
+
+  // Project Status Override (Phase 6: 'not_started' | 'in_progress' | 'completed' | 'needs_revision')
+  const setProjectStatus = useCallback((projectId, status) => {
+    setProgress((prev) => ({
+      ...prev,
+      projectStatusOverride: {
+        ...prev.projectStatusOverride,
+        [projectId]: status
+      },
+      lastUpdated: Date.now()
+    }));
+  }, []);
+
+  const getProjectStatus = useCallback((projectId, totalMilestonesCount) => {
+    if (progress.projectStatusOverride[projectId]) {
+      return progress.projectStatusOverride[projectId];
+    }
+    const completedCount = (progress.projectMilestones[projectId] || []).length;
+    if (completedCount === 0) return 'not_started';
+    if (totalMilestonesCount && completedCount >= totalMilestonesCount) return 'completed';
+    return 'in_progress';
+  }, [progress.projectStatusOverride, progress.projectMilestones]);
+
+  // Project Testing Checklist (Phase 6)
+  const toggleProjectTestItem = useCallback((projectId, itemKey) => {
+    setProgress((prev) => {
+      const current = prev.projectTestingChecklist[projectId] || {};
+      const updated = { ...current, [itemKey]: !current[itemKey] };
+      return {
+        ...prev,
+        projectTestingChecklist: {
+          ...prev.projectTestingChecklist,
+          [projectId]: updated
+        },
+        lastUpdated: Date.now()
+      };
+    });
+  }, []);
+
+  const isProjectTestItemVerified = useCallback((projectId, itemKey) => {
+    const list = progress.projectTestingChecklist[projectId] || {};
+    return Boolean(list[itemKey]);
+  }, [progress.projectTestingChecklist]);
+
+  // Production-Readiness Checklist Tool (Phase 6)
+  const toggleProductionChecklistItem = useCallback((itemId) => {
+    setProgress((prev) => ({
+      ...prev,
+      productionChecklist: {
+        ...prev.productionChecklist,
+        [itemId]: !prev.productionChecklist[itemId]
+      },
+      lastUpdated: Date.now()
+    }));
+  }, []);
+
+  const isProductionChecklistItemComplete = useCallback((itemId) => {
+    return Boolean(progress.productionChecklist[itemId]);
+  }, [progress.productionChecklist]);
+
+  const getProductionChecklistProgress = useCallback((totalCount = 30) => {
+    const completed = Object.values(progress.productionChecklist).filter(Boolean).length;
+    return {
+      completed,
+      total: totalCount,
+      percent: Math.min(100, Math.round((completed / totalCount) * 100))
+    };
+  }, [progress.productionChecklist]);
+
+  // Technical Interview Prep Attempts (Phase 6)
+  const recordInterviewAttempt = useCallback((questionId, confidence = 'medium') => {
+    setProgress((prev) => ({
+      ...prev,
+      interviewAttempts: {
+        ...prev.interviewAttempts,
+        [questionId]: {
+          answered: true,
+          confidence,
+          lastAttempt: Date.now()
+        }
+      },
+      lastUpdated: Date.now()
+    }));
+  }, []);
+
+  const getInterviewAttempt = useCallback((questionId) => {
+    return progress.interviewAttempts[questionId] || null;
+  }, [progress.interviewAttempts]);
+
+  // Portfolio Project Builder (Phase 6)
+  const updatePortfolioProject = useCallback((fields) => {
+    setProgress((prev) => ({
+      ...prev,
+      portfolioProject: {
+        ...(prev.portfolioProject || {}),
+        ...fields,
+        updatedAt: Date.now()
+      },
+      lastUpdated: Date.now()
+    }));
+  }, []);
+
+  const getPortfolioProject = useCallback(() => {
+    return progress.portfolioProject;
+  }, [progress.portfolioProject]);
+
+
   // Bookmarks (Revision)
   const toggleBookmark = useCallback((lessonSlug) => {
     setProgress((prev) => {
@@ -347,6 +481,12 @@ export function ProgressProvider({ children }) {
     completedChallenges: progress.completedChallenges,
     challengeAttempts: progress.challengeAttempts,
     projectMilestones: progress.projectMilestones,
+    projectNotes: progress.projectNotes,
+    projectStatusOverride: progress.projectStatusOverride,
+    projectTestingChecklist: progress.projectTestingChecklist,
+    productionChecklist: progress.productionChecklist,
+    interviewAttempts: progress.interviewAttempts,
+    portfolioProject: progress.portfolioProject,
     bookmarkedLessons: progress.bookmarkedLessons,
     flaggedQuestions: progress.flaggedQuestions,
     assessmentScores: progress.assessmentScores,
@@ -363,6 +503,19 @@ export function ProgressProvider({ children }) {
     toggleProjectMilestone,
     isProjectMilestoneComplete,
     getProjectProgress,
+    setProjectNote,
+    getProjectNote,
+    setProjectStatus,
+    getProjectStatus,
+    toggleProjectTestItem,
+    isProjectTestItemVerified,
+    toggleProductionChecklistItem,
+    isProductionChecklistItemComplete,
+    getProductionChecklistProgress,
+    recordInterviewAttempt,
+    getInterviewAttempt,
+    updatePortfolioProject,
+    getPortfolioProject,
     toggleBookmark,
     isBookmarked,
     recordAssessmentScore,
@@ -385,6 +538,19 @@ export function ProgressProvider({ children }) {
     toggleProjectMilestone,
     isProjectMilestoneComplete,
     getProjectProgress,
+    setProjectNote,
+    getProjectNote,
+    setProjectStatus,
+    getProjectStatus,
+    toggleProjectTestItem,
+    isProjectTestItemVerified,
+    toggleProductionChecklistItem,
+    isProductionChecklistItemComplete,
+    getProductionChecklistProgress,
+    recordInterviewAttempt,
+    getInterviewAttempt,
+    updatePortfolioProject,
+    getPortfolioProject,
     toggleBookmark,
     isBookmarked,
     recordAssessmentScore,

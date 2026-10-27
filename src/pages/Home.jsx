@@ -12,7 +12,8 @@ import {
   Award,
   Flame,
   Bookmark,
-  Server
+  Server,
+  ShieldCheck
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { COURSES } from '../data/courses';
@@ -280,6 +281,74 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Phase 6: Career & Production Readiness Suite */}
+      <section style={{ paddingTop: '1rem', paddingBottom: '2.5rem' }}>
+        <div className="container">
+          <div style={{ maxWidth: '840px', margin: '0 auto', textAlign: 'center', marginBottom: '2rem' }}>
+            <Badge variant="purple" style={{ marginBottom: '0.5rem' }}>
+              Career & Production Engineering
+            </Badge>
+            <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>
+              From Code to Career Readiness
+            </h2>
+            <p style={{ fontSize: '1rem', color: 'var(--color-text-secondary)' }}>
+              Ship production-ready full-stack software, audit applications against real-world standards, and prepare for rigorous engineering interviews.
+            </p>
+          </div>
+
+          <div className="grid-cols-3">
+            {/* Card 1: Production Checklist */}
+            <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <ShieldCheck size={24} />
+                </div>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Production Checklist</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+                  32-point engineering audit verifying functionality, accessibility (WCAG AA), security (OWASP Top 10), reliability, performance, and cloud deployment.
+                </p>
+              </div>
+              <Link to="/production-checklist" className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-start' }}>
+                Open Checklist →
+              </Link>
+            </div>
+
+            {/* Card 2: Interview Prep */}
+            <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'rgba(124, 58, 237, 0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <Award size={24} />
+                </div>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Interview Prep Center</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+                  Practice conceptual reasoning, JavaScript output prediction, live debugging, and system design prompts with model answers and confidence tracking.
+                </p>
+              </div>
+              <Link to="/interview-prep" className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-start' }}>
+                Practice Interviews →
+              </Link>
+            </div>
+
+            {/* Card 3: Portfolio Builder */}
+            <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'rgba(79, 70, 229, 0.1)', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <Sparkles size={24} />
+                </div>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Portfolio Project Builder</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+                  Guided multi-stage architectural planner for custom capstone projects. Tailors curriculum recommendations and exports production-grade README specifications.
+                </p>
+              </div>
+              <Link to="/portfolio-builder" className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-start' }}>
+                Build Capstone →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* Featured Case Study Spotlight: CRP India */}
       <section

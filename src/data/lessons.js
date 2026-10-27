@@ -17,6 +17,10 @@ import { REACT_LESSONS } from './lessons/reactCourse.js';
 import { NODE_EXPRESS_LESSONS } from './lessons/nodeExpressCourse.js';
 import { DATABASES_LESSONS } from './lessons/databasesCourse.js';
 import { AUTH_SECURITY_LESSONS } from './lessons/authSecurityCourse.js';
+import { TESTING_LESSONS } from './lessons/testingCourse.js';
+import { DEBUGGING_LESSONS } from './lessons/debuggingCourse.js';
+import { DEPLOYMENT_LESSONS } from './lessons/deploymentCourse.js';
+import { CAREER_READINESS_LESSONS } from './lessons/careerReadinessCourse.js';
 import { CRP_CASE_STUDY_LESSONS } from './lessons/crpCaseStudyLesson.js';
 
 export const LESSONS = {
@@ -32,5 +36,10 @@ export const LESSONS = {
   ...NODE_EXPRESS_LESSONS,
   ...DATABASES_LESSONS,
   ...AUTH_SECURITY_LESSONS,
+  ...TESTING_LESSONS,
+  ...DEBUGGING_LESSONS,
+  ...DEPLOYMENT_LESSONS,
+  ...CAREER_READINESS_LESSONS,
   ...CRP_CASE_STUDY_LESSONS
 };
+

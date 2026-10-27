@@ -13,6 +13,9 @@ import ProjectDetail from './pages/ProjectDetail';
 import Assessments from './pages/Assessments';
 import AssessmentDetail from './pages/AssessmentDetail';
 import Revision from './pages/Revision';
+import ProductionChecklist from './pages/ProductionChecklist';
+import PortfolioBuilder from './pages/PortfolioBuilder';
+import InterviewPrep from './pages/InterviewPrep';
 import NotFound from './pages/NotFound';
 
 // Restores window scroll to top whenever navigation route changes
@@ -43,6 +46,9 @@ export default function App() {
           <Route path="assessments" element={<Assessments />} />
           <Route path="assessments/:slug" element={<AssessmentDetail />} />
           <Route path="revision" element={<Revision />} />
+          <Route path="production-checklist" element={<ProductionChecklist />} />
+          <Route path="portfolio-builder" element={<PortfolioBuilder />} />
+          <Route path="interview-prep" element={<InterviewPrep />} />
           <Route path="case-studies/crp-india" element={<CaseStudy />} />
           <Route path="*" element={<NotFound />} />
         </Route>
@@ -50,3 +56,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+

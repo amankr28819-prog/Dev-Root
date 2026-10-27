@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { BookOpen, Layers, Menu, X, Sprout, Code2, Rocket, Award, Sparkles, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Layers, Menu, X, Sprout, Code2, Rocket, Award, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { useProgress } from '../context/ProgressContext';
 
@@ -16,9 +16,12 @@ export default function Navbar() {
     { to: '/courses', label: 'Courses', icon: BookOpen },
     { to: '/challenges', label: 'Challenges', icon: Code2 },
     { to: '/projects', label: 'Projects', icon: Rocket },
-    { to: '/assessments', label: 'Assessments', icon: Award },
-    { to: '/revision', label: 'Revision', icon: Sparkles }
+    { to: '/production-checklist', label: 'Checklist', icon: ShieldCheck },
+    { to: '/interview-prep', label: 'Interview', icon: Award },
+    { to: '/portfolio-builder', label: 'Builder', icon: Sparkles },
+    { to: '/revision', label: 'Revision', icon: CheckCircle2 }
   ];
+
 
   return (
     <header
