@@ -1,0 +1,38 @@
+{
+  "name": "crp-india-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API for CRP India - Civic Reporting Platform",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch --watch-path=src src/server.js",
+    "seed": "node src/utils/seed.js"
+  },
+  "keywords": [
+    "civic",
+    "complaints",
+    "express",
+    "mongoose",
+    "rest-api"
+  ],
+  "author": "CRP India Team",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^2.22.0",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.7.0",
+    "google-auth-library": "^11.0.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.1.3"
+  }
+}

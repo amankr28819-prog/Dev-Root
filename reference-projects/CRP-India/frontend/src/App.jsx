@@ -1,0 +1,264 @@
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+
+// Components
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
+import CitizenProtectedRoute from './components/CitizenProtectedRoute';
+import LogoutConfirmModal from './components/LogoutConfirmModal';
+import PortalSwitchModal from './components/PortalSwitchModal';
+import AIAssistant from './components/AIAssistant';
+
+// Citizen Pages
+import RoleSelection from './pages/RoleSelection';
+import Home from './pages/Home';
+import CitizenDashboard from './pages/CitizenDashboard';
+import CategorySelect from './pages/CategorySelect';
+import ComplaintForm from './pages/ComplaintForm';
+import TrackComplaint from './pages/TrackComplaint';
+import ComplaintDetails from './pages/ComplaintDetails';
+import CitizenLogin from './pages/CitizenLogin';
+import CitizenRegister from './pages/CitizenRegister';
+import About from './pages/About';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import FAQs from './pages/FAQs';
+import AccountLayout from './pages/account/AccountLayout';
+import CitizenSearch from './pages/CitizenSearch';
+import CitizenPublicProfile from './pages/CitizenPublicProfile';
+
+// Authority Pages
+import AuthorityLogin from './pages/authority/AuthorityLogin';
+import AuthorityDashboard from './pages/authority/AuthorityDashboard';
+import AuthorityComplaints from './pages/authority/AuthorityComplaints';
+import AuthorityComplaintDetail from './pages/authority/AuthorityComplaintDetail';
+import AuthorityAssignedComplaints from './pages/authority/AuthorityAssignedComplaints';
+import AuthorityDeletedComplaints from './pages/authority/AuthorityDeletedComplaints';
+import AuthorityReports from './pages/authority/AuthorityReports';
+import AuthorityAccount from './pages/authority/AuthorityAccount';
+import NotFound from './pages/NotFound';
+
+// Wrapper to conditionally render Navbar (hidden on standalone role selection screen)
+function AppLayout() {
+  const location = useLocation();
+  const { user, isAuthority, portalRole } = useAuth();
+  const { theme } = useTheme();
+
+  const isRoleSelection = location.pathname === '/' || location.pathname === '/select-role';
+  const path = location.pathname;
+
+  // AI Assistant Visibility Rules:
+  // Hidden on:
+  // 1. Landing/role-selection screen ('/' or '/select-role')
+  // 2. Citizen Login ('/login')
+  // 3. Citizen Registration ('/register')
+  // 4. Any Municipal/Authority route ('/authority/*')
+  // 5. Any session where the authenticated user or portal role is authority
+  const isAuthorityContext = isAuthority || user?.role === 'authority' || portalRole === 'authority' || path.startsWith('/authority');
+  const isExcludedRoute = path === '/' || path === '/select-role' || path === '/login' || path === '/register';
+
+  // Visible on:
+  // 1. Authenticated citizen pages: /home, /dashboard, /report, /track, /complaint, /account, /citizens
+  // 2. Public legal/help pages: /about, /help, /faqs, /privacy, /terms
+  const isPublicLegalOrHelp = ['/about', '/help', '/faqs', '/privacy', '/terms'].includes(path);
+  const isCitizenPortalRoute =
+    path === '/home' ||
+    path === '/dashboard' ||
+    path.startsWith('/report') ||
+    path.startsWith('/track') ||
+    path.startsWith('/complaint') ||
+    path.startsWith('/account') ||
+    path.startsWith('/citizens');
+
+  const showAIAssistant = !isAuthorityContext && !isExcludedRoute && (isPublicLegalOrHelp || isCitizenPortalRoute);
+
+  // Theme Isolation: Main Role Selection screen is strictly DARK, while inner portals use active preference
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="color-scheme"]');
+    if (isRoleSelection) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (meta) meta.setAttribute('content', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+      if (meta) meta.setAttribute('content', theme);
+    }
+  }, [isRoleSelection, theme]);
+
+  // Accessibility Settings: Synchronize and persist globally across route changes
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('crp_reduced_motion') === 'true') {
+        document.documentElement.setAttribute('data-reduced-motion', 'true');
+      } else {
+        document.documentElement.removeAttribute('data-reduced-motion');
+      }
+      if (localStorage.getItem('crp_high_contrast') === 'true') {
+        document.documentElement.setAttribute('data-high-contrast', 'true');
+      } else {
+        document.documentElement.removeAttribute('data-high-contrast');
+      }
+    } catch {
+      // ignore
+    }
+  }, [location.pathname]);
+
+  return (
+    <div className="app-wrapper">
+      {!isRoleSelection && <Navbar />}
+      <main className="main-content">
+        <Routes>
+          {/* Main Front Page Gateway (Role Selection) */}
+          <Route path="/" element={<RoleSelection />} />
+          <Route path="/select-role" element={<RoleSelection />} />
+
+          {/* Citizen */}
+          <Route path="/home" element={<Home />} />
+          <Route
+            path="/dashboard"
+            element={
+              <CitizenProtectedRoute>
+                <CitizenDashboard />
+              </CitizenProtectedRoute>
+            }
+          />
+          <Route
+            path="/report"
+            element={
+              <CitizenProtectedRoute>
+                <CategorySelect />
+              </CitizenProtectedRoute>
+            }
+          />
+          <Route
+            path="/report/:categorySlug"
+            element={
+              <CitizenProtectedRoute>
+                <ComplaintForm />
+              </CitizenProtectedRoute>
+            }
+          />
+          <Route
+            path="/track"
+            element={
+              <CitizenProtectedRoute>
+                <TrackComplaint />
+              </CitizenProtectedRoute>
+            }
+          />
+          <Route
+            path="/complaint/:id"
+            element={
+              <CitizenProtectedRoute>
+                <ComplaintDetails />
+              </CitizenProtectedRoute>
+            }
+          />
+          <Route
+            path="/account/*"
+            element={
+              <CitizenProtectedRoute>
+                <AccountLayout />
+              </CitizenProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<CitizenLogin />} />
+          <Route path="/register" element={<CitizenRegister />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/help" element={<About />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/faqs" element={<FAQs />} />
+          <Route path="/citizens" element={<CitizenSearch />} />
+          <Route path="/citizens/:id" element={<CitizenPublicProfile />} />
+          <Route path="/complaints/:id" element={<ComplaintDetails />} />
+
+          {/* Municipal Authority Portal */}
+          <Route path="/authority/login" element={<AuthorityLogin />} />
+          <Route
+            path="/authority/dashboard"
+            element={
+              <ProtectedRoute>
+                <AuthorityDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/authority/complaints"
+            element={
+              <ProtectedRoute>
+                <AuthorityComplaints />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/authority/complaints/:id"
+            element={
+              <ProtectedRoute>
+                <AuthorityComplaintDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/authority/assigned"
+            element={
+              <ProtectedRoute>
+                <AuthorityAssignedComplaints />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/authority/deleted-complaints"
+            element={
+              <ProtectedRoute>
+                <AuthorityDeletedComplaints />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/authority/reports"
+            element={
+              <ProtectedRoute>
+                <AuthorityReports />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/authority/account"
+            element={
+              <ProtectedRoute>
+                <AuthorityAccount />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Catch-all 404 handler */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      {!isRoleSelection && <Footer />}
+      {showAIAssistant && <AIAssistant />}
+      <LogoutConfirmModal />
+      <PortalSwitchModal />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <Router>
+            <ScrollToTop />
+            <AppLayout />
+          </Router>
+        </ToastProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}

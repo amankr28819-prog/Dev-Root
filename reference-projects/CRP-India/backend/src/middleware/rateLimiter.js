@@ -1,0 +1,86 @@
+const rateLimit = require('express-rate-limit');
+
+/**
+ * Sensitive Auth Limiter
+ * Applied to login, registration, verify-password, and change-password.
+ * Defends against brute-force and credential-stuffing attacks.
+ */
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 20 : 1000, // relaxed limit for local dev & automated testing
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many authentication attempts from this IP. Please try again after 15 minutes.'
+  }
+});
+
+/**
+ * General API Rate Limiter
+ * Guards against API scraping and volumetric DoS.
+ */
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 400, // generous allowance for legitimate SPA polling and browsing
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many requests received. Please slow down and try again shortly.'
+  }
+});
+
+/**
+ * Complaint Submission Limiter
+ * Prevents automated grievance spamming while allowing normal citizen usage.
+ */
+const complaintLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 12, // max 12 submissions per 10 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many complaint submissions in a short period. Please wait a few minutes before submitting another issue.'
+  }
+});
+
+/**
+ * Gemini AI Chat Rate Limiter
+ * Protects Gemini quota while allowing fluid conversational interaction.
+ */
+const aiChatLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute window
+  max: process.env.NODE_ENV === 'production' ? 20 : 60, // 20 requests/minute in production
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "You're sending messages a little too quickly. Please wait a moment and try again."
+  }
+});
+
+/**
+ * Password Reset Verification Limiter
+ * Stricter defense against enumeration attacks on email/mobile/voter ID combinations.
+ */
+const passwordResetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 5 : 100, // 5 attempts per 15 mins in production
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many password reset verification attempts. Please try again after 15 minutes.'
+  }
+});
+
+module.exports = {
+  authLimiter,
+  apiLimiter,
+  complaintLimiter,
+  aiChatLimiter,
+  passwordResetLimiter
+};
+

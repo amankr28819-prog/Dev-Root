@@ -1,0 +1,306 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import {
+  ShieldCheck,
+  Lock,
+  FileText,
+  KeyRound,
+  LogOut,
+  ExternalLink,
+  CheckCircle2,
+  AlertCircle
+} from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+
+export default function PrivacySecurityView() {
+  const { user, requestLogout } = useAuth();
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Header */}
+      <div>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+          Privacy, Identity & Security
+        </h2>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
+          Overview of your account security protocols, voter data governance, and privacy disclosures.
+        </p>
+      </div>
+
+      {/* Google-Only Password Setup Prompt */}
+      {user?.hasPassword === false && (
+        <div
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--color-primary)',
+            borderRadius: '12px',
+            padding: '20px 24px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '16px',
+            boxShadow: '0 2px 8px rgba(30, 64, 175, 0.08)'
+          }}
+        >
+          <div style={{ maxWidth: '620px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <KeyRound size={20} style={{ color: 'var(--color-primary)' }} />
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                Set CRP Account Password
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
+              You signed in using Google. Set a CRP password to enable password-based login with your email or mobile number and unlock password-protected features such as viewing your masked Voter ID.
+            </p>
+          </div>
+          <Link
+            to="/account/change-password"
+            className="btn btn-primary"
+            style={{ padding: '8px 18px', fontSize: '0.875rem' }}
+          >
+            Set Password
+          </Link>
+        </div>
+      )}
+
+      {/* Security Status Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+        <div
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '10px',
+            padding: '18px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '12px'
+          }}
+        >
+          <div
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '8px',
+              backgroundColor: 'var(--color-accent-green-bg, #DCFCE7)',
+              color: 'var(--color-accent-green, #15803D)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}
+          >
+            <ShieldCheck size={18} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              Encrypted Session
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Your session is authenticated via cryptographic JSON Web Tokens (JWT) with automated expiration.
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '10px',
+            padding: '18px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '12px'
+          }}
+        >
+          <div
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '8px',
+              backgroundColor: user?.hasPassword === false ? 'var(--color-accent-amber-bg, #FEF3C7)' : 'var(--color-accent-blue-bg, #DBEAFE)',
+              color: user?.hasPassword === false ? 'var(--color-accent-amber, #D97706)' : 'var(--color-primary, #1E40AF)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}
+          >
+            <Lock size={18} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {user?.hasPassword === false ? 'Password Not Set (Google Auth)' : 'Password Hash Protection'}
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              {user?.hasPassword === false
+                ? 'Your account is authenticated via Google. Set a CRP password to enable password-protected features.'
+                : 'Passwords are salted and irreversibly hashed using standard bcrypt algorithms.'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Voter ID Data Protection Notice */}
+      <div
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: '12px',
+          padding: '24px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <ShieldCheck size={20} style={{ color: 'var(--color-primary)' }} />
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+            Voter ID (EPIC) & Identity Protection Policy
+          </h3>
+        </div>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 16px 0' }}>
+          The Civic Reporting Platform (CRP India) utilizes citizen voter identity to guarantee authenticity and prevent fraudulent or bot-automated civic submissions. In alignment with modern data governance guidelines:
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '18px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <CheckCircle2 size={16} style={{ color: 'var(--color-accent-green)', flexShrink: 0, marginTop: '2px' }} />
+            <div style={{ fontSize: '0.825rem', color: 'var(--text-secondary)' }}>
+              <strong>Masked Display:</strong> Your Voter ID is masked (`••••••••1234`) across all public interfaces and requires re-authentication with your password to reveal.
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <CheckCircle2 size={16} style={{ color: 'var(--color-accent-green)', flexShrink: 0, marginTop: '2px' }} />
+            <div style={{ fontSize: '0.825rem', color: 'var(--text-secondary)' }}>
+              <strong>Restricted Officer Access:</strong> Only authorized municipal nodal officers assigned to your specific ward can verify your contact coordinates for on-ground repair coordination.
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <CheckCircle2 size={16} style={{ color: 'var(--color-accent-green)', flexShrink: 0, marginTop: '2px' }} />
+            <div style={{ fontSize: '0.825rem', color: 'var(--text-secondary)' }}>
+              <strong>No Third-Party Sharing:</strong> Your registered credentials are never monetized, rented, or distributed to non-governmental marketing third parties.
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: '12px 16px',
+            backgroundColor: 'var(--bg-subtle)',
+            borderRadius: '8px',
+            fontSize: '0.8rem',
+            color: 'var(--text-muted)'
+          }}
+        >
+          <em>Note:</em> In this demonstration environment, Voter IDs are simulated dummy identifiers for citizen verification workflows.
+        </div>
+      </div>
+
+      {/* Security Quick Actions */}
+      <div
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: '12px',
+          padding: '24px'
+        }}
+      >
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 16px 0' }}>
+          Security & Legal Actions
+        </h3>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+          <Link
+            to="/account/change-password"
+            className="btn btn-secondary"
+            style={{ justifyContent: 'space-between', padding: '12px 16px' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <KeyRound size={16} style={{ color: 'var(--color-primary)' }} />
+              <span>{user?.hasPassword === false ? 'Set Password' : 'Change Password'}</span>
+            </div>
+            <ExternalLink size={14} style={{ color: 'var(--text-muted)' }} />
+          </Link>
+
+          <Link
+            to="/privacy"
+            className="btn btn-secondary"
+            style={{ justifyContent: 'space-between', padding: '12px 16px' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FileText size={16} style={{ color: 'var(--color-primary)' }} />
+              <span>Privacy Policy</span>
+            </div>
+            <ExternalLink size={14} style={{ color: 'var(--text-muted)' }} />
+          </Link>
+
+          <Link
+            to="/terms"
+            className="btn btn-secondary"
+            style={{ justifyContent: 'space-between', padding: '12px 16px' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FileText size={16} style={{ color: 'var(--color-primary)' }} />
+              <span>Terms of Service</span>
+            </div>
+            <ExternalLink size={14} style={{ color: 'var(--text-muted)' }} />
+          </Link>
+        </div>
+      </div>
+
+      {/* Active Session Management */}
+      <div
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: '12px',
+          padding: '24px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <LogOut size={18} style={{ color: 'var(--color-status-rejected, #DC2626)' }} />
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                Active Session Management
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, maxWidth: '560px', lineHeight: 1.5 }}>
+              Terminate your authenticated session and revoke active security access tokens across this device and all other registered access points.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={requestLogout}
+            className="btn btn-secondary"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 18px',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              fontFamily: 'inherit',
+              color: 'var(--color-status-rejected, #DC2626)',
+              borderColor: 'var(--border-subtle)',
+              backgroundColor: 'var(--bg-surface)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(220, 38, 38, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(220, 38, 38, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--bg-surface)';
+              e.currentTarget.style.borderColor = 'var(--border-subtle)';
+            }}
+          >
+            <LogOut size={16} />
+            <span>Sign Out Everywhere</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

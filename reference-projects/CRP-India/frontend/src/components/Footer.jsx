@@ -1,0 +1,187 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Shield, Phone, Mail, MapPin } from 'lucide-react';
+import crpLogo from '../assets/crp-logo.png';
+import { useAuth } from '../context/AuthContext';
+
+export default function Footer() {
+  const { isAuthenticated, isAuthority, requestPortalSwitch } = useAuth();
+
+  const handleCitizenLinkClick = (e) => {
+    if (isAuthenticated && isAuthority) {
+      e.preventDefault();
+      requestPortalSwitch();
+    }
+  };
+
+  return (
+    <footer style={{ backgroundColor: 'var(--bg-footer)', color: 'var(--text-footer)', borderTop: '1px solid rgba(255, 255, 255, 0.08)', padding: '40px 0 24px 0', fontSize: '0.875rem' }}>
+      <div className="container">
+        <div className="footer-grid">
+          {/* Section 1: CRP India Branding */}
+          <div>
+            <img
+              src={crpLogo}
+              alt="CRP India Logo"
+              className="footer-crp-logo"
+            />
+          </div>
+
+          {/* Section 2: Navigation */}
+          <div>
+            <h4 style={{ color: 'var(--text-footer-heading)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Navigation
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <li>
+                <Link to="/home" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)', transition: 'color 0.15s' }}>Home</Link>
+              </li>
+              <li>
+                <Link to="/report" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)', transition: 'color 0.15s' }}>Report an Issue</Link>
+              </li>
+              <li>
+                <Link to="/track" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)', transition: 'color 0.15s' }}>Track Complaint</Link>
+              </li>
+              <li>
+                <Link to="/about" style={{ color: 'var(--text-footer)', transition: 'color 0.15s' }}>About Platform</Link>
+              </li>
+              <li>
+                <Link to="/authority/login" style={{ color: 'var(--text-footer)', transition: 'color 0.15s' }}>Municipal Authority Portal</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Section 3: Priority Categories */}
+          <div>
+            <h4 style={{ color: 'var(--text-footer-heading)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Categories
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <li>
+                <Link to="/report/roads-potholes" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)' }}>Roads & Potholes</Link>
+              </li>
+              <li>
+                <Link to="/report/garbage-sanitation" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)' }}>Garbage & Sanitation</Link>
+              </li>
+              <li>
+                <Link to="/report/streetlights" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)' }}>Streetlights</Link>
+              </li>
+              <li>
+                <Link to="/report/water-supply" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)' }}>Water Supply</Link>
+              </li>
+              <li>
+                <Link to="/report/drainage" onClick={handleCitizenLinkClick} style={{ color: 'var(--text-footer)' }}>Drainage & Sewerage</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Section 4: Legal & Contact */}
+          <div>
+            <h4 style={{ color: 'var(--text-footer-heading)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Legal & Support
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <li>
+                <Link to="/faqs" style={{ color: 'var(--text-footer)' }}>FAQs</Link>
+              </li>
+              <li>
+                <Link to="/privacy" style={{ color: 'var(--text-footer)' }}>Privacy Policy</Link>
+              </li>
+              <li>
+                <Link to="/terms" style={{ color: 'var(--text-footer)' }}>Terms of Service</Link>
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', marginTop: '6px', fontSize: '0.8125rem' }}>
+                <Phone size={13} style={{ flexShrink: 0 }} />
+                <span>Toll-Free Helpline: 1800-11-XXXX</span>
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', fontSize: '0.8125rem' }}>
+                <Mail size={13} style={{ flexShrink: 0 }} />
+                <a
+                  href="mailto:crpindianew@gmail.com"
+                  style={{ color: 'var(--text-footer)', textDecoration: 'none', wordBreak: 'break-word' }}
+                >
+                  crpindianew@gmail.com
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', fontSize: '0.75rem' }}>
+          <div>
+            &copy; {new Date().getFullYear()} CRP India. All Rights Reserved. Civic Infrastructure & Grievance Division.
+          </div>
+          <div>
+            <span>Compliant with Citizen Charter Guidelines</span>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        .footer-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 28px;
+          margin-bottom: 32px;
+          align-items: start;
+        }
+
+        .footer-grid > div {
+          min-width: 0;
+        }
+
+        @media (min-width: 540px) {
+          .footer-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 28px 24px;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .footer-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+          }
+        }
+
+        @media (min-width: 900px) {
+          .footer-grid {
+            gap: 24px;
+          }
+        }
+
+        @media (min-width: 1100px) {
+          .footer-grid {
+            gap: 32px;
+          }
+        }
+
+        .footer-crp-logo {
+          width: 220px;
+          max-width: 100%;
+          height: auto;
+          object-fit: contain;
+          border-radius: 8px;
+          display: block;
+        }
+
+        @media (max-width: 640px) {
+          .footer-crp-logo {
+            width: 180px;
+            max-width: 100%;
+            height: auto;
+          }
+        }
+
+        @media (max-width: 360px) {
+          .footer-crp-logo {
+            width: 160px;
+            max-width: 100%;
+            height: auto;
+          }
+        }
+      `}</style>
+    </footer>
+  );
+}

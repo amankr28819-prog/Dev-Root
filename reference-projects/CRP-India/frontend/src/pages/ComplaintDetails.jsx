@@ -1,0 +1,676 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, MapPin, Calendar, Building2, User, Image, AlertCircle, Copy, CheckCircle2, X, Trash2, ShieldAlert, AlertTriangle, ExternalLink } from 'lucide-react';
+import { api, getImageUrl } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import StatusBadge from '../components/StatusBadge';
+import Timeline from '../components/Timeline';
+import BackButton from '../components/BackButton';
+import VotingButtons from '../components/VotingButtons';
+
+export default function ComplaintDetails() {
+  const { id } = useParams();
+  const { user, isAuthority } = useAuth();
+  const [complaint, setComplaint] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [fullscreenImage, setFullscreenImage] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const fetchComplaint = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await api.trackComplaint(id);
+        if (res.success && res.complaint) {
+          setComplaint(res.complaint);
+        } else {
+          setError('Complaint not found.');
+        }
+      } catch (err) {
+        setError(err.message || 'Unable to retrieve complaint details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComplaint();
+  }, [id]);
+
+  const copyRef = () => {
+    if (complaint) {
+      navigator.clipboard.writeText(complaint.referenceId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const isOwner = Boolean(
+    user &&
+    complaint?.citizen?.userId &&
+    (user._id?.toString() === complaint.citizen.userId.toString() || user.id?.toString() === complaint.citizen.userId.toString())
+  );
+
+  const handleDeleteComplaint = async () => {
+    setDeleting(true);
+    try {
+      const res = await api.deleteComplaint(complaint._id || complaint.referenceId);
+      if (res.success) {
+        setComplaint((prev) => ({
+          ...prev,
+          deletedByCitizen: true,
+          deletedAt: new Date()
+        }));
+        setShowDeleteModal(false);
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to delete complaint.');
+      setShowDeleteModal(false);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container" style={{ padding: '64px 20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+        <p>Loading complaint details from civic registry...</p>
+      </div>
+    );
+  }
+
+  if (error || !complaint) {
+    return (
+      <div className="container" style={{ padding: '64px 20px', maxWidth: '640px' }}>
+        <div className="alert alert-error">
+          <AlertCircle size={20} />
+          <div>
+            <strong>Grievance Record Not Found</strong>
+            <p style={{ marginTop: '4px' }}>{error || 'No complaint matches the specified identifier.'}</p>
+          </div>
+        </div>
+        <BackButton fallback="/track" label="Back to Search" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="container" style={{ padding: '36px 20px 80px 20px', maxWidth: '860px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '10px' }}>
+        <BackButton fallback="/track" label="Back to Tracking" style={{ marginBottom: 0 }} />
+
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {isOwner && !isAuthority && !complaint.deletedByCitizen && (
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="btn btn-secondary btn-sm"
+              style={{
+                fontSize: '0.8125rem',
+                color: 'var(--color-status-rejected, #DC2626)',
+                borderColor: 'rgba(239, 68, 68, 0.3)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Trash2 size={13} />
+              <span>Delete Complaint</span>
+            </button>
+          )}
+
+          <button onClick={copyRef} className="btn btn-secondary btn-sm" style={{ fontSize: '0.8125rem' }}>
+            <Copy size={13} />
+            <span>{copied ? 'Copied' : 'Copy Reference ID'}</span>
+          </button>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '32px' }}>
+        {/* Top Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', paddingBottom: '24px', borderBottom: '1px solid var(--border-subtle)' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-primary)', backgroundColor: 'var(--color-primary-light)', padding: '3px 8px', borderRadius: '4px' }}>
+                {complaint.category}
+              </span>
+              <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                Ref: <strong>{complaint.referenceId}</strong>
+              </span>
+            </div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+              {complaint.title}
+            </h1>
+          </div>
+
+          {complaint.deletedByCitizen ? (
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '5px 12px',
+                borderRadius: '4px',
+                fontSize: '0.8125rem',
+                fontWeight: 700,
+                backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                color: 'var(--color-status-rejected, #DC2626)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em'
+              }}
+            >
+              <AlertCircle size={14} />
+              <span>Complaint Deleted</span>
+            </span>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {complaint.flagStatus === 'misinformation' && (
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '4px 10px',
+                      borderRadius: '4px',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      backgroundColor: '#FEE2E2',
+                      color: '#DC2626',
+                      border: '1px solid #FCA5A5',
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                    <AlertTriangle size={12} />
+                    Flagged: Misinformation
+                  </span>
+                )}
+                {complaint.flagStatus === 'duplicate' && (
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '4px 10px',
+                      borderRadius: '4px',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      backgroundColor: '#FEF3C7',
+                      color: '#D97706',
+                      border: '1px solid #FCD34D',
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                    <AlertTriangle size={12} />
+                    Flagged: Duplicate
+                  </span>
+                )}
+                <StatusBadge status={complaint.status} />
+              </div>
+
+              {/* Citizen Voting Controls */}
+              <div style={{ marginTop: '2px' }}>
+                <VotingButtons
+                  complaint={complaint}
+                  onVoteChange={(updated) => {
+                    setComplaint((prev) => ({
+                      ...prev,
+                      ...updated,
+                      ...(updated.autoRestored ? { flagStatus: 'none' } : {})
+                    }));
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Administrative Flag Banner with Explanation & 500-Upvote Milestone */}
+        {complaint.flagStatus && complaint.flagStatus !== 'none' && (
+          <div
+            style={{
+              backgroundColor: complaint.flagStatus === 'misinformation' ? '#FEF2F2' : '#FFFBEB',
+              border: `1.5px solid ${complaint.flagStatus === 'misinformation' ? '#EF4444' : '#F59E0B'}`,
+              borderRadius: '8px',
+              padding: '18px 20px',
+              marginTop: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: complaint.flagStatus === 'misinformation' ? '#B91C1C' : '#B45309', fontWeight: 700, fontSize: '0.95rem' }}>
+                <ShieldAlert size={19} />
+                <span>
+                  {complaint.flagStatus === 'misinformation'
+                    ? 'Administratively Flagged as Misinformation'
+                    : 'Administratively Flagged as Duplicate Grievance'}
+                </span>
+              </div>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: complaint.flagStatus === 'misinformation' ? '#991B1B' : '#92400E',
+                  backgroundColor: complaint.flagStatus === 'misinformation' ? '#FEE2E2' : '#FEF3C7',
+                  padding: '2px 8px',
+                  borderRadius: '4px'
+                }}
+              >
+                Moved to Flagged Complaints Pool
+              </span>
+            </div>
+
+            {complaint.flagDetails?.reason && (
+              <div
+                style={{
+                  fontSize: '0.875rem',
+                  color: '#1F2937',
+                  backgroundColor: '#FFFFFF',
+                  padding: '12px 14px',
+                  borderRadius: '6px',
+                  borderLeft: `4px solid ${complaint.flagStatus === 'misinformation' ? '#EF4444' : '#F59E0B'}`
+                }}
+              >
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: complaint.flagStatus === 'misinformation' ? '#B91C1C' : '#B45309', marginBottom: '4px', textTransform: 'uppercase' }}>
+                  Official Authority Stated Explanation:
+                </div>
+                <div style={{ lineHeight: 1.5 }}>{complaint.flagDetails.reason}</div>
+                {complaint.flagDetails.duplicateOfComplaintRef && (
+                  <div style={{ marginTop: '8px', fontSize: '0.8125rem', color: '#4B5563' }}>
+                    Duplicate of Complaint Reference:{' '}
+                    <Link
+                      to={`/complaints/${complaint.flagDetails.duplicateOfComplaintRef}`}
+                      style={{ color: 'var(--color-primary)', fontWeight: 600 }}
+                    >
+                      {complaint.flagDetails.duplicateOfComplaintRef}
+                    </Link>
+                  </div>
+                )}
+                {complaint.flagDetails.flaggedAt && (
+                  <div style={{ marginTop: '6px', fontSize: '0.75rem', color: '#6B7280' }}>
+                    Flagged on: {new Date(complaint.flagDetails.flaggedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Community 500-Upvote Auto-Restoration Tracker */}
+            <div style={{ backgroundColor: '#FFFFFF', padding: '12px 14px', borderRadius: '6px', border: '1px solid #E5E7EB' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8125rem', marginBottom: '6px' }}>
+                <span style={{ fontWeight: 600, color: '#374151' }}>
+                  Community Auto-Restoration Milestone (500 Unique Upvotes)
+                </span>
+                <span style={{ fontWeight: 700, color: 'var(--color-primary)' }}>
+                  {complaint.upvotesCount || 0} / 500 upvotes ({Math.min(100, Math.round(((complaint.upvotesCount || 0) / 500) * 100))}%)
+                </span>
+              </div>
+              <div style={{ height: '8px', width: '100%', backgroundColor: '#E5E7EB', borderRadius: '4px', overflow: 'hidden' }}>
+                <div
+                  style={{
+                    height: '100%',
+                    width: `${Math.min(100, ((complaint.upvotesCount || 0) / 500) * 100)}%`,
+                    backgroundColor: '#10B981',
+                    borderRadius: '4px',
+                    transition: 'width 0.3s ease'
+                  }}
+                />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '6px' }}>
+                Citizens can still vote on this complaint. Once it reaches 500 unique upvotes, it will be automatically restored to the active complaints pool.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Deleted by Citizen Alert Banner */}
+        {complaint.deletedByCitizen && (
+          <div
+            style={{
+              backgroundColor: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              borderRadius: '6px',
+              padding: '16px 20px',
+              marginTop: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}
+          >
+            <AlertCircle size={22} style={{ color: 'var(--color-status-rejected, #DC2626)', flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-status-rejected, #DC2626)' }}>
+                Complaint Deleted
+              </div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-primary)', marginTop: '2px' }}>
+                This complaint has been deleted by the citizen who submitted it.
+                {complaint.deletedAt && (
+                  <span style={{ color: 'var(--text-secondary)', marginLeft: '6px' }}>
+                    (Deleted on {new Date(complaint.deletedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })})
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Civic Meta Details List */}
+        <div style={{ padding: '24px 0', borderBottom: '1px solid var(--border-subtle)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '4px' }}>
+              Location & Jurisdiction
+            </div>
+            <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              {complaint.location}
+            </div>
+            <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+              {complaint.ward}, {complaint.city}
+            </div>
+            {complaint.latitude && complaint.longitude && (
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                GPS: {complaint.latitude}, {complaint.longitude}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '4px' }}>
+              Complainant / Citizen
+            </div>
+            <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              {complaint.citizen?.userId ? (
+                <Link
+                  to={`/citizens/${complaint.citizen.userId}`}
+                  style={{
+                    color: 'var(--color-primary)',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                  title="View Public Accountability Profile"
+                >
+                  <span>{complaint.citizen.name || 'Verified Citizen'}</span>
+                  <ExternalLink size={12} />
+                </Link>
+              ) : (
+                complaint.citizen?.name || 'Verified Citizen'
+              )}
+            </div>
+            <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+              Verified Grievance Author
+            </div>
+          </div>
+
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '4px' }}>
+              Assigned Department
+            </div>
+            <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              {complaint.assignedDepartment || 'Central Grievance Redressal Cell'}
+            </div>
+            <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+              Designated Officer: {(complaint.assignedOfficer && complaint.assignedOfficer !== 'Unassigned') ? complaint.assignedOfficer : 'Pending Allocation'}
+            </div>
+            {complaint.assignmentInstruction && (
+              <div style={{ marginTop: '6px', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Authority Instruction: </span>
+                <span style={{ fontStyle: 'italic', color: 'var(--text-primary)' }}>"{complaint.assignmentInstruction}"</span>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '4px' }}>
+              Filing & Last Update
+            </div>
+            <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              Filed: {new Date(complaint.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </div>
+            <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+              Updated: {new Date(complaint.updatedAt || complaint.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        </div>
+
+        {/* Detailed Description */}
+        <div style={{ padding: '24px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+          <h3 style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
+            Complaint Description
+          </h3>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+            {complaint.description}
+          </p>
+        </div>
+
+        {/* Uploaded Evidence */}
+        {complaint.images && complaint.images.length > 0 && (
+          <div style={{ padding: '24px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>
+              Photographic Evidence (Reported Problem)
+            </h3>
+            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+              {complaint.images.map((img, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setFullscreenImage({ url: getImageUrl(img), caption: `Initial Complaint Photo #${idx + 1}` })}
+                  style={{ cursor: 'pointer', width: '140px', height: '140px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}
+                  title="Click to view larger"
+                >
+                  <img src={getImageUrl(img)} alt="Evidence photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Resolution Proof Section */}
+        {!complaint.deletedByCitizen && complaint.status === 'Resolved' && complaint.resolutionPhoto && (
+          <div style={{ padding: '24px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: 'var(--color-status-resolved-bg)', color: 'var(--color-status-resolved)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <CheckCircle2 size={18} />
+              </div>
+              <div>
+                <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-status-resolved)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  ✓ Complaint Resolved
+                </div>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                  Resolution Proof
+                </h3>
+              </div>
+            </div>
+
+            {/* Before vs After Visual Comparison */}
+            <div style={{ display: 'grid', gridTemplateColumns: complaint.images && complaint.images.length > 0 ? 'repeat(auto-fit, minmax(260px, 1fr))' : '1fr', gap: '18px', marginBottom: '18px' }}>
+              {complaint.images && complaint.images.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px' }}>
+                    Before: Reported Issue
+                  </div>
+                  <div
+                    onClick={() => setFullscreenImage({ url: getImageUrl(complaint.images[0]), caption: 'Reported Issue (Before Resolution)' })}
+                    style={{ cursor: 'pointer', height: '220px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}
+                    title="Click to view full size"
+                  >
+                    <img
+                      src={getImageUrl(complaint.images[0])}
+                      alt="Before"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--color-status-resolved)', textTransform: 'uppercase', marginBottom: '8px' }}>
+                  After: Resolution Proof (Work Done)
+                </div>
+                <div
+                  onClick={() => setFullscreenImage({ url: getImageUrl(complaint.resolutionPhoto), caption: 'Official Resolution Photo Proof' })}
+                  style={{ cursor: 'pointer', height: '220px', borderRadius: '8px', overflow: 'hidden', border: '2.5px solid var(--color-status-resolved)' }}
+                  title="Click to view full size"
+                >
+                  <img
+                    src={getImageUrl(complaint.resolutionPhoto)}
+                    alt="Resolution proof"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {complaint.resolutionNote && (
+              <div style={{ backgroundColor: 'var(--bg-app)', padding: '14px 18px', borderRadius: '6px', borderLeft: '4px solid var(--color-status-resolved)', marginBottom: '12px' }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '3px', fontWeight: 600 }}>
+                  Municipal Resolution Note:
+                </div>
+                <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)', fontStyle: 'italic', lineHeight: 1.5 }}>
+                  "{complaint.resolutionNote}"
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+              {complaint.resolvedAt && (
+                <div>
+                  <strong>Resolved on:</strong> {new Date(complaint.resolvedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </div>
+              )}
+              {complaint.resolvedBy && (
+                <div>
+                  <strong>Resolved by:</strong> {complaint.resolvedBy}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Chronological Status Timeline */}
+        <div style={{ paddingTop: '24px' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>
+            Status Progression Timeline
+          </h3>
+          <Timeline history={complaint.statusHistory} currentStatus={complaint.status} complaint={complaint} />
+        </div>
+      </div>
+
+      {/* Lightbox Modal */}
+      {fullscreenImage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.88)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999,
+            padding: '20px',
+            backdropFilter: 'blur(3px)'
+          }}
+          onClick={() => setFullscreenImage(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            style={{ position: 'relative', maxWidth: '92vw', maxHeight: '88vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setFullscreenImage(null)}
+              style={{
+                alignSelf: 'flex-end',
+                background: 'rgba(255,255,255,0.15)',
+                border: 'none',
+                color: '#fff',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.85rem',
+                marginBottom: '10px'
+              }}
+            >
+              <X size={16} />
+              <span>Close Preview</span>
+            </button>
+            <img
+              src={fullscreenImage.url}
+              alt={fullscreenImage.caption || 'Enlarged photo'}
+              style={{ maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: '6px', boxShadow: '0 10px 40px rgba(0,0,0,0.6)' }}
+            />
+            {fullscreenImage.caption && (
+              <div style={{ color: '#e5e7eb', marginTop: '12px', fontSize: '0.875rem', fontWeight: 500, textAlign: 'center' }}>
+                {fullscreenImage.caption}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="logout-modal-backdrop"
+          onClick={() => !deleting && setShowDeleteModal(false)}
+          style={{ zIndex: 99999 }}
+        >
+          <div
+            className="logout-confirm-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: '440px', width: '90vw', textAlign: 'left', padding: '24px' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+              <div style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--color-status-rejected, #DC2626)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Trash2 size={18} />
+              </div>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                Delete Complaint
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '24px' }}>
+              Are you sure you want to delete this complaint?
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="btn btn-secondary btn-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteComplaint}
+                disabled={deleting}
+                className="btn btn-sm"
+                style={{
+                  backgroundColor: 'var(--color-status-rejected, #DC2626)',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  fontWeight: 600
+                }}
+              >
+                {deleting ? 'Deleting...' : 'Delete Complaint'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
