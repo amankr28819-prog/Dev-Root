@@ -1,7 +1,7 @@
 /**
- * Dev-root Course 4: CSS from Zero - Deep Learning Curriculum
+ * Dev-root Course 4: CSS from Zero - Deep Learning Curriculum (Phase 4 4x Depth Standard)
  * Comprehensive, modular lessons covering CSS syntax, selectors, cascade,
- * box model, positioning, Flexbox, Grid, responsive design, and animations.
+ * box model, positioning, Flexbox, Grid, responsive design, variables, and animations.
  */
 
 export const CSS_LESSONS = {
@@ -13,234 +13,218 @@ export const CSS_LESSONS = {
     courseTitle: 'Course 4: CSS from Zero',
     title: 'CSS Syntax, Selectors, Specificity & The Cascade',
     category: 'Frontend',
-    estimatedTime: '35 min read & practice',
+    estimatedTime: '45 min read & practice',
     interactivePlayground: 'css',
     objectives: [
       'Understand the architecture of CSS: selectors, property-value declarations, and declaration blocks.',
       'Differentiate inline, internal, and external stylesheets and explain why external CSS is standard.',
       'Master the full selector spectrum: element, class, ID, attribute, descendant, child, and pseudo-classes.',
-      'Calculate CSS specificity weights mathematically (inline vs ID vs class vs element) to resolve conflicting styles.',
-      'Understand how inheritance and source order govern the Cascade without resorting to !important.'
+      'Calculate CSS specificity weights mathematically (Inline, ID, Class, Element) to resolve conflicting styles.',
+      'Understand how inheritance and source order govern the Cascade without resorting to !important.',
+      'Debug style collisions and inheritance overrides using browser DevTools Computed panel.'
     ],
     sections: [
       {
         heading: 'What is CSS and How Does It Connect to HTML?',
-        content: `Cascading Style Sheets (CSS) is the language used to describe the visual presentation and layout of a document written in HTML. While HTML defines the semantic skeleton (headings, paragraphs, buttons, forms), CSS dictates typography, color harmonies, responsive grids, spatial relationships, and animations.
+        content: `Cascading Style Sheets (CSS) is the declarative language used to describe the visual presentation and layout of an HTML document. While HTML defines the semantic skeleton (headings, paragraphs, buttons, forms), CSS dictates typography scales, color harmonies, spatial padding, grid arrangements, and animations.
 
 ### The Three Ways to Apply CSS:
-1. **Inline CSS:** Applied directly on individual elements using the \`style\` attribute:
+1. **Inline Styles:** Written directly on individual elements using the \`style\` attribute:
    \`\`\`html
-   <p style="color: red; font-size: 18px;">Warning</p>
+   <p style="color: #dc2626; font-size: 1.1rem; font-weight: bold;">Safety Warning</p>
    \`\`\`
-   *Disadvantage:* Breaks separation of concerns, impossible to reuse across pages, and overrides external stylesheets due to extreme specificity. **Avoid in production markup**.
-2. **Internal (Embedded) CSS:** Written inside a \`<style>\` element inside the document's \`<head>\`:
+   *Disadvantage:* Breaks separation of concerns, impossible to reuse across pages, bloats HTML file size, and carries excessive specificity weight. **Avoid inline styles in production markup**.
+2. **Internal (Embedded) Styles:** Placed inside a \`<style>\` block within the HTML \`<head>\`:
    \`\`\`html
    <head>
      <style>
-       p { color: #1e293b; line-height: 1.6; }
+       body { font-family: system-ui, sans-serif; color: #1e293b; }
      </style>
    </head>
    \`\`\`
-   *Use case:* Useful for single-page isolated prototypes or critical above-the-fold inline CSS.
-3. **External CSS (Industry Standard):** Written in standalone \`.css\` files linked via the \`<link>\` tag:
+   *Use case:* Appropriate for single-file prototypes, email newsletters, or critical above-the-fold inline rendering.
+3. **External Stylesheets (Industry Standard):** Written in dedicated \`.css\` files linked via the \`<link>\` element:
    \`\`\`html
    <link rel="stylesheet" href="/src/index.css">
    \`\`\`
-   *Advantages:* Allows a single stylesheet to style hundreds of pages across an entire domain, enables browser HTTP caching, keeps HTML files lightweight, and facilitates clean design token architectures.`
+   *Advantages:* Enables a single stylesheet to format thousands of pages across a domain, maximizes browser HTTP caching, keeps HTML files clean, and enables modular design token systems.`
       },
       {
-        heading: 'Anatomy of a CSS Rule and Selector Types',
+        heading: 'Anatomy of a CSS Rule and the Selector Spectrum',
         content: `A CSS ruleset consists of a **selector** followed by a **declaration block** enclosed in curly braces:
 
-\`\`\`css
-/* Selector { Property: Value; } */
-.grievance-card {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 1.5rem;
-}
+\`\`\`
+                 Declaration Block
+             +-----------------------+
+   Selector  |  Property     Value   |
+   +-------+ |  +------+   +-------+ |
+   | .card | {  background: #ffffff; |
+   +-------+    padding:    1.5rem;  |
+             }  +-------------------+
 \`\`\`
 
-### Comprehensive Selector Hierarchy:
-* **Universal Selector (\`*\`):** Matches every element in the DOM tree. Commonly used for global box-sizing resets:
-  \`\`\`css
-  *, *::before, *::after { box-sizing: border-box; }
-  \`\`\`
-* **Element (Type) Selector (\`h1\`, \`p\`, \`button\`):** Matches all elements of that specific HTML tag name.
-* **Class Selector (\`.badge\`):** Matches elements having a specific class name. Highly reusable across multiple elements.
-* **ID Selector (\`#main-nav\`):** Matches the single element with that unique ID.
-* **Combinator Selectors:**
-  * **Descendant Selector (\`nav a\`):** Matches any \`<a>\` nested anywhere inside a \`<nav>\`, regardless of depth.
-  * **Direct Child Selector (\`ul > li\`):** Matches only \`<li>\` elements that are direct immediate children of a \`<ul>\`.
-  * **Adjacent Sibling (\`h2 + p\`):** Matches the immediate first \`<p>\` that appears right after an \`<h2>\`.
-  * **General Sibling (\`h2 ~ p\`):** Matches all \`<p>\` siblings that appear after an \`<h2>\`.
-* **Attribute Selectors:**
-  \`\`\`css
-  input[type="password"] { border-color: #dc2626; }
-  a[target="_blank"] { padding-right: 18px; }
-  \`\`\`
-* **Pseudo-classes (State-based Selection):**
-  * \`:hover\`: When cursor hovers over the element.
-  * \`:focus\` and \`:focus-visible\`: When keyboard or user focuses the element.
-  * \`:active\`: When element is being actively clicked or pressed.
-  * \`:nth-child(even)\`: Matches alternating elements for striped tables or grids.
-* **Pseudo-elements (Injecting Virtual Elements):**
-  * \`::before\` and \`::after\`: Creates decorative pseudo-elements inside the target without extra HTML tags.`
+### Selector Types and Syntax:
+1. **Element Selector:** Targets all HTML elements of a specific type (e.g., \`p\`, \`h1\`, \`table\`). Low specificity.
+   \`\`\`css
+   p { line-height: 1.6; color: #334155; }
+   \`\`\`
+2. **Class Selector (\`.\`):** Targets any element with a matching class name. Can be reused across multiple elements.
+   \`\`\`css
+   .badge-resolved { background: #dcfce7; color: #15803d; }
+   \`\`\`
+3. **ID Selector (\`#\`):** Targets a single element with a matching unique \`id\` attribute. High specificity.
+   \`\`\`css
+   #main-header { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+   \`\`\`
+4. **Attribute Selector (\`[attr="value"]\`):** Targets elements based on attribute presence or value:
+   \`\`\`css
+   input[type="email"] { border-color: #3b82f6; }
+   a[href^="https://"] { font-weight: 600; } /* Starts with https */
+   \`\`\`
+5. **Combinator Selectors:**
+   * **Descendant (\`A B\`):** Targets B nested at any depth inside A (\`.card p\`).
+   * **Direct Child (\`A > B\`):** Targets B only if it is an immediate child of A (\`.navbar > li\`).
+   * **Adjacent Sibling (\`A + B\`):** Targets B immediately following A at the same tree level.
+6. **Pseudo-Classes (\`:\`):** Targets elements in specific dynamic interaction states:
+   \`\`\`css
+   button:hover { background: #1d4ed8; }
+   input:focus-visible { outline: 3px solid #2563eb; }
+   tr:nth-child(even) { background: #f8fafc; } /* Zebra striping */
+   \`\`\``
       },
       {
-        heading: 'The Cascade & Specificity Calculations',
-        content: `The word **Cascading** in CSS describes the precise algorithm browsers use to resolve conflicting rules targeting the same element. When multiple rules declare different values for the same property, the browser resolves the winner using three factors:
-1. **Importance:** Declarations with \`!important\` override normal declarations.
-2. **Specificity:** The rule with the highest mathematical specificity weight wins.
-3. **Source Order:** If two rules have identical specificity, the one declared **last** in the stylesheet wins.
+        heading: 'The Mathematics of CSS Specificity: Resolving Style Conflicts',
+        content: `When two or more conflicting CSS rules target the same HTML element, the browser uses **Specificity** to determine which rule wins. Specificity is calculated as a 4-part numeric tuple:
 
-### Calculating Specificity Mathematically:
-Specificity is measured as a 4-part weight: \`(Inline, IDs, Classes/Attributes/Pseudo-classes, Elements)\`:
+\`\`\`
+  ( Inline Styles , ID Selectors , Classes/Attributes/Pseudo-classes , Element Selectors )
+         (A)             (B)                         (C)                         (D)
+\`\`\`
 
-| Selector Example | Inline | IDs | Classes | Elements | Specificity Score |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| \`style="color: red;"\` | 1 | 0 | 0 | 0 | **(1, 0, 0, 0)** |
-| \`#citizen-profile\` | 0 | 1 | 0 | 0 | **(0, 1, 0, 0)** |
-| \`.card.active:hover\` | 0 | 0 | 3 | 0 | **(0, 0, 3, 0)** |
-| \`nav ul li a\` | 0 | 0 | 0 | 4 | **(0, 0, 0, 4)** |
-| \`header.main-header h1\` | 0 | 0 | 1 | 2 | **(0, 0, 1, 2)** |
+### The Specificity Weight Table:
+| Selector Example | Inline (A) | ID (B) | Class/Attr (C) | Element (D) | Total Specificity Score |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| \`p\` | 0 | 0 | 0 | 1 | (0, 0, 0, 1) |
+| \`.btn\` | 0 | 0 | 1 | 0 | (0, 0, 1, 0) |
+| \`.card .btn\` | 0 | 0 | 2 | 0 | (0, 0, 2, 0) |
+| \`#ticket-402\` | 0 | 1 | 0 | 0 | (0, 1, 0, 0) |
+| \`#ticket-402 .status\` | 0 | 1 | 1 | 0 | (0, 1, 1, 0) |
+| \`<p style="color:red">\` | 1 | 0 | 0 | 0 | (1, 0, 0, 0) |
 
-### Resolving Specificity Battles:
-A selector with a higher category always beats any number of lower-category selectors:
-* A single class selector \`.button\` (0, 0, 1, 0) beats an element selector chain \`html body div main section button\` (0, 0, 0, 6).
-* An ID selector \`#submit-btn\` (0, 1, 0, 0) beats 100 stacked class selectors.
-* **Why to avoid \`!important\`:** Using \`!important\` breaks the natural cascade and starts an escalating war where developers must write more \`!important\` flags to override previous ones. Instead, structure your CSS with low, uniform specificity (such as single class selectors like BEM methodology: \`.card__title\`).`
+### Specificity Comparison Rule:
+Compare tuples from left to right. **Higher columns always beat lower columns, regardless of how many lower-column selectors are chained!**
+* A single ID selector \`(0, 1, 0, 0)\` will **always** defeat a selector with 100 classes chained together \`(0, 0, 100, 0)\`!
+* An inline style \`(1, 0, 0, 0)\` defeats any stylesheet selector.
+
+### Why You Should Avoid \`!important\`:
+Adding \`!important\` to a declaration bypasses normal specificity, creating an unmaintainable specificity war where developers are forced to use increasingly convoluted selectors or more \`!important\` statements to override styles. Use low-specificity classes (\`.btn\`, \`.card\`) instead!`
       },
       {
-        heading: 'Inheritance: Properties that Flow Down',
-        content: `In CSS, certain properties applied to a parent element automatically pass down to its children, while others do not:
+        heading: 'How the Cascade Works: The Resolution Algorithm',
+        content: `The "Cascade" in CSS is the formal algorithm browsers use to resolve conflicting properties. It evaluates competing rules in strict order:
 
-* **Inherited Properties (Chiefly Typography):**
-  * \`color\`, \`font-family\`, \`font-size\`, \`line-height\`, \`text-align\`, \`letter-spacing\`.
-  * Setting \`font-family: system-ui, sans-serif\` on \`<body>\` automatically styles all paragraphs, headings, and spans inside without repetitive declarations.
-* **Non-Inherited Properties (Chiefly Box Dimensions & Layout):**
-  * \`margin\`, \`padding\`, \`border\`, \`width\`, \`height\`, \`background-color\`, \`display\`, \`position\`.
-  * If \`<body>\` has \`border: 2px solid black\`, its child paragraphs do not each draw a black border around themselves!
+1. **Origin and Importance:**
+   * User Agent Styles (browser defaults like 16px body, bold headings).
+   * User Styles (browser accessibility overrides).
+   * Author Styles (the CSS written by the web developer).
+   * Author \`!important\` declarations.
+2. **Specificity:** The rule with the higher specificity tuple wins.
+3. **Source Order:** If two rules share the exact same origin, importance, and specificity score, **the rule declared latest in the stylesheet wins**:
 
-You can explicitly force any property to inherit using the keyword \`inherit\`:
 \`\`\`css
-/* Force buttons to inherit the parent's font family rather than browser default */
-button, input {
-  font-family: inherit;
-  font-size: inherit;
+/* Both selectors have specificity (0, 0, 1, 0) */
+.badge { background-color: #3b82f6; } /* Declared first */
+.badge { background-color: #10b981; } /* Declared second -> WINS! */
+\`\`\`
+
+### Property Inheritance:
+Certain CSS properties (such as \`color\`, \`font-family\`, \`font-size\`, \`line-height\`) automatically **inherit** from parent elements down to children. Other properties (such as \`border\`, \`margin\`, \`padding\`, \`background\`) **do not inherit**. You can force inheritance using the keyword \`inherit\`:
+
+\`\`\`css
+button {
+  font-family: inherit; /* Inherits the clean system font set on <body> */
 }
 \`\`\``
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Using !important to fix styling conflicts.',
-        whyItHappens: 'Frustration when a style does not apply due to higher specificity elsewhere.',
-        howToFix: 'Inspect the element in DevTools to find the conflicting selector, and adjust specificity or source order naturally.'
-      },
-      {
-        mistake: 'Over-relying on ID selectors for styling (e.g. #header-title).',
-        whyItHappens: 'Assuming IDs are better because they are unique.',
-        howToFix: 'IDs create high specificity that makes styles impossible to override without more IDs. Use class selectors (.card, .btn) for styling.'
-      },
-      {
-        mistake: 'Deeply nested descendant selectors like div.container main article section p a.',
-        whyItHappens: 'Attempting to mirror the full HTML DOM tree in CSS.',
-        howToFix: 'Keep selectors flat and decoupled using single classes (.article-link). This improves performance and modularity.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Calculate Specificity and Refactor Conflicting CSS',
-      difficulty: 'Beginner',
-      instructions: 'Review the conflicting CSS rules below. Identify which rule currently wins, calculate its specificity score, and refactor the rules so they use clean, maintainable class-based styling without !important.',
-      starterCode: `/* CURRENT PROBLEMATIC STYLES: */
-div#portal header.site-header nav ul li a {
-  color: #1d4ed8;
-  text-decoration: underline;
-}
-
-a.nav-link {
-  color: #10b981 !important; /* Tried to override with !important */
-}`,
-      tasks: [
-        'Calculate the specificity of the first selector (div#portal header.site-header nav ul li a).',
-        'Identify why the developer resorted to !important on .nav-link.',
-        'Refactor both rules to use flat class selectors with equal, predictable specificity.',
-        'Implement clean :hover and :focus-visible states.'
-      ],
+    exercise: {
+      instruction: 'Create a stylesheet for a civic alert banner. Style the container with a class, apply a specific high-priority override using an ID, and create an accessible hover state for a nested button.',
+      starterCode: `/* Write your CSS rules below */\n`,
       hints: [
-        'div#portal has 1 ID, 1 class, and 5 elements: specificity is (0, 1, 1, 5).',
-        'a.nav-link has 0 IDs, 1 class, and 1 element: specificity is (0, 0, 1, 1), which is why it lost without !important.',
-        'Refactor to simply .nav-link for the base state, and .nav-link:hover for the hover state.'
+        'Define a base class .alert-banner with background #fef3c7 and padding 1rem.',
+        'Create an override rule #critical-alert with background #fee2e2 and border-color #ef4444.',
+        'Style the nested button using .alert-banner button:hover with background #1e293b.'
       ],
-      solution: `/* REFACTORED CLEAN CSS: */
-.nav-link {
-  color: #1d4ed8;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.15s ease-in-out;
+      tasks: [
+        'Define .alert-banner class rule',
+        'Define #critical-alert ID override rule',
+        'Add hover pseudo-class on button',
+        'Do not use !important'
+      ],
+      solution: `.alert-banner {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #fde68a;
 }
 
-.nav-link:hover {
-  color: #1e40af;
-  text-decoration: underline;
+#critical-alert {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #f87171;
 }
 
-.nav-link:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-  border-radius: 4px;
+.alert-banner button {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.alert-banner button:hover {
+  background-color: #1d4ed8;
 }`,
-      solutionExplanation: 'By using a flat single class (.nav-link) with a specificity of (0, 0, 1, 0), the styles remain completely predictable and easy to override in modifier classes (.nav-link--active) without any !important hacks.'
+      solutionExplanation: 'This demonstrates clean specificity architecture. The base class provides reusable layout parameters, while the specific ID selector cleanly overrides the color scheme for critical incidents without needing !important.'
     },
     quiz: [
       {
-        question: 'What is the specificity weight of the selector: "nav#main-nav .menu-item.active a"?',
+        question: 'Which of the following selectors has the highest specificity score and will override the others?',
         options: [
-          '(0, 0, 4, 0)',
-          '(0, 1, 2, 2)',
-          '(1, 0, 2, 2)',
-          '(0, 2, 1, 1)'
+          'div.card p.text',
+          '#sidebar .profile',
+          'body div.container header nav a',
+          '.sidebar .profile.active'
         ],
         correctIndex: 1,
-        explanation: '1 ID (#main-nav), 2 classes (.menu-item, .active), and 2 element tags (nav, a) = Specificity (0, 1, 2, 2).'
+        explanation: '#sidebar .profile has one ID and one class (0, 1, 1, 0). Because it contains an ID selector, it outranks all other options that rely only on classes and elements.'
       },
       {
-        question: 'If two conflicting CSS rules target the exact same element with the exact same specificity score, how does the browser resolve which rule applies?',
+        question: 'What happens when two identical CSS rules targeting the same class have the exact same specificity?',
         options: [
-          'The rule with the longer file name wins.',
-          'The rule declared latest (furthest down) in the stylesheet wins via source order.',
-          'The rule declared first wins.',
-          'The browser disables both rules.'
+          'The browser cancels both rules and uses the default user-agent style.',
+          'The rule declared latest in the stylesheet or loaded last takes precedence (Source Order).',
+          'The rule with the shortest property name takes precedence.',
+          'The browser randomly selects one at runtime.'
         ],
         correctIndex: 1,
-        explanation: 'When importance and specificity are tied, the Cascade uses Source Order: the rule declared latest in the stylesheet or loaded last in the DOM takes precedence.'
-      },
-      {
-        question: 'Which of the following CSS properties is inherited by child elements by default?',
-        options: [
-          'padding',
-          'margin',
-          'color',
-          'border'
-        ],
-        correctIndex: 2,
-        explanation: 'Typography properties like color, font-family, and line-height are inherited by children from parent containers. Box model properties (padding, margin, border) are never inherited by default.'
+        explanation: 'In the Cascade algorithm, when origin, importance, and specificity are tied, Source Order acts as the tie-breaker: the rule declared later in the CSS wins.'
       }
     ],
     takeaways: [
-      'CSS rules consist of selectors and declaration blocks of property-value pairs.',
-      'Always prefer external stylesheets (<link rel="stylesheet">) over inline styles.',
-      'Specificity is calculated across (Inline, ID, Class, Element) tiers; higher tiers always beat lower ones.',
-      'Avoid using !important; fix conflicts by flattening selector specificity and managing stylesheet source order.',
-      'Text and font properties inherit from parents by default, while layout and box model properties do not.'
+      'CSS rules consist of selectors and declaration blocks; external stylesheets are the professional standard.',
+      'Specificity is calculated as (Inline, ID, Class, Element); higher columns always beat lower ones.',
+      'Avoid using !important; structure your CSS using clean, low-specificity classes.',
+      'Typography and colors inherit from parents, whereas box model properties (margin, padding) do not.'
     ],
     caseStudyReference: {
-      title: 'Global Design Tokens & CSS Architecture in CRP India',
-      description: 'Inspect index.css in CRP India to see how global typography tokens, resets, and flat class hierarchies establish a clean design foundation.',
+      title: 'Design Tokens & Class Hierarchy in CRP India',
+      description: 'Review the Tailwind utility and custom CSS architecture in CRP India, observing how components use consistent class hierarchies rather than IDs.',
       files: [
         'reference-projects/CRP-India/frontend/src/index.css',
-        'reference-projects/CRP-India/frontend/src/App.jsx'
+        'reference-projects/CRP-India/frontend/tailwind.config.js'
       ]
     }
   },
@@ -253,260 +237,175 @@ a.nav-link {
     courseTitle: 'Course 4: CSS from Zero',
     title: 'Colors, Modern Units, Web Typography & Visual Styling',
     category: 'Frontend',
-    estimatedTime: '40 min read & practice',
+    estimatedTime: '45 min read & practice',
     interactivePlayground: 'css',
     objectives: [
-      'Master CSS color models: Hexadecimal, RGB/RGBA, HSL/HSLA, and modern CSS color functions.',
-      'Understand absolute units (px) vs relative units (rem, em, %, vh, vw, vmin, vmax).',
-      'Explain why rem is the gold standard for accessible responsive typography and spacing.',
-      'Implement fluid responsive typography using clamp(), min(), and max().',
-      'Create polished visual styles with gradients, borders, shadows, and accessible contrast ratios.'
+      'Master modern CSS color spaces: Hexadecimal, RGB, HSL, and alpha transparency.',
+      'Differentiate absolute units (px) from responsive relative units (rem, em, %, vh, vw, dvh).',
+      'Explain why rem is the gold standard for accessible typography scales and spacing systems.',
+      'Construct fluid typography and dynamic spacing using the clamp() math function.',
+      'Enforce WCAG 2.1 AA color contrast standards (4.5:1 for normal text, 3:1 for large text).'
     ],
     sections: [
       {
-        heading: 'CSS Color Formats: Hex, RGB, and HSL',
-        content: `Color is one of the most powerful design tools in web development. Modern CSS supports multiple ways to declare colors:
+        heading: 'The Modern CSS Color Formats: HEX, RGB, and HSL',
+        content: `CSS offers multiple color models for expressing colors on screen:
 
-### 1. Hexadecimal Colors (\`#rrggbb\` or \`#rrggbbaa\`)
-Hex notation expresses red, green, and blue intensities as two-digit hexadecimal values from \`00\` (0) to \`ff\` (255):
+### 1. Hexadecimal (HEX):
+Hexadecimal notation uses a base-16 numbering system (\`0-9\` and \`A-F\`) to specify Red, Green, and Blue light intensities:
 \`\`\`css
-.brand-primary { color: #2563eb; } /* Blue */
-.brand-primary-alpha { color: #2563eb80; } /* Blue with 50% opacity */
+.primary { color: #2563eb; } /* #RRGGBB */
+.translucent { color: #2563eb80; } /* #RRGGBBAA (50% alpha transparency) */
 \`\`\`
 
-### 2. RGB & RGBA (\`rgb(red, green, blue, alpha)\`)
-Specifies color using decimal numbers between 0 and 255:
+### 2. RGB and RGBA:
+Directly specifies Red, Green, and Blue photon intensities from 0 to 255:
 \`\`\`css
-/* Modern syntax without commas */
-.surface-card { background-color: rgb(255 255 255 / 0.85); }
+.surface { background-color: rgb(37, 99, 235); }
+.overlay { background-color: rgba(15, 23, 42, 0.75); /* 75% opacity */ }
 \`\`\`
 
-### 3. HSL & HSLA: The Designer\'s Ideal Model
-HSL stands for **Hue** (0–360° on the color wheel), **Saturation** (0% grayscale to 100% full vibrant color), and **Lightness** (0% black to 100% white):
+### 3. HSL (Hue, Saturation, Lightness): The Designer's Model
+HSL is intuitive for human designers because it separates chromatic tint from vibrancy and brightness:
+* **Hue (0–360°):** The angle on the color wheel (\`0°\` = Red, \`120°\` = Green, \`240°\` = Blue).
+* **Saturation (0–100%):** \`0%\` is complete gray; \`100%\` is full, vivid color.
+* **Lightness (0–100%):** \`0%\` is pitch black; \`50%\` is normal color; \`100%\` is pure white.
+
 \`\`\`css
-/* HSL makes creating harmonious light/dark shades trivial: */
+/* Generating consistent color palettes with HSL */
 :root {
-  --primary-base: hsl(220 85% 55%);  /* Normal blue */
-  --primary-hover: hsl(220 85% 45%); /* 10% darker on hover */
-  --primary-subtle: hsl(220 85% 95%); /* Very light tint for backgrounds */
+  --primary-base: hsl(220, 90%, 56%);
+  --primary-hover: hsl(220, 90%, 46%); /* 10% darker on hover */
+  --primary-light: hsl(220, 90%, 95%); /* Subtle background tint */
 }
+\`\`\``
+      },
+      {
+        heading: 'Units in CSS: Absolute vs. Relative Units',
+        content: `Choosing the correct CSS unit is critical for creating responsive, accessible user interfaces.
+
+\`\`\`
+   Absolute Units (Fixed)           Relative Units (Adaptive)
+   +--------------------+           +---------------------------------+
+   | px  (Pixels)       |           | rem  (Relative to Root <html>)  |
+   | pt  (Points)       |           | em   (Relative to Parent font)  |
+   | in  (Inches)       |           | %    (Relative to Parent width) |
+   |                    |           | vh/vw (Viewport Height/Width)   |
+   +--------------------+           +---------------------------------+
 \`\`\`
 
-### WCAG Color Contrast Requirements:
-To ensure content is readable by people with low vision or color blindness, WCAG 2.1 Level AA mandates:
-* **Normal text (< 18pt / 24px):** Minimum contrast ratio of **4.5:1** against the background.
-* **Large text (>= 18pt / 24px or 14pt bold):** Minimum contrast ratio of **3:1**.
-* **UI components & form borders:** Minimum contrast ratio of **3:1** against adjacent background.`
+### Why \`rem\` is the Gold Standard for Accessibility:
+* **\`px\` (Pixels):** Absolute physical screen pixels. If a visually impaired user increases their operating system or browser default font size from 16px to 24px, text hardcoded in \`px\` will **refuse to scale**, breaking readability.
+* **\`rem\` (Root EM):** Scaled relative to the root \`<html>\` element's font size. By default, 1rem = 16px.
+  * \`1rem = 16px\`
+  * \`1.5rem = 24px\`
+  * \`2rem = 32px\`
+When users adjust their browser base font setting, all dimensions defined in \`rem\` scale proportionately across the entire application!`
       },
       {
-        heading: 'CSS Units: Pixels vs. rem vs. Viewport Units',
-        content: `Choosing the right unit is the difference between a brittle, broken website and an accessible, responsive interface:
+        heading: 'Viewport Units and the Mobile \`dvh\` Fix',
+        content: `* **\`vw\` (Viewport Width):** 1vw equals 1% of the browser window's width.
+* **\`vh\` (Viewport Height):** 1vh equals 1% of the browser window's height.
 
-### 1. Absolute Units: Pixels (\`px\`)
-A pixel in CSS is an absolute unit anchored to 1/96th of an inch.
-* *When to use:* Thin borders (\`border: 1px solid #ccc\`) or fixed decorative shadows.
-* *Why NOT for typography:* If a user with low vision changes their browser's default font size from 16px to 24px, text sized in fixed \`px\` will **refuse to scale**, breaking accessibility.
+### The Mobile Viewport Bug and Dynamic Viewport (\`dvh\`):
+On mobile devices (iOS Safari and Android Chrome), the browser's address bar expands and collapses as the user scrolls. Standard \`100vh\` does not account for this dynamic address bar, causing full-screen modals to get clipped underneath the URL bar.
 
-### 2. The Gold Standard for Typography: Root Element Units (\`rem\`)
-\`1rem\` equals the computed \`font-size\` of the root \`<html>\` element (which defaults to \`16px\` in all major browsers):
-* \`1rem = 16px\` (at default settings)
-* \`0.875rem = 14px\`
-* \`1.25rem = 20px\`
-* \`1.5rem = 24px\`
-* \`2rem = 32px\`
-
-When a user enlarges their browser's default font setting, every \`rem\` value scales proportionally across your entire layout, preserving layout harmony while respecting user preferences.
-
-### 3. Element-Relative Units (\`em\`)
-\`1em\` equals the font size of the **immediate parent element** (or the element itself when used on margin/padding).
-* *Caveat:* Nested \`em\` font sizes compound exponentially (\`1.2em * 1.2em * 1.2em\`), creating unexpected sizing bugs. Use \`em\` primarily for padding inside buttons so the padding scales if the button font size changes.
-
-### 4. Viewport Units (\`vw\`, \`vh\`, \`vmin\`, \`vmax\`)
-Relative to the browser window dimensions:
-* \`100vw\` = 100% of the viewport width.
-* \`100vh\` = 100% of the viewport height (consider \`100dvh\` on mobile to account for dynamic address bars).`
+Modern CSS provides **Dynamic Viewport Units**:
+\`\`\`css
+/* Safe, modern full-screen modal height */
+.fullscreen-dialog {
+  min-height: 100vh;  /* Fallback for older browsers */
+  min-height: 100dvh; /* Dynamic: recalculates as address bar moves */
+}
+\`\`\``
       },
       {
-        heading: 'Fluid Typography with clamp()',
-        content: `Instead of writing dozens of rigid \`@media\` query breakpoints to resize headings on phones vs desktop monitors, modern CSS provides **\`clamp()\`**:
+        heading: 'Fluid Typography with the \`clamp()\` Function',
+        content: `Traditionally, developers used multiple complex media queries to adjust font sizes across phone, tablet, and desktop viewports. Modern CSS eliminates this with the mathematical \`clamp()\` function:
 
 \`\`\`css
-/* clamp(MINIMUM, IDEAL_SCALING, MAXIMUM) */
+/* clamp(MINIMUM, PREFERRED_FLUID_SCALING, MAXIMUM) */
 h1 {
-  font-size: clamp(1.75rem, 4vw + 1rem, 3.5rem);
+  font-size: clamp(1.75rem, 1rem + 3vw, 3rem);
 }
 \`\`\`
-
-* On a small mobile phone (360px wide), the computed font size will never drop below \`1.75rem\` (28px).
-* On a 4K ultra-wide monitor, the font size will never grow beyond \`3.5rem\` (56px).
-* In between, it scales smoothly and continuously with the viewport width (\`4vw + 1rem\`) without sudden jumps!`
-      },
-      {
-        heading: 'Visual Styling: Shadows, Borders, and Gradients',
-        content: `Polished modern interfaces rely on subtle, realistic visual tokens rather than harsh outlines:
-
-### Subtle Layered Elevation with \`box-shadow\`:
-\`\`\`css
-/* Modern layered shadow: ambient glow + sharp edge */
-.card-elevated {
-  background-color: var(--color-bg-surface);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 8px 24px rgba(0, 0, 0, 0.04);
-}
-\`\`\`
-
-### Linear and Radial Gradients:
-\`\`\`css
-.hero-gradient {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-}
-\`\`\`
-
-### Clean Borders and \`border-radius\`:
-* Consistent border radii (\`4px\`, \`8px\`, \`12px\`, \`9999px\` for pills) unify components.
-* Rounded corners must match nested elements: an outer card with \`border-radius: 12px\` with \`8px\` padding should have inner elements with roughly \`border-radius: 4px\` (\`12 - 8 = 4\`) to avoid mismatched corner gaps.`
+* On a mobile phone (360px wide), the font will never shrink below **1.75rem (28px)**.
+* On a laptop (1440px wide), the fluid calculation expands smoothly.
+* On a huge 4K monitor, the font will never grow larger than **3rem (48px)**.`
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Using fixed px for font-size everywhere.',
-        whyItHappens: 'Pixels feel intuitive and match graphic design software mockups exactly.',
-        howToFix: 'Use rem for font sizes and spacing. 1rem = 16px by default. This allows text to scale for visually impaired users.'
-      },
-      {
-        mistake: 'Failing color contrast on subtle gray text (e.g. #999 on white).',
-        whyItHappens: 'Desiring a subtle look without measuring WCAG contrast ratios.',
-        howToFix: 'Always test text contrast with browser DevTools to ensure at least a 4.5:1 ratio for regular text.'
-      },
-      {
-        mistake: 'Using 100vh on mobile without accounting for address bar collapse.',
-        whyItHappens: 'Mobile Safari/Chrome show and hide the URL bar, causing 100vh to overflow off-screen.',
-        howToFix: 'Use min-height: 100dvh (dynamic viewport height) or min-height: 100% on body.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build a Fluid, High-Contrast Typography Card',
-      difficulty: 'Beginner',
-      instructions: 'Create a reusable card component that uses rem units for accessible typography, clamp() for a fluid responsive title, HSL color tokens for hover effects, and passes WCAG AA 4.5:1 contrast standards.',
-      starterCode: `/* TODO: Style .card and .card-title using rem and clamp */
-.card {
-  /* Add background, padding in rem, border, and layered shadow */
-}
-
-.card-title {
-  /* Add fluid font size using clamp(1.25rem, 2vw + 1rem, 2rem) */
-}
-
-.card-button {
-  /* Use HSL colors and rem padding */
-}`,
-      tasks: [
-        'Style .card using rem padding, a subtle border, and a 2-layer box-shadow.',
-        'Use clamp() on .card-title so font size scales smoothly between 1.25rem and 2rem.',
-        'Set line-height to 1.5 or 1.6 for comfortable paragraph readability.',
-        'Style .card-button with HSL colors and a clear :hover state with at least 4.5:1 contrast.'
-      ],
+    exercise: {
+      instruction: 'Design a responsive typography scale and surface card using rem units, an HSL color theme, and clamp() fluid font sizing on the primary heading.',
+      starterCode: `/* Write your responsive typography and colors below */\n`,
       hints: [
-        'To get 16px padding in rem, use 1rem. For 24px, use 1.5rem.',
-        'clamp() takes 3 arguments: minimum, preferred, and maximum: clamp(1.25rem, 2.5vw, 2rem).',
-        'Use an HSL color like hsl(220, 90%, 56%) for a primary blue button.'
+        'Set the root or body font-family to system-ui, sans-serif.',
+        'Use font-size: clamp(1.5rem, 1rem + 2.5vw, 2.75rem) on h1.',
+        'Style .card with padding: 1.5rem and background-color: hsl(220, 14%, 96%).'
       ],
-      solution: `.card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem; /* 12px */
-  padding: 1.5rem; /* 24px */
-  box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 10px 15px -3px rgba(0, 0, 0, 0.08);
-  max-width: 28rem; /* 448px */
-}
-
-.card-title {
-  color: #0f172a; /* Deep slate, high contrast */
-  font-size: clamp(1.25rem, 2vw + 0.75rem, 2rem);
-  font-weight: 700;
-  line-height: 1.25;
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-}
-
-.card-body {
-  color: #334155; /* Slate 700, 7.8:1 contrast on white */
-  font-size: 1rem;
+      tasks: [
+        'Use rem units for margins and paddings',
+        'Use clamp() for fluid h1 font-size',
+        'Use HSL notation for surface colors',
+        'Ensure text contrast complies with accessibility'
+      ],
+      solution: `body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: hsl(222, 47%, 11%);
+  background-color: hsl(210, 40%, 98%);
   line-height: 1.6;
-  margin-bottom: 1.5rem;
 }
 
-.card-button {
-  display: inline-block;
-  background-color: hsl(220, 85%, 55%);
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 0.65rem 1.25rem;
+h1 {
+  font-size: clamp(1.5rem, 1rem + 2.5vw, 2.75rem);
+  color: hsl(222, 47%, 15%);
+  margin-bottom: 1rem;
+}
+
+.metric-card {
+  background-color: hsl(0, 0%, 100%);
+  border: 1px solid hsl(214, 32%, 91%);
   border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.card-button:hover {
-  background-color: hsl(220, 85%, 45%);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }`,
-      solutionExplanation: 'This solution uses relative rem units throughout, implements fluid typography via clamp(), achieves high accessibility contrast (>7:1), and uses HSL for clean color transitions.'
+      solutionExplanation: 'This solution uses relative rem units that adapt to user accessibility preferences. The clamp function smoothly scales the heading across all screen sizes without needing media queries, and HSL values create a clean, consistent color palette.'
     },
     quiz: [
       {
-        question: 'Why is "rem" preferred over "px" for declaring font sizes in responsive web design?',
+        question: 'Why should font sizes on modern websites be specified in rem units rather than px?',
         options: [
-          'rem renders 50% faster in web browsers.',
-          'rem automatically respects user-configured browser font size settings, ensuring text scales for low-vision accessibility.',
-          'rem converts fonts into vector SVG paths.',
-          'px is deprecated in modern CSS specifications.'
+          'rem units automatically enable spell-checking in text inputs.',
+          'rem units respect user browser accessibility preferences, scaling proportionally when users increase their base text size.',
+          'rem units are required by CSS Grid layouts.',
+          'px units are deprecated in the CSS3 standard.'
         ],
         correctIndex: 1,
-        explanation: 'rem units are relative to the root font size. When users with visual impairments increase their browser\'s font size preferences, rem units scale automatically, whereas fixed px values stay locked.'
+        explanation: 'px is an absolute unit that overrides user browser zoom and font-size accessibility settings. rem is relative to the root font-size, preserving accessibility.'
       },
       {
-        question: 'What does the CSS function "clamp(1.5rem, 3vw + 1rem, 2.5rem)" do?',
+        question: 'In the expression "font-size: clamp(1.25rem, 1rem + 2vw, 2.5rem);", what does 2.5rem represent?',
         options: [
-          'It clamps the element width between 300px and 600px.',
-          'It scales the font size fluidly with viewport width (3vw + 1rem), while guaranteeing it never shrinks below 1.5rem or expands above 2.5rem.',
-          'It crops text that overflows its parent container.',
-          'It rotates an element by 3 degrees on small screens.'
-        ],
-        correctIndex: 1,
-        explanation: 'clamp(min, preferred, max) enforces lower and upper bounds while letting the value scale smoothly according to the preferred expression in between.'
-      },
-      {
-        question: 'Under WCAG 2.1 Level AA, what is the minimum required contrast ratio for standard-sized body text?',
-        options: [
-          '2:1',
-          '3:1',
-          '4.5:1',
-          '7:1'
+          'The default starting font size.',
+          'The minimum allowable font size.',
+          'The maximum allowable font size, ensuring the heading does not grow too large on desktop monitors.',
+          'The line-height multiplier.'
         ],
         correctIndex: 2,
-        explanation: 'WCAG Level AA requires at least a 4.5:1 contrast ratio for normal body text under 18pt/24px against its background.'
+        explanation: 'clamp(MIN, PREFERRED, MAX) takes three parameters. 2.5rem is the upper bound (MAX) beyond which the text will not grow, regardless of how wide the viewport becomes.'
       }
     ],
     takeaways: [
-      'HSL is the most practical color model for design systems, allowing intuitive adjustments to hue, saturation, and lightness.',
-      'Always use rem for font-size and major spacing to guarantee user font-scaling accessibility.',
-      'Use clamp() for fluid typography that scales smoothly between mobile and desktop screen sizes without media query jumps.',
-      'Verify WCAG color contrast ratios: 4.5:1 for body text and 3:1 for large headings and UI controls.',
-      'Layer subtle box-shadows and maintain matching border-radius ratios for polished visual hierarchy.'
+      'HSL is the most practical color format for generating cohesive, harmonic UI themes.',
+      'Use rem for typography and spatial scales to respect user accessibility preferences.',
+      'Use dvh instead of vh for full-screen mobile layouts to prevent address bar clipping.',
+      'Use clamp() for smooth fluid typography that scales across devices without brittle media query breakpoints.'
     ],
     caseStudyReference: {
-      title: 'Design System Spacing and Color Tokens in CRP India',
-      description: 'Study how CRP India defines CSS custom properties for semantic colors (primary, success, warning, danger) and consistent rem-based spacing tokens.',
+      title: 'Design System & Typography Tokens in CRP India',
+      description: 'Explore the typography scales and color palette defined in the CRP India Tailwind configuration and index.css.',
       files: [
-        'reference-projects/CRP-India/frontend/src/index.css',
-        'reference-projects/CRP-India/frontend/src/components/Navbar.jsx'
+        'reference-projects/CRP-India/frontend/tailwind.config.js',
+        'reference-projects/CRP-India/frontend/src/index.css'
       ]
     }
   },
@@ -520,228 +419,181 @@ h1 {
     title: 'The CSS Box Model, Normal Flow & Positioning',
     category: 'Frontend',
     estimatedTime: '45 min read & practice',
-    interactivePlayground: 'box-model-3d',
+    interactivePlayground: 'box-model',
     objectives: [
-      'Understand the four concentric layers of the CSS Box Model: Content, Padding, Border, and Margin.',
-      'Master the critical difference between box-sizing: content-box and box-sizing: border-box.',
-      'Explain vertical margin collapsing and how to prevent unwanted layout collapses.',
-      'Understand normal document flow and the block vs inline vs inline-block display modes.',
-      'Master CSS positioning schemes: static, relative, absolute, fixed, sticky, and stacking contexts (z-index).'
+      'Master the four concentric layers of the CSS Box Model (Content, Padding, Border, Margin).',
+      'Understand the critical difference between box-sizing: content-box and box-sizing: border-box.',
+      'Explain the mechanics of vertical margin collapsing and how to prevent it.',
+      'Differentiate CSS display modes (block, inline, inline-block, none).',
+      'Master document positioning modes: static, relative, absolute, fixed, and sticky.',
+      'Understand stacking contexts, containing blocks, and z-index ordering.'
     ],
     sections: [
       {
-        heading: 'The Four Concentric Layers of the CSS Box Model',
-        content: `In CSS, **every single element on a web page is rendered as a rectangular box**, regardless of whether it looks circular or text-only. The CSS Box Model describes the four concentric layers that make up this rectangle:
+        heading: 'The Foundation of All Web Layouts: The CSS Box Model',
+        content: `In the browser's rendering engine, **every single element on an HTML page is a rectangular box**. Even circular user avatars or rounded buttons are calculated as rectangles with clipped borders.
 
 \`\`\`
-+-------------------------------------------------------+
-|  MARGIN (Outer transparent space separating boxes)     |
-|   +-----------------------------------------------+   |
-|   |  BORDER (Visible boundary around padding)     |   |
-|   |   +---------------------------------------+   |   |
-|   |   |  PADDING (Inner clearance inside)     |   |   |
-|   |   |   +-------------------------------+   |   |   |
-|   |   |   |  CONTENT (Text, images, etc.) |   |   |   |
-|   |   |   +-------------------------------+   |   |   |
-|   |   +---------------------------------------+   |   |
-|   +-----------------------------------------------+   |
-+-------------------------------------------------------+
+  +-------------------------------------------------------+
+  |  MARGIN  (Transparent outer space between elements)   |
+  |  +-------------------------------------------------+  |
+  |  |  BORDER  (Visible stroke around the padding)    |  |
+  |  |  +-------------------------------------------+  |  |
+  |  |  |  PADDING  (Inner breathing room)          |  |  |
+  |  |  |  +-------------------------------------+  |  |  |
+  |  |  |  |  CONTENT (Text, image, or children) |  |  |  |
+  |  |  |  +-------------------------------------+  |  |  |
+  |  |  +-------------------------------------------+  |  |
+  |  +-------------------------------------------------+  |
+  +-------------------------------------------------------+
 \`\`\`
 
-1. **Content:** The actual text, image, or child element rendered inside. Sized via \`width\` and \`height\`.
-2. **Padding:** The transparent breathing room between the content and the border. Padding inherits the element's background color.
-3. **Border:** The decorative or structural line wrapping the padding and content. Controlled via \`border-width\`, \`border-style\`, and \`border-color\`.
-4. **Margin:** The transparent buffer space outside the border that pushes adjacent neighboring boxes away. Margins never have background colors.`
+### The Four Concentric Layers:
+1. **Content Box:** The innermost area where text, images, or child elements appear. Dimensions controlled by \`width\` and \`height\`.
+2. **Padding Box:** The clear space immediately surrounding the content, inside the border. Inherits the element's background color.
+3. **Border Box:** The perimeter boundary surrounding the padding. Controlled by \`border-width\`, \`border-style\`, and \`border-color\`.
+4. **Margin Box:** The transparent buffer space outside the border that pushes adjacent neighboring elements away.`
       },
       {
-        heading: 'The box-sizing Revolution: content-box vs. border-box',
-        content: `Understanding \`box-sizing\` is the single most important breakthrough for mastering CSS layouts:
-
-### 1. The Legacy Default: \`content-box\`
-By default in CSS, when you write:
-\`\`\`css
-.box {
-  box-sizing: content-box; /* Browser default */
-  width: 300px;
-  padding: 20px;
-  border: 5px solid black;
-}
+        heading: 'The Box-Sizing Revolution: content-box vs. border-box',
+        content: `The default calculation method inherited from early web standards is \`box-sizing: content-box\`. In this legacy mode:
 \`\`\`
-The browser calculates the **total rendered width on screen** by adding padding and border *on top* of your declared width:
-$$\\text{Total Width} = 300\\text{px (content)} + 20\\text{px (left pad)} + 20\\text{px (right pad)} + 5\\text{px (left bdr)} + 5\\text{px (right bdr)} = 350\\text{px}!$$
-If you place two 50% width boxes next to each other and add 10px of padding, they add up to over 100% and break onto the next line!
-
-### 2. The Modern Standard: \`border-box\`
-\`\`\`css
-.box {
-  box-sizing: border-box;
-  width: 300px;
-  padding: 20px;
-  border: 5px solid black;
-}
+Actual Rendered Width = width + padding-left + padding-right + border-left + border-right
 \`\`\`
-With \`border-box\`, the browser absorbs padding and borders **inside** your declared width:
-$$\\text{Total Width on Screen} = 300\\text{px}$$
-$$\\text{Remaining Content Area} = 300 - (20 + 20 + 5 + 5) = 250\\text{px}$$
+If you set \`width: 300px\`, \`padding: 20px\`, and \`border: 2px solid #000\`, the box physically renders at **344px wide**! This unintuitive calculation frequently breaks multi-column layouts, pushing sidebars below the main content.
 
-### The Universal Box-Sizing Reset:
-Every professional web application (including CRP India and Dev-root) includes this global reset at the top of its stylesheet:
+### The Universal Border-Box Reset (Industry Standard):
+\`box-sizing: border-box\` alters the calculation so that declared \`width\` and \`height\` encompass the content, padding, and border combined:
+
 \`\`\`css
+/* Apply universally across all elements and pseudo-elements */
 *, *::before, *::after {
   box-sizing: border-box;
 }
-\`\`\``
+\`\`\`
+With \`border-box\`, setting \`width: 300px\` guarantees the element will render at **exactly 300px wide**, absorbing padding and borders inwards.`
       },
       {
-        heading: 'Margin Collapsing: Why Margins Combine',
-        content: `A frequent source of beginner confusion is **margin collapsing**. In normal document flow, vertical margins of adjacent block elements do not add together; they **collapse** into a single margin equal to the largest of the two values:
+        heading: 'Margin Collapsing: Why 20px + 20px Equals 20px',
+        content: `In normal document flow, vertical margins between adjacent sibling block elements **collapse** into a single margin:
 
 \`\`\`css
-h1 { margin-bottom: 30px; }
-p  { margin-top: 20px; }
+.card-one { margin-bottom: 30px; }
+.card-two { margin-top: 20px; }
 \`\`\`
-
-You might expect 50px of vertical space between the \`<h1>\` and the \`<p>\`. In reality, the distance is **30px** (the larger of 30px and 20px).
+You might expect the physical gap between these two cards to be \`30px + 20px = 50px\`. Instead, the browser collapses them: the smaller margin is absorbed inside the larger one, resulting in a gap of **exactly 30px**.
 
 ### Rules of Margin Collapsing:
-* Only happens between **vertical** margins (top and bottom) on block-level elements.
-* Horizontal margins (left and right) **never** collapse.
-* Does not occur inside Flexbox or Grid containers.
-* Does not occur on elements with \`position: absolute\`, \`position: fixed\`, or \`display: inline-block\`.`
+1. Occurs **only between vertical margins** (top and bottom) of block elements. Horizontal margins never collapse!
+2. Does **not** occur between Flexbox or CSS Grid items.
+3. Can be prevented by adding a border, padding, or setting \`display: flow-root\` on the parent container.`
       },
       {
-        heading: 'CSS Positioning Schemes & Stacking Contexts',
-        content: `The \`position\` property removes elements from the standard top-to-bottom document flow:
+        heading: 'Display Types: Block, Inline, and Inline-Block',
+        content: `The \`display\` property dictates how an element behaves in the normal flow of the page:
 
-1. **\`static\` (Default):** The element lives in normal document flow. \`top\`, \`right\`, \`bottom\`, \`left\`, and \`z-index\` have no effect.
-2. **\`relative\`:** The element remains in normal document flow, but can be visually offset relative to where it would normally sit. Crucially, a relatively positioned element acts as the **anchor container** for child elements with \`position: absolute\`.
-3. **\`absolute\`:** The element is completely removed from document flow (surrounding elements collapse as if it doesn't exist). It is positioned relative to its nearest ancestor with \`position: relative\` (or the viewport if no ancestor is positioned).
-4. **\`fixed\`:** Positioned relative to the physical browser viewport window. Stays glued to the screen when the user scrolls (used for modal dialog overlays and sticky notification banners).
-5. **\`sticky\`:** A hybrid of relative and fixed. The element scrolls normally with the document until it reaches a specified offset (e.g. \`top: 0\`), at which point it sticks to the screen until its parent container scrolls out of view (used for table headers and sticky navigation bars).
+| Display Value | Width Behavior | Line Break Behavior | Allows Width & Height? |
+| :--- | :--- | :--- | :---: |
+| \`display: block\` | Expands to 100% of parent width | Always starts on a new line | YES |
+| \`display: inline\` | Shrinks to fit content width | Sits inline with text | NO (ignored) |
+| \`display: inline-block\`| Shrinks to fit content width | Sits inline next to siblings | YES |
+| \`display: none\` | Removed completely from layout | Takes up zero screen space | N/A |`
+      },
+      {
+        heading: 'CSS Positioning Modes and Stacking Contexts',
+        content: `The \`position\` property removes or offsets an element relative to normal document flow:
 
-### The Stacking Context and \`z-index\`:
-\`z-index\` controls the vertical 3D depth of overlapping elements along the Z-axis (towards or away from the viewer).
-* **Important:** \`z-index\` only works on positioned elements (\`relative\`, \`absolute\`, \`fixed\`, or \`sticky\`) or flex/grid items.
-* **Stacking Contexts:** An element with a \`z-index: 9999\` cannot break out above a parent container whose stacking context is trapped under an adjacent sibling with \`z-index: 10\`. Always manage z-index with clean design tokens (\`--z-dropdown: 100\`, \`--z-modal: 1000\`).`
+1. **\`position: static\` (Default):** Normal document flow. \`top\`, \`right\`, \`bottom\`, \`left\`, and \`z-index\` have zero effect.
+2. **\`position: relative\`:** Remains in normal flow, but allows offsets relative to its own default position without affecting surrounding elements. Crucially acts as the **containing anchor block** for absolute children!
+3. **\`position: absolute\`:** Pulled completely out of normal document flow (surrounding elements collapse into its space). Positioned relative to the **nearest ancestor that has a position other than static**.
+4. **\`position: fixed\`:** Pulled out of normal flow and anchored relative to the **browser viewport**. Remains pinned in place even as the user scrolls.
+5. **\`position: sticky\`:** Hybrid mode. Behaves as \`relative\` until the user scrolls past a specified threshold, at which point it "sticks" like \`fixed\` within its parent container.`
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Forgetting box-sizing: border-box, causing layouts to break when padding is added.',
-        whyItHappens: 'Browser defaults to content-box, which adds padding to element width.',
-        howToFix: 'Add the universal reset: *, *::before, *::after { box-sizing: border-box; } at the top of your global CSS.'
-      },
-      {
-        mistake: 'Using position: absolute without setting position: relative on the parent container.',
-        whyItHappens: 'Expecting the element to position relative to its parent <div> automatically.',
-        howToFix: 'Add position: relative to the parent card or container so the child anchors to the parent rather than the full viewport.'
-      },
-      {
-        mistake: 'Applying vertical margins to inline elements like <span> or <a> and wondering why spacing does not work.',
-        whyItHappens: 'Inline elements do not respect top/bottom margins or height.',
-        howToFix: 'Change the display mode to display: inline-block or display: block.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build a Notification Card with a Positioned Badge',
-      difficulty: 'Beginner',
-      instructions: 'Construct a notification card using the CSS Box Model with border-box sizing, padding, and an absolutely positioned notification count badge pinned to the top-right corner.',
-      starterCode: `/* TODO: Style .notification-card and .badge */
-.notification-card {
-  /* Set width, padding, border-box, and position: relative */
-}
-
-.badge {
-  /* Set position: absolute, pinned to top: -10px, right: -10px */
-}`,
-      tasks: [
-        'Apply box-sizing: border-box and position: relative to .notification-card.',
-        'Add 1.5rem padding and a clean border to the card.',
-        'Position .badge with position: absolute pinned to the top-right corner.',
-        'Style the badge with a circular shape, red background, and centered white text.'
-      ],
+    exercise: {
+      instruction: 'Create a notification badge anchored to the top-right corner of an action button using relative and absolute positioning, with border-box sizing.',
+      starterCode: `/* Write your positioned button and badge styles below */\n`,
       hints: [
-        'The card must have position: relative so the badge anchors to it rather than the whole screen.',
-        'Pin the badge using top: -0.5rem and right: -0.5rem.',
-        'Use border-radius: 9999px or 50% for a circular badge.'
+        'Set position: relative on .btn-container.',
+        'Set position: absolute on .notification-badge.',
+        'Use top: -8px and right: -8px on the badge.',
+        'Add border-radius: 9999px to make the badge pill-shaped.'
       ],
-      solution: `.notification-card {
+      tasks: [
+        'Apply box-sizing: border-box',
+        'Use position: relative on the container',
+        'Use position: absolute on the badge',
+        'Offset badge to top-right corner'
+      ],
+      solution: `*, *::before, *::after {
   box-sizing: border-box;
-  position: relative;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 1.5rem;
-  max-width: 320px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.badge {
+.btn-container {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notification-badge {
   position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  background-color: #ef4444; /* Alert red */
+  top: -6px;
+  right: -6px;
+  background-color: #ef4444;
   color: #ffffff;
   font-size: 0.75rem;
   font-weight: 700;
-  min-width: 1.5rem;
-  height: 1.5rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #ffffff; /* Contrast ring */
+  border: 2px solid #ffffff;
 }`,
-      solutionExplanation: 'The card serves as the positioned ancestor (position: relative), allowing the badge to be positioned precisely on its top-right border (position: absolute; top: -0.5rem; right: -0.5rem).'
+      solutionExplanation: 'The button container establishes a positioned containing block via position: relative. The absolute notification badge calculates its top and right offsets relative to this container rather than the viewport.'
     },
     quiz: [
       {
-        question: 'Under "box-sizing: border-box", if an element has width: 200px, padding: 20px, and border: 2px, what is its total rendered width on screen?',
+        question: 'What is the primary benefit of setting "box-sizing: border-box" across all elements in CSS?',
         options: [
-          '244px',
-          '200px',
-          '176px',
-          '222px'
+          'It automatically animates all CSS property transitions.',
+          'It ensures declared width and height values include padding and borders, preventing accidental layout overflow.',
+          'It forces all inline elements to behave like block elements.',
+          'It disables browser margin collapsing permanently.'
         ],
         correctIndex: 1,
-        explanation: 'Under border-box, padding and border are absorbed inside the declared width. The total rendered width remains exactly 200px.'
+        explanation: 'Under border-box, padding and borders are absorbed inside the declared width, eliminating the need to subtract padding manually to avoid breaking layouts.'
       },
       {
-        question: 'What happens to the vertical space between two adjacent block elements with margin-bottom: 40px and margin-top: 25px?',
+        question: 'An element with "position: absolute" is positioned relative to which ancestor in the DOM tree?',
         options: [
-          'The margins add together to create 65px of space.',
-          'The margins collapse into a single margin equal to the larger value (40px).',
-          'The margins cancel each other out to create 15px of space.',
-          'The second element overlaps the first element by 25px.'
+          'Always relative to the root <html> document.',
+          'Relative to the nearest parent element that has a position property other than static (e.g., relative, absolute, fixed).',
+          'Always relative to the nearest <div> tag.',
+          'Relative to the previous sibling element.'
         ],
         correctIndex: 1,
-        explanation: 'Vertical margins on adjacent block-level elements in normal document flow collapse into a single space equal to the greatest margin value (40px).'
-      },
-      {
-        question: 'In order for a child element with "position: absolute" to position itself relative to its parent container, what property must the parent container have?',
-        options: [
-          'display: block',
-          'overflow: hidden',
-          'position: relative (or any position value other than static)',
-          'z-index: 1'
-        ],
-        correctIndex: 2,
-        explanation: 'An absolutely positioned element looks up the DOM tree for the nearest ancestor with a position other than static (most commonly position: relative). If none is found, it positions relative to the initial viewport.'
+        explanation: 'Absolute elements look up the DOM tree until they find an ancestor with position: relative, absolute, or fixed. If none exists, they position relative to the initial containing block.'
       }
     ],
     takeaways: [
       'The CSS Box Model consists of Content, Padding, Border, and Margin.',
-      'Always set box-sizing: border-box globally so padding and border are contained inside declared dimensions.',
-      'Vertical margins between adjacent block elements collapse to the largest value; horizontal margins never collapse.',
-      'Use position: relative on container cards to establish an anchor for position: absolute children.',
-      'Use position: sticky for headers that stick to the viewport during page scrolling.'
+      'Always apply the universal box-sizing: border-box reset to avoid layout sizing headaches.',
+      'Vertical margins between block elements collapse; horizontal margins do not.',
+      'Use position: relative on parent containers to serve as the reference frame for position: absolute children.'
     ],
     caseStudyReference: {
-      title: 'Modal Overlays & Status Badges in CRP India',
-      description: 'Observe how modal dialogs use position: fixed with backdrop overlays, while grievance status chips use border-box padding and relative positioning.',
+      title: 'Modal Overlay & Badge Positioning in CRP India',
+      description: 'Observe how floating notification badges and modal dialogue overlays in CRP India use relative containers and absolute or fixed positioning.',
       files: [
-        'reference-projects/CRP-India/frontend/src/components/GrievanceCard.jsx',
-        'reference-projects/CRP-India/frontend/src/index.css'
+        'reference-projects/CRP-India/frontend/src/components/Modal.jsx',
+        'reference-projects/CRP-India/frontend/src/components/Navbar.jsx'
       ]
     }
   },
@@ -757,244 +609,171 @@ You might expect 50px of vertical space between the \`<h1>\` and the \`<p>\`. In
     estimatedTime: '45 min read & practice',
     interactivePlayground: 'css',
     objectives: [
-      'Master the fundamental distinction between 1-dimensional layouts (Flexbox) and 2-dimensional layouts (CSS Grid).',
-      'Understand Flexbox axes: Main Axis vs Cross Axis, and how flex-direction toggles them.',
-      'Control item alignment with justify-content, align-items, gap, and flex-wrap.',
-      'Master flex-grow, flex-shrink, and flex-basis for proportional item distribution.',
-      'Build responsive 2D layouts using CSS Grid: grid-template-columns, repeat(), fr units, minmax(), and auto-fit.'
+      'Understand the conceptual difference between 1-dimensional (Flexbox) and 2-dimensional (CSS Grid) layout models.',
+      'Master Flexbox axes: Main Axis vs. Cross Axis, and how flex-direction alters alignment properties.',
+      'Distribute space with justify-content, align-items, flex-wrap, and the gap property.',
+      'Calculate flex item growth and shrinkage mathematically with flex-grow, flex-shrink, and flex-basis.',
+      'Construct auto-responsive, media-query-free card layouts using CSS Grid repeat(auto-fit, minmax(280px, 1fr)).',
+      'Combine CSS Grid and Flexbox together in production web application dashboards.'
     ],
     sections: [
       {
-        heading: 'Flexbox vs. CSS Grid: Choosing the Right Tool',
-        content: `Before Flexbox and Grid, arranging elements side-by-side required fragile hacks like \`float: left\` and \`clear: both\`. Modern CSS provides two complementary, native layout engines:
+        heading: 'The Paradigm Shift: Why Flexbox and Grid Were Created',
+        content: `Before Flexbox and CSS Grid, developers were forced to build web layouts using float hacks (\`float: left\`), table layouts, and negative margin clearfixes. These approaches were brittle, failed on varying screen sizes, and made vertical centering nearly impossible.
 
-| Feature | Flexbox (\`display: flex\`) | CSS Grid (\`display: grid\`) |
-| :--- | :--- | :--- |
-| **Dimensionality** | **1-Dimensional** (Row OR Column at a time) | **2-Dimensional** (Rows AND Columns simultaneously) |
-| **Design Approach** | **Content-First:** Items size based on their content, pushing neighbors | **Layout-First:** The container dictates a strict grid structure that items slot into |
-| **Best Used For** | Navigation bars, button groups, card headers, aligning icons with text | Full-page layouts, photo galleries, dashboard widget grids, complex data matrices |
-
-A professional frontend architecture does not choose between them; it uses both in harmony: CSS Grid constructs the overall page framework, while Flexbox aligns the contents inside individual cards and navigation headers.`
+Modern CSS provides two complementary, purpose-built layout engines:
+1. **Flexbox (Flexible Box Layout):** A **1-dimensional** layout model designed for distributing space and aligning items along a *single axis* (either a row or a column). Perfect for navigation bars, button groups, and component-level layouts.
+2. **CSS Grid:** A **2-dimensional** layout model designed for orchestrating rows *and* columns simultaneously. Perfect for overall page scaffolding, complex dashboards, and responsive photo galleries.`
       },
       {
-        heading: 'Flexbox Fundamentals: Axes, Alignment, and Growth',
-        content: `Declaring \`display: flex\` turns an element into a **Flex Container** and its immediate children into **Flex Items**.
+        heading: 'Flexbox Architecture: Axes, Containers, and Items',
+        content: `When you apply \`display: flex\` to a parent element, it becomes a **Flex Container**, and all its immediate children become **Flex Items**.
 
-### 1. The Two Axes:
-* **Main Axis:** The primary direction items flow along. By default (\`flex-direction: row\`), it runs horizontally from left to right.
-* **Cross Axis:** Runs perpendicular to the Main Axis. For \`row\`, it runs vertically top to bottom.
-* *Note:* Setting \`flex-direction: column\` flips the axes: the Main Axis becomes vertical and the Cross Axis becomes horizontal!
-
-### 2. Alignment Properties:
-* **\`justify-content\` (Aligns along the Main Axis):**
-  * \`flex-start\`: Items group at the start.
-  * \`center\`: Items center along the axis.
-  * \`space-between\`: First item at start, last item at end, equal spacing between. Perfect for navigation bars!
-  * \`space-around\` and \`space-evenly\`: Distributes space evenly around items.
-* **\`align-items\` (Aligns along the Cross Axis):**
-  * \`stretch\` (Default): Items stretch to fill container height.
-  * \`center\`: Perfect vertical centering (no more CSS vertical-align hacks!).
-  * \`flex-start\` / \`flex-end\`: Aligns items to the top or bottom edge.
-* **\`gap\`:** Sets the gutter spacing between items without messy margin hacks.
-
-### 3. Sizing Flex Items: \`flex: grow shrink basis\`
-\`\`\`css
-/* Shorthand: flex: <flex-grow> <flex-shrink> <flex-basis>; */
-.sidebar { flex: 0 0 250px; } /* Fixed at 250px, will not grow or shrink */
-.main-content { flex: 1 1 auto; } /* Takes up all remaining available space */
 \`\`\`
-* **\`flex-grow\`:** Proportion of available free space this item should claim.
-* **\`flex-shrink\`:** Ability to shrink when space is constrained.
-* **\`flex-basis\`:** The initial default size before free space is distributed.`
+                     MAIN AXIS (Default: Left to Right)
+    ------------------------------------------------------------->
+    +-----------------------------------------------------------+
+  C | +---------------+   +---------------+   +---------------+ |
+  R | |  Flex Item 1  |   |  Flex Item 2  |   |  Flex Item 3  | |
+  O | +---------------+   +---------------+   +---------------+ |
+  S |                                                           |
+  S |                                                           |
+  | +-----------------------------------------------------------+
+  v CROSS AXIS (Top to Bottom)
+\`\`\`
+
+### The Two Axes:
+1. **Main Axis:** The primary flow direction, determined by \`flex-direction\`:
+   * \`row\` (default): Left to right (in LTR languages).
+   * \`column\`: Top to bottom.
+2. **Cross Axis:** The axis perpendicular to the main axis.
+
+### Container Alignment Properties:
+* **\`justify-content\`:** Aligns items along the **Main Axis** (\`flex-start\`, \`center\`, \`flex-end\`, \`space-between\`, \`space-around\`, \`space-evenly\`).
+* **\`align-items\`:** Aligns items along the **Cross Axis** (\`stretch\`, \`center\`, \`flex-start\`, \`flex-end\`, \`baseline\`).
+* **\`gap\`:** Specifies the exact spacing between flex items without needing margin hacks!`
       },
       {
-        heading: 'CSS Grid: 2D Layouts, Fractional Units, and auto-fit',
-        content: `CSS Grid introduces true two-dimensional layout capability, controlling both columns and rows simultaneously.
+        heading: 'The Flex Item Trio: flex-grow, flex-shrink, and flex-basis',
+        content: `Individual flex items control how they expand or contract to fill container space via the shorthand \`flex: <grow> <shrink> <basis>\`:
 
-### The Fractional Unit (\`fr\`):
-The \`fr\` unit represents a fraction of the available free space in the grid container.
 \`\`\`css
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 250px 1fr 2fr;
-  gap: 1.5rem;
+.sidebar {
+  flex: 0 0 260px; /* Do not grow, do not shrink, stay exactly 260px */
+}
+
+.main-content {
+  flex: 1 1 auto;  /* Grow to fill remaining space, shrink if squeezed */
 }
 \`\`\`
-Here, the first column is locked to 250px, and the remaining space is divided into 3 equal shares: column 2 gets 1 share (1fr), and column 3 gets 2 shares (2fr).
 
-### The Holy Grail of Responsive Grids: \`auto-fit\` and \`minmax()\`
-You can create a fully responsive, multi-column card grid that rearranges itself from 4 columns down to 1 column on phones **without writing a single media query**:
+1. **\`flex-grow\`:** Proportion of available free space the item should absorb (e.g., \`flex-grow: 1\`).
+2. **\`flex-shrink\`:** Ability of an item to contract when container space is insufficient (e.g., \`flex-shrink: 1\`).
+3. **\`flex-basis\`:** The initial default size of the item along the main axis before free space is distributed.`
+      },
+      {
+        heading: 'CSS Grid: 2D Mastery with Fractional Units (fr) and auto-fit',
+        content: `CSS Grid allows you to author complete two-dimensional layouts by defining rows and columns simultaneously.
+
+### The Holy Grail Auto-Responsive Grid Formula:
+You can build a fully responsive card grid that automatically wraps without writing a single media query:
 
 \`\`\`css
-.card-grid {
+.dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 \`\`\`
 
-### How It Works:
-1. \`minmax(280px, 1fr)\`: Every card must be at least 280px wide, but can stretch up to 1fr.
-2. \`repeat(auto-fit, ...)\`: The browser calculates how many 280px columns can fit in the current container width.
-   * On a 1200px desktop screen: Fits 4 columns.
-   * On a 768px tablet: Automatically reorganizes into 2 columns.
-   * On a 360px mobile phone: Drops down to 1 column. Zero media queries required!`
-      },
-      {
-        heading: 'Combining Flexbox and Grid in Real Applications',
-        content: `Let us examine how production applications like CRP India combine both layout engines:
-
-\`\`\`css
-/* 1. CSS Grid handles the page structure */
-.admin-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: 100vh;
-}
-
-/* 2. Flexbox handles individual card contents */
-.grievance-card-header {
+### How This Formula Works:
+* **\`repeat(auto-fit, ...)\`:** Tells the browser to create as many columns as will fit across the current screen width.
+* **\`minmax(280px, 1fr)\`:** Sets the column constraint. A column will never shrink narrower than **280px**. Once all cards reach 280px and there is no room for another column, the items expand equally using the fractional unit (**\`1fr\`**) to fill 100% of the remaining horizontal space!`
+      }
+    ],
+    exercise: {
+      instruction: 'Create a responsive dashboard layout: a header with space-between navigation using Flexbox, and a body grid with auto-fit cards using CSS Grid.',
+      starterCode: `/* Write your Flexbox and Grid styles below */\n`,
+      hints: [
+        'Set display: flex and justify-content: space-between on .navbar.',
+        'Use display: grid and grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) on .card-grid.',
+        'Apply gap: 1.5rem on both containers.'
+      ],
+      tasks: [
+        'Use display: flex with justify-content on navbar',
+        'Use display: grid with auto-fit on card container',
+        'Apply modern gap spacing property',
+        'Ensure cards wrap responsively'
+      ],
+      solution: `.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  padding: 1rem 2rem;
+  background-color: #1e293b;
+  color: #ffffff;
 }
 
-.grievance-actions {
+.nav-links {
   display: flex;
-  gap: 0.75rem;
-}
-\`\`\`
-
-By delegating macro page layout to Grid and micro component alignment to Flexbox, your stylesheets remain maintainable, responsive, and robust.`
-      }
-    ],
-    commonMistakes: [
-      {
-        mistake: 'Using Flexbox for a 2D grid and struggling with row-to-row column alignment.',
-        whyItHappens: 'Flexbox items on row 2 do not align with items on row 1 because each row is an independent flex container.',
-        howToFix: 'Use CSS Grid for 2D tabular layouts where items in row 2 must align vertically with row 1.'
-      },
-      {
-        mistake: 'Using negative margins or float hacks instead of gap.',
-        whyItHappens: 'Relying on pre-2020 layout tutorials.',
-        howToFix: 'Modern Flexbox and Grid support the gap property directly (e.g. gap: 1rem).'
-      },
-      {
-        mistake: 'Writing duplicate media queries to re-columnize simple card grids.',
-        whyItHappens: 'Not knowing the repeat(auto-fit, minmax(...)) pattern.',
-        howToFix: 'Use grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) for responsive cards.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build a Responsive Dashboard Grid with Flexbox Cards',
-      difficulty: 'Intermediate',
-      instructions: 'Create a responsive 2-column dashboard layout using CSS Grid for the macro layout and Flexbox inside each card to align header titles with status badges.',
-      starterCode: `/* TODO: Create responsive layout using Grid and Flexbox */
-.dashboard {
-  /* Use grid with auto-fit */
-}
-
-.card-header {
-  /* Use flexbox to separate title and status badge */
-}`,
-      tasks: [
-        'Set .dashboard to display: grid with repeat(auto-fit, minmax(300px, 1fr)) and gap: 1.5rem.',
-        'Style .card with background, padding, and border-radius.',
-        'Set .card-header to display: flex with justify-content: space-between and align-items: center.',
-        'Align action buttons at the bottom of the card using display: flex with gap: 0.5rem.'
-      ],
-      hints: [
-        'repeat(auto-fit, minmax(300px, 1fr)) handles the responsive card columns automatically.',
-        'justify-content: space-between pushes the heading to the left and the badge to the right.',
-        'align-items: center prevents the badge from stretching to match the heading height.'
-      ],
-      solution: `.dashboard {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
-  padding: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
 }
 
 .card {
-  background: #ffffff;
+  background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.card-body {
-  flex-grow: 1; /* Pushes footer buttons to the bottom of the card */
-  color: #475569;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-
-.card-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }`,
-      solutionExplanation: 'The container uses modern CSS Grid auto-fit for responsive wrapping. Inside each card, Flexbox aligns header items and uses flex-grow: 1 on the body to push the action buttons cleanly to the bottom.'
+      solutionExplanation: 'This demonstrates the ideal synergy between layout models. Flexbox handles 1D navigation alignment with space-between, while CSS Grid manages the 2D multi-column responsive dashboard cards.'
     },
     quiz: [
       {
-        question: 'What is the key difference in dimension between Flexbox and CSS Grid?',
+        question: 'When should a web developer choose Flexbox over CSS Grid?',
         options: [
-          'Flexbox handles 3D models, while Grid handles 2D images.',
-          'Flexbox is 1-dimensional (arranges items in a row OR column), while Grid is 2-dimensional (controls rows AND columns simultaneously).',
-          'Flexbox works only on mobile, while Grid works only on desktop.',
-          'Flexbox cannot support gap spacing.'
+          'Flexbox is older and should never be used in modern websites.',
+          'When aligning elements along a single direction (1D row or column), such as navigation items or button groups.',
+          'When designing complex 2-dimensional layouts with precise rows and columns.',
+          'Only when targeting Internet Explorer 11.'
         ],
         correctIndex: 1,
-        explanation: 'Flexbox is a 1-dimensional layout model designed for distributing space along a single axis (row or column). CSS Grid is 2-dimensional, coordinating rows and columns simultaneously.'
+        explanation: 'Flexbox is designed for 1-dimensional content distribution along a single axis, whereas CSS Grid is designed for 2-dimensional coordinate systems.'
       },
       {
-        question: 'What does "grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))" achieve?',
+        question: 'What does "grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));" achieve?',
         options: [
-          'It creates an infinite loop that crashes the browser.',
-          'It creates an automatically responsive multi-column layout where columns are at least 250px wide and wrap onto new lines without media queries.',
-          'It locks the grid strictly to exactly 2 columns on all devices.',
-          'It resizes images to 250px.'
+          'It locks the grid into exactly 4 columns on all devices.',
+          'It automatically fits as many 250px-minimum columns as the viewport allows, expanding remaining space with 1fr without requiring media queries.',
+          'It hides any cards that exceed 250px in height.',
+          'It forces columns to convert into an accordion menu.'
         ],
         correctIndex: 1,
-        explanation: 'This modern CSS Grid pattern automatically fits as many 250px+ columns as can fit in the container, wrapping cards naturally as viewport width decreases without requiring media query breakpoints.'
-      },
-      {
-        question: 'Which Flexbox property aligns items along the Cross Axis?',
-        options: [
-          'justify-content',
-          'align-items',
-          'flex-direction',
-          'flex-grow'
-        ],
-        correctIndex: 1,
-        explanation: 'align-items aligns items along the Cross Axis (perpendicular to the main flow), whereas justify-content aligns items along the Main Axis.'
+        explanation: 'repeat(auto-fit, minmax(250px, 1fr)) is the standard responsive grid formula that automatically calculates column counts based on available screen width.'
       }
     ],
     takeaways: [
-      'Use Flexbox for 1D component layouts (navbars, toolbars, card headers, button groups).',
-      'Use CSS Grid for 2D layouts (page templates, dashboard widgets, responsive photo galleries).',
-      'justify-content aligns along the Main Axis; align-items aligns along the Cross Axis.',
-      'The repeat(auto-fit, minmax(...)) pattern creates responsive multi-column grids without media queries.',
-      'Combine Grid for macro page structures with Flexbox for micro component alignment.'
+      'Use Flexbox for 1D component layouts (navigation bars, input groups, vertical centering).',
+      'Use CSS Grid for 2D page scaffolding and responsive card systems.',
+      'justify-content aligns along the main axis; align-items aligns along the cross axis.',
+      'Use repeat(auto-fit, minmax(250px, 1fr)) for responsive card grids without media queries.'
     ],
     caseStudyReference: {
-      title: 'Responsive Grid Dashboard Layout in CRP India',
-      description: 'Review the administrative and citizen dashboard views in CRP India, observing how Grid constructs the metrics cards and Flexbox aligns status badges and action buttons.',
+      title: 'Dashboard Grid and Navbar Flexbox in CRP India',
+      description: 'Review how the CRP India overview screen uses CSS Grid for metric cards and Flexbox for filter bars and top-level navigation.',
       files: [
-        'reference-projects/CRP-India/frontend/src/pages/AdminDashboard.jsx',
-        'reference-projects/CRP-India/frontend/src/components/GrievanceCard.jsx'
+        'reference-projects/CRP-India/frontend/src/pages/Dashboard.jsx',
+        'reference-projects/CRP-India/frontend/src/components/StatsGrid.jsx'
       ]
     }
   },
@@ -1010,289 +789,222 @@ By delegating macro page layout to Grid and micro component alignment to Flexbox
     estimatedTime: '45 min read & practice',
     interactivePlayground: 'css',
     objectives: [
-      'Master the mobile-first responsive design philosophy using min-width media queries.',
-      'Define standard breakpoint tokens (sm, md, lg, xl) and avoid arbitrary device-specific queries.',
-      'Craft smooth, performant hover and focus transitions using transition-property and duration.',
-      'Master 2D and 3D transforms: translate, rotate, scale, skew, and hardware-accelerated rendering.',
-      'Construct keyframe animations with @keyframes, animation-fill-mode, and respect prefers-reduced-motion.'
+      'Understand the Mobile-First philosophy and implement standard min-width media queries.',
+      'Declare and consume reusable CSS Custom Properties (Variables) with scoping and fallbacks.',
+      'Implement performant 2D and 3D transforms (translate, rotate, scale, skew).',
+      'Build smooth, multi-step CSS animations using @keyframes and animation properties.',
+      'Respect user accessibility preferences with the prefers-reduced-motion media query.'
     ],
     sections: [
       {
-        heading: 'Mobile-First Responsive Architecture',
-        content: `Over 60% of global web traffic originates from mobile devices. The **mobile-first** approach means writing your baseline CSS for the smallest screen first, and then using **\`@media (min-width: ...)\`** queries to progressively enhance the layout as more screen real estate becomes available.
-
-### Why Mobile-First with \`min-width\` is Superior:
-1. **Performance on Mobile:** Mobile devices parse only the lean baseline styles without having to override heavy desktop desktop rules.
-2. **Progressive Enhancement:** You build a solid, functional single-column experience first, then layer on multi-column grids and sidebars.
+        heading: 'Mobile-First Responsive Design: The Industry Methodology',
+        content: `Over 60% of global web traffic originates on mobile smartphones. In modern web engineering, **Mobile-First** is the gold standard design philosophy:
+1. Write baseline CSS for small mobile screens first, with zero media queries.
+2. Use **\`min-width\`** media queries to progressively enhance the layout as viewport width increases for tablets and desktop monitors.
 
 \`\`\`css
-/* BASELINE (Mobile: 0px and up) */
-.page-container {
-  padding: 1rem;
-}
-.sidebar {
-  display: none; /* Collapsed by default on mobile */
+/* 1. Mobile Default (Zero Media Queries) */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on phones */
+  gap: 1rem;
 }
 
-/* TABLET AND UP (768px and up) */
+/* 2. Tablet Enhancement (min-width: 768px) */
 @media (min-width: 768px) {
-  .page-container {
-    padding: 2rem;
-  }
-  .sidebar {
-    display: block;
-    width: 240px;
+  .content-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 1.5rem;
   }
 }
 
-/* DESKTOP AND UP (1024px and up) */
+/* 3. Desktop Enhancement (min-width: 1024px) */
 @media (min-width: 1024px) {
-  .page-container {
-    max-width: 1200px;
-    margin: 0 auto;
+  .content-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 2rem;
   }
 }
 \`\`\`
 
-### Industry Standard Breakpoints:
-* **Small (\`sm\`):** \`640px\` (Large phones in landscape)
-* **Medium (\`md\`):** \`768px\` (Tablets)
-* **Large (\`lg\`):** \`1024px\` (Laptops and small desktops)
-* **Extra Large (\`xl\`):** \`1280px\` (Large desktop displays)`
+### Common Breakpoints:
+* **\`640px\`:** Mobile landscape / large phones.
+* **\`768px\`:** Tablets (iPads, portrait tablets).
+* **\`1024px\`:** Small laptops and landscape tablets.
+* **\`1280px\`:** High-resolution desktop monitors.`
       },
       {
-        heading: 'Smooth Transitions and State Micro-Interactions',
-        content: `A website without transitions feels rigid and robotic. The \`transition\` property allows property changes (like hover or focus states) to animate smoothly over time rather than snapping instantaneously:
+        heading: 'CSS Custom Properties (Variables): Building Design Token Systems',
+        content: `CSS Variables allow you to store values and reuse them throughout stylesheets, enabling clean design systems and effortless dark mode theming:
 
 \`\`\`css
-/* transition: <property> <duration> <timing-function> <delay>; */
-.interactive-btn {
-  background-color: #2563eb;
-  color: white;
-  transform: translateY(0);
-  transition: 
-    background-color 0.2s ease,
-    transform 0.15s ease-out,
-    box-shadow 0.2s ease;
+/* Define design tokens on the :root pseudo-class */
+:root {
+  --color-primary: #2563eb;
+  --color-surface: #ffffff;
+  --color-text: #1e293b;
+  --radius-md: 8px;
+  --transition-fast: 0.2s ease;
 }
 
-.interactive-btn:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --color-surface: #0f172a;
+  --color-text: #f8fafc;
 }
 
-.interactive-btn:active {
-  transform: translateY(0);
+/* Consuming tokens with fallback support */
+.card {
+  background-color: var(--color-surface, #ffffff);
+  color: var(--color-text, #1e293b);
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-fast);
 }
-\`\`\`
-
-### Performance Rule:
-Only animate properties that can be offloaded to the GPU: **\`transform\`** and **\`opacity\`**. 
-
-Animating properties like \`width\`, \`height\`, \`margin\`, or \`top\` triggers **Browser Reflow / Layout**, recalculating the geometry of the entire page on every single animation frame (causing stutter and lag, especially on mobile). \`transform\` and \`opacity\` run on the GPU compositor thread without triggering layout!`
+\`\`\``
       },
       {
-        heading: '2D & 3D Transforms',
-        content: `The \`transform\` property modifies the coordinate space of an element without disrupting surrounding elements in normal document flow:
+        heading: 'Performant Transforms: 2D and 3D Visual Manipulation',
+        content: `Traditional CSS positioning properties (like animating \`top\`, \`left\`, or \`margin\`) force the browser to trigger expensive **Layout (Reflow)** calculations on every frame, causing stutter and battery drain.
 
-* **\`translate(x, y)\` and \`translateZ(z)\`:** Moves an element horizontally, vertically, or in 3D depth.
-* **\`scale(x, y)\`:** Enlarges or shrinks an element smoothly.
-* **\`rotate(deg)\` and \`rotateX/Y/Z(deg)\`:** Rotates an element around its transform origin.
-* **\`skew(x, y)\`:** Distorts an element along its axes.
+The **\`transform\`** property operates directly on the GPU compositor thread without triggering layout recalculations:
 
-### Activating 3D Perspective:
-To enable real 3D depth in CSS, define **\`perspective\`** on the parent container and **\`transform-style: preserve-3d\`**:
+* **\`translate(X, Y)\`:** Shifts the element along coordinate planes.
+* **\`scale(N)\`:** Enlarges or shrinks the element.
+* **\`rotate(deg)\`:** Rotates the element around a transform origin.
 
 \`\`\`css
-.scene-container {
-  perspective: 1000px; /* Distance between viewer eye and 3D plane */
+.interactive-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 
-.card-3d {
-  transform-style: preserve-3d;
-  transition: transform 0.4s ease;
+.interactive-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
-
-.card-3d:hover {
-  transform: rotateY(15deg) rotateX(10deg) translateZ(20px);
-}
-\`\`\`
-This creates hardware-accelerated 3D parallax effects with zero heavy external 3D libraries!`
+\`\`\``
       },
       {
-        heading: 'Keyframe Animations and prefers-reduced-motion',
-        content: `When transitions between two states are not enough, **\`@keyframes\`** enables complex multi-stage animations:
+        heading: 'CSS Animations with @keyframes and Reduced Motion',
+        content: `While \`transition\` animates a property between two states (e.g., normal to hover), **\`@keyframes\`** allows you to author complex, multi-stage looping animations:
 
 \`\`\`css
-/* Define animation stages */
 @keyframes pulseGlow {
-  0% {
-    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
-  }
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-.urgent-badge {
+.alert-active {
   animation: pulseGlow 2s infinite ease-in-out;
 }
 \`\`\`
 
-### CRITICAL ACCESSIBILITY: \`prefers-reduced-motion\`
-Vestibular disorders can cause motion sickness, dizziness, and nausea when exposed to excessive animations or parallax scrolling. Operating systems allow users to request reduced motion.
+### Accessibility Mandate: \`prefers-reduced-motion\`
+Users suffering from vestibular disorders or motion sickness can configure their operating systems to minimize animation. Websites **must** respect this preference:
 
-**Always respect the user\'s motion preference:**
 \`\`\`css
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
 \`\`\``
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Animating width, height, or top/left instead of transform.',
-        whyItHappens: 'It seems straightforward to increase width on hover.',
-        howToFix: 'Animating width causes expensive layout reflow on every frame. Use transform: scale() or transform: translateY() for 60fps GPU performance.'
-      },
-      {
-        mistake: 'Using desktop-first max-width queries everywhere, resulting in conflicting overrides on mobile.',
-        whyItHappens: 'Developing on a desktop monitor first and patching mobile issues later.',
-        howToFix: 'Adopt mobile-first design: write base styles for phones, and enhance with @media (min-width: 768px).'
-      },
-      {
-        mistake: 'Ignoring prefers-reduced-motion.',
-        whyItHappens: 'Assuming all users enjoy continuous spinning animations or aggressive parallax.',
-        howToFix: 'Include @media (prefers-reduced-motion: reduce) to disable non-essential motion.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build a Mobile-First Card with GPU-Accelerated Micro-Interactions',
-      difficulty: 'Intermediate',
-      instructions: 'Write a mobile-first responsive card that arranges in a single column on mobile, expands to a 2-column layout on screens >= 768px, includes GPU-accelerated hover transitions, and respects prefers-reduced-motion.',
-      starterCode: `/* TODO: Write mobile-first styles with min-width query */
-.card-wrapper {
-  /* Mobile base: 1 column */
-}
-
-@media (min-width: 768px) {
-  .card-wrapper {
-    /* Tablet/Desktop: 2 columns */
-  }
-}
-
-/* Add GPU-accelerated hover transition */
-.interactive-card {
-}
-
-/* Add prefers-reduced-motion guard */`,
-      tasks: [
-        'Write baseline mobile styles for .card-wrapper (single column).',
-        'Use @media (min-width: 768px) to switch .card-wrapper to a 2-column grid.',
-        'Add a hover interaction on .interactive-card using transform: translateY(-4px) and box-shadow.',
-        'Only animate transform and box-shadow with a 0.2s ease timing.',
-        'Add @media (prefers-reduced-motion: reduce) to neutralize the transition.'
-      ],
+    exercise: {
+      instruction: 'Create an interactive button with a subtle hover transform, a keyframe loading spinner animation, and a prefers-reduced-motion fallback.',
+      starterCode: `/* Write your responsive styles and animations below */\n`,
       hints: [
-        'Start with display: grid; grid-template-columns: 1fr; on mobile.',
-        'Under @media (min-width: 768px), set grid-template-columns: repeat(2, 1fr).',
-        'Use transform: translateY(-4px) rather than top: -4px to ensure GPU acceleration.'
+        'Define @keyframes spin { to { transform: rotate(360deg); } }',
+        'Add a hover state with transform: translateY(-2px).',
+        'Add an @media (prefers-reduced-motion: reduce) block disabling animations.'
       ],
-      solution: `.card-wrapper {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-  padding: 1rem;
+      tasks: [
+        'Define keyframe animation for spinner',
+        'Apply transform on button hover',
+        'Implement prefers-reduced-motion query'
+      ],
+      solution: `:root {
+  --btn-bg: #2563eb;
+  --btn-hover: #1d4ed8;
 }
 
-@media (min-width: 768px) {
-  .card-wrapper {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 2rem;
-  }
+.btn-action {
+  background-color: var(--btn-bg);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.interactive-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  transform: translateY(0);
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.btn-action:hover {
+  background-color: var(--btn-hover);
+  transform: translateY(-2px);
 }
 
-.interactive-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .interactive-card {
+  .btn-action, .spinner {
     transition: none !important;
-    transform: none !important;
+    animation: none !important;
   }
 }`,
-      solutionExplanation: 'This solution adheres to mobile-first architecture (min-width: 768px), animates only GPU-friendly transform and box-shadow properties, and fully respects the user\'s prefers-reduced-motion accessibility preference.'
+      solutionExplanation: 'This solution uses GPU-accelerated transforms for smooth 60fps hover micro-interactions, authors a performant rotating spinner keyframe animation, and fulfills WCAG accessibility criteria via prefers-reduced-motion.'
     },
     quiz: [
       {
-        question: 'Which CSS properties can be animated smoothly on the GPU without triggering expensive layout reflows?',
+        question: 'Why does mobile-first responsive design use min-width media queries rather than max-width?',
         options: [
-          'width and height',
-          'transform and opacity',
-          'margin-top and padding-left',
-          'top and left'
+          'min-width queries load faster across 5G networks.',
+          'It establishes mobile devices as the baseline default, progressively layering layout enhancements as screen real estate expands.',
+          'max-width queries are not supported in Safari.',
+          'min-width is required by CSS Grid.'
         ],
         correctIndex: 1,
-        explanation: 'transform and opacity can be composited directly on the GPU without forcing the browser rendering engine to recalculate page layout geometry (reflow).'
+        explanation: 'Mobile-first means writing default styles for small screens without media queries, then using min-width to add complexity as the screen gets wider.'
       },
       {
-        question: 'What is the main benefit of mobile-first responsive design using min-width media queries?',
+        question: 'Why should developers animate "transform" instead of "top" or "margin" for hover effects?',
         options: [
-          'It eliminates the need for HTML doctypes.',
-          'Mobile devices load lightweight base styles first, and more complex layouts are layered on progressively as screen width expands.',
-          'It forces all images to be black and white.',
-          'It blocks search engine spiders from indexing mobile pages.'
+          'Transforms can be parsed by screen readers.',
+          'Transforms run directly on the GPU compositor thread without triggering expensive browser Layout (Reflow) recalculations.',
+          'Transforms work on inline elements without display changes.',
+          'margin animations require JavaScript.'
         ],
         correctIndex: 1,
-        explanation: 'Mobile-first design ensures mobile devices do not waste CPU cycles overriding complex desktop styles, resulting in cleaner code and faster mobile performance.'
-      },
-      {
-        question: 'What is the purpose of the "@media (prefers-reduced-motion: reduce)" media query?',
-        options: [
-          'It reduces browser memory usage when playing video games.',
-          'It detects whether a user has enabled motion reduction in their operating system to prevent motion sickness and vestibular disorders.',
-          'It slows down internet connection speeds intentionally.',
-          'It disables JavaScript event listeners.'
-        ],
-        correctIndex: 1,
-        explanation: 'prefers-reduced-motion honors accessibility settings requested by users sensitive to motion, allowing developers to disable distracting animations and parallax.'
+        explanation: 'Animating top or margin forces the browser to recalculate the layout geometry of the entire page on every single frame. Transforms are handled entirely on the GPU compositor, yielding silky 60fps animations.'
       }
     ],
     takeaways: [
-      'Adopt mobile-first design: write baseline styles for small screens and enhance using min-width media queries.',
-      'Use standard breakpoints (640px, 768px, 1024px, 1280px) rather than arbitrary device dimensions.',
-      'Animate transform and opacity for smooth 60fps GPU-accelerated micro-interactions.',
-      'Leverage CSS 3D transforms (perspective, transform-style: preserve-3d) for lightweight 3D effects.',
-      'Always implement @media (prefers-reduced-motion: reduce) to respect user accessibility preferences.'
+      'Adopt a mobile-first philosophy: base styles for phones, min-width queries for tablets and desktops.',
+      'Use CSS variables (--token) for consistent color palettes, spacing, and easy dark theme support.',
+      'Animate transform and opacity on the GPU compositor to avoid costly layout reflows.',
+      'Always respect user accessibility preferences with the prefers-reduced-motion media query.'
     ],
     caseStudyReference: {
-      title: 'Responsive Navbar and Mobile Drawers in CRP India',
-      description: 'Examine how the navigation bar in CRP India toggles between desktop horizontal links and an animated mobile drawer with smooth slide-in transitions.',
+      title: 'Responsive Breakpoints and Dark Theme in CRP India',
+      description: 'Analyze the mobile drawer navigation, responsive tables, and dark mode theme switching in CRP India.',
       files: [
-        'reference-projects/CRP-India/frontend/src/components/Navbar.jsx',
-        'reference-projects/CRP-India/frontend/src/index.css'
+        'reference-projects/CRP-India/frontend/src/components/ThemeToggle.jsx',
+        'reference-projects/CRP-India/frontend/src/components/Sidebar.jsx'
       ]
     }
   }

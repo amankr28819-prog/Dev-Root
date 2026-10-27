@@ -1,6 +1,6 @@
 /**
- * Dev-root Course 5: JavaScript Fundamentals - Deep Learning Curriculum
- * Comprehensive lessons covering variables, types, control flow, functions, and scope.
+ * Dev-root Course 5: JavaScript Fundamentals - Deep Learning Curriculum (Phase 4 4x Depth Standard)
+ * Comprehensive lessons covering variables, types, memory architecture, control flow, functions, and scope.
  */
 
 export const JS_FUNDAMENTALS_LESSONS = {
@@ -12,213 +12,234 @@ export const JS_FUNDAMENTALS_LESSONS = {
     courseTitle: 'Course 5: JavaScript Fundamentals',
     title: 'Variables, Data Types & Control Flow',
     category: 'Programming',
-    estimatedTime: '35 min read & practice',
+    estimatedTime: '45 min read & practice',
     objectives: [
       'Master modern variable declarations: const vs let, and why var is obsolete.',
-      'Understand JavaScript primitive types (string, number, boolean, null, undefined, symbol, bigint) vs reference types (objects, arrays).',
-      'Master strict equality (===) vs loose equality (==) and understand type coercion.',
-      'Implement branching control flow with if/else if/else and switch statements.',
-      'Control repetitive execution using for loops, while loops, and array iteration.'
+      'Understand computer memory allocation: Stack (primitives) vs Heap (reference objects).',
+      'Master the 7 JavaScript primitive types and reference types (arrays, objects).',
+      'Understand type coercion and why strict equality (===) is mandatory over loose equality (==).',
+      'Construct branching logic with if/else, the ternary operator, and switch statements.',
+      'Implement deterministic loops (for, while, for...of) and avoid infinite loops.'
     ],
     sections: [
       {
         heading: 'Why JavaScript Powers the Web',
-        content: `While HTML provides structure and CSS provides presentation, **JavaScript is the programming language that breathes life into the web**. It is the only programming language natively supported by all modern web browsers without plugins.
+        content: `While HTML provides semantic structure and CSS provides visual presentation, **JavaScript is the Turing-complete programming language that brings web applications to life**. It is the only programming language natively built into and executed by all modern web browsers without requiring external runtimes or plugins.
 
-With modern JavaScript (ES6+), you can:
-* Respond to user clicks, typing, and gestures.
-* Validate form input before sending data across the network.
-* Send asynchronous requests to backend APIs and update the page without refreshing.
-* Build complete full-stack web applications using Node.js on the server.`
+### What JavaScript Enables:
+* **Interactive UIs:** Responding to user clicks, keyboard typing, scroll events, and touch gestures.
+* **Client-Side Validation:** Validating form inputs instantly before sending data over the network.
+* **Asynchronous Networking:** Fetching live data from backend servers (via the Fetch API or Axios) and updating the DOM without triggering a full page reload.
+* **Full-Stack Engineering:** With the advent of Node.js, JavaScript runs on backend servers, communicates with databases like MongoDB, and powers command-line developer tools.`
       },
       {
-        heading: 'Variable Declarations: const vs. let vs. var',
-        content: `A variable is a named storage container for data in computer memory:
+        heading: 'Variables in Memory: const vs. let vs. var',
+        content: `A variable is a named pointer to a location in computer memory where data is stored:
 
-### 1. \`const\` (Constant - Default Choice)
-Used for variables whose identifier should not be reassigned:
+\`\`\`
+  Variable Name (Identifier)              Memory Address              Stored Value
+  +------------------------+             +--------------+            +------------+
+  |       portalName       |  -------->  |  0x7FFE0014  | -------->  | "CRP India"|
+  +------------------------+             +--------------+            +------------+
+\`\`\`
+
+### 1. \`const\` (Constant - The Professional Default)
+Used for identifiers that will not be reassigned:
 \`\`\`javascript
 const portalName = "CRP India";
 const maxRetries = 3;
-// portalName = "Other"; // TypeError: Assignment to constant variable!
+// portalName = "New Name"; // TypeError: Assignment to constant variable!
 \`\`\`
-*Rule of Thumb:* **Always default to \`const\`**. It prevents accidental reassignment bugs and signals intent to other engineers. Note that properties of a \`const\` object or array can still be mutated (\`const user = {}; user.name = "Anita";\` is completely valid).
+*Golden Rule:* **Always default to \`const\`**. It prevents accidental reassignment bugs and signals immutability to team members. Note: mutating properties inside a \`const\` object or array is valid (\`const user = {}; user.name = "Anita";\`), but reassigning the variable identifier itself is prevented.
 
 ### 2. \`let\` (Reassignable Variable)
-Used when a variable\'s value will legitimately change over time (such as loop counters or state toggles):
+Used when a variable's value is expected to legitimately change (e.g., loop counters, accumulation totals, active tab indices):
 \`\`\`javascript
 let activeComplaintsCount = 0;
 activeComplaintsCount = activeComplaintsCount + 1; // Valid reassignment
 \`\`\`
-Both \`const\` and \`let\` are **block-scoped** (trapped within the nearest pair of curly braces \`{}\`) and enter the Temporal Dead Zone if referenced before declaration.
+Both \`const\` and \`let\` are **block-scoped** (trapped within the nearest pair of curly braces \`{}\`) and live in the Temporal Dead Zone (TDZ) if accessed before declaration.
 
-### 3. \`var\` (Legacy - Never Use in Modern Code)
-The original 1995 variable declaration. It is function-scoped (not block-scoped), hoists with an initial value of \`undefined\`, and creates silent bugs in loops and conditionals. Avoid in modern code.`
+### 3. \`var\` (Legacy 1995 Syntax - Obsolete)
+The legacy variable keyword. It is function-scoped (ignores \`if\` and \`for\` blocks), hoists to the top of its scope initialized as \`undefined\`, and creates silent bugs. Modern web standards forbid \`var\`.`
       },
       {
-        heading: 'Data Types: Primitives vs. Reference Objects',
-        content: `JavaScript values are divided into two fundamental categories:
+        heading: 'Primitive Types vs. Reference Types: Stack vs. Heap',
+        content: `JavaScript divides data into two distinct memory management models:
 
-### Primitive Types (Stored directly by value in memory, immutable):
-1. **String:** Text data enclosed in quotes: \`"Citizen"\`, \`'Report'\`, or template literals \`\`Complaint #\${id}\`\`.
-2. **Number:** Double-precision 64-bit float handling integers and decimals: \`42\`, \`3.14159\`, \`-10\`.
-3. **Boolean:** Logical truth values: \`true\` or \`false\`.
-4. **null:** Intentional absence of any object value.
-5. **undefined:** Uninitialized variable that has been declared but not assigned a value.
-6. **Symbol & BigInt:** Unique identifiers and arbitrary-precision integers.
+### 1. Primitive Types (Passed by Value, Stored on the Call Stack)
+Primitives are immutable, lightweight values stored directly on the fast execution Stack:
+* **\`string\`:** Text sequences enclosed in quotes (\`"CRP India"\`, \`'Admin'\`, or template literals \`\`Hello \${name}\`\`).
+* **\`number\`:** 64-bit floating-point numbers (integers and decimals: \`42\`, \`3.14159\`, \`-7\`).
+* **\`boolean\`:** Logical truth states (\`true\` or \`false\`).
+* **\`null\`:** Intentional, explicit absence of any object value.
+* **\`undefined\`:** Variable declared but not yet assigned a value.
+* **\`bigint\`:** Arbitrary-precision integers for cryptographic math (\`9007199254740991n\`).
+* **\`symbol\`:** Guaranteed unique tokens used as object keys.
 
-### Reference Types (Stored by reference in the memory heap):
-* **Objects (\`{ key: value }\`):** Collections of named properties.
-* **Arrays (\`[1, 2, 3]\`):** Ordered, zero-indexed lists of items.
-* **Functions:** Executable blocks of code.`
+\`\`\`javascript
+// Primitives are copied by VALUE
+let a = 10;
+let b = a; // b receives a distinct copy of 10
+b = 20;
+console.log(a); // Still 10!
+\`\`\`
+
+### 2. Reference Types (Passed by Reference, Stored on the Heap)
+Objects, arrays, and functions are dynamic, complex structures allocated on the Heap. The variable on the Stack stores only a memory address pointer:
+
+\`\`\`javascript
+// Reference types share the same memory pointer
+const ticketA = { id: 101, status: "Open" };
+const ticketB = ticketA; // ticketB points to the EXACT SAME object on the Heap!
+
+ticketB.status = "Resolved";
+console.log(ticketA.status); // "Resolved"! Both variables pointed to the same memory.
+\`\`\``
       },
       {
-        heading: 'Strict Equality (===) vs. Loose Equality (==)',
-        content: `JavaScript features two equality comparison operators:
+        heading: 'Type Coercion and Strict Equality (===) vs. Loose Equality (==)',
+        content: `JavaScript is dynamically and weakly typed. When comparing differing types, the loose equality operator (\`==\`) performs implicit **Type Coercion**, attempting to convert operands to matching types before comparison:
 
-* **Loose Equality (\`==\`):** Attempts to perform automatic **type coercion** before comparing. This produces notorious, counter-intuitive bugs:
-  \`\`\`javascript
-  0 == false;       // true (coerces false to 0!)
-  "" == 0;          // true (coerces empty string to 0!)
-  null == undefined;// true
-  \`\`\`
-* **Strict Equality (\`===\`):** Compares **both value and data type** without coercion:
-  \`\`\`javascript
-  0 === false;        // false (Number vs Boolean)
-  "" === 0;           // false (String vs Number)
-  "42" === 42;        // false (String vs Number)
-  42 === 42;          // true
-  \`\`\`
+\`\`\`javascript
+// DANGEROUS LOOSE EQUALITY (==)
+console.log(0 == false);        // true! (coerces false to 0)
+console.log("" == 0);           // true! (coerces empty string to 0)
+console.log("42" == 42);        // true! (coerces string to number)
+console.log(null == undefined); // true!
+\`\`\`
 
-**Golden Rule:** Always use \`===\` (strict equality) and \`!==\` (strict inequality). Never use \`==\` or \`!=\`.`
+### The Non-Negotiable Rule: Always Use Strict Equality (\`===\`)
+Strict equality checks both **Value AND Type** without coercion:
+\`\`\`javascript
+console.log("42" === 42);       // false! (string !== number)
+console.log(0 === false);        // false! (number !== boolean)
+\`\`\`
+
+### Truthy and Falsy Values:
+In JavaScript conditionals, every value evaluates to either \`true\` or \`false\`. There are exactly **8 falsy values**:
+1. \`false\`
+2. \`0\` and \`-0\`
+3. \`0n\` (BigInt zero)
+4. \`""\` (empty string)
+5. \`null\`
+6. \`undefined\`
+7. \`NaN\` (Not-a-Number)
+8. \`document.all\` (legacy browser quirk)
+
+**Every other value in JavaScript is Truthy**, including empty arrays (\`[]\`) and empty objects (\`{}\`)!`
       },
       {
         heading: 'Control Flow: Conditionals and Loops',
-        content: `\`\`\`javascript
-// Branching Logic
-const priority = "high";
+        content: `### 1. Conditionals: if / else if / else
+\`\`\`javascript
+const complaintPriority = "high";
 
-if (priority === "emergency") {
-  notifyImmediateSquad();
-} else if (priority === "high") {
-  assignSupervisingOfficer();
+if (complaintPriority === "critical") {
+  dispatchEmergencyTeam();
+} else if (complaintPriority === "high") {
+  assignNodalSupervisor();
 } else {
-  queueStandardQueue();
+  queueStandardInspection();
+}
+\`\`\`
+
+### 2. The Ternary Operator (\`condition ? exprIfTrue : exprIfFalse\`)
+Compact syntax for conditional assignment:
+\`\`\`javascript
+const badgeClass = isResolved ? "badge-success" : "badge-pending";
+\`\`\`
+
+### 3. Iteration with Loops:
+\`\`\`javascript
+// Standard for loop (index-based)
+const wards = ["Ward 1", "Ward 2", "Ward 3"];
+for (let i = 0; i < wards.length; i++) {
+  console.log(\`Auditing \${wards[i]}\`);
 }
 
-// Looping through collections
-const departments = ["Sanitation", "Water", "Roads"];
-
-for (let i = 0; i < departments.length; i++) {
-  console.log(\`Department #\${i + 1}: \${departments[i]}\`);
+// Modern for...of loop (clean value iteration)
+for (const ward of wards) {
+  console.log(\`Auditing \${ward}\`);
 }
 \`\`\``
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Using == instead of ===, resulting in unexpected type coercion bugs.',
-        whyItHappens: 'Typing two equals signs feels more natural from algebra.',
-        howToFix: 'Always use === for comparisons. It checks both type and value.'
-      },
-      {
-        mistake: 'Using var for variables and experiencing hoisting bugs.',
-        whyItHappens: 'Relying on legacy JavaScript tutorials.',
-        howToFix: 'Use const by default. Use let only when reassignment is required.'
-      },
-      {
-        mistake: 'Confusing null with undefined.',
-        whyItHappens: 'Both represent falsy empty values.',
-        howToFix: 'undefined means a variable has not been given a value yet. null means a developer explicitly set it to empty.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Implement Grievance Priority Filtering Logic',
-      difficulty: 'Beginner',
-      instructions: 'Write a JavaScript function that evaluates an array of grievance complaint objects and categorizes them based on their urgency level and resolution status using strict equality.',
-      starterCode: `const complaints = [
-  { id: 101, dept: "Sanitation", priority: "high", resolved: false },
-  { id: 102, dept: "Roads", priority: "low", resolved: true },
-  { id: 103, dept: "Water", priority: "emergency", resolved: false }
-];
-
-// TODO: Count how many complaints are unresolved emergencies or high priority`,
-      tasks: [
-        'Iterate through the complaints array using a loop.',
-        'Use strict equality (===) to check if resolved is false.',
-        'Check if priority is "emergency" or "high".',
-        'Increment an unresolvedUrgentCount counter and log the result.'
-      ],
-      hints: [
-        'Use let for the counter so it can be incremented.',
-        'Combine logical AND (&&) with logical OR (||): !item.resolved && (item.priority === "emergency" || item.priority === "high").'
-      ],
-      solution: `const complaints = [
-  { id: 101, dept: "Sanitation", priority: "high", resolved: false },
-  { id: 102, dept: "Roads", priority: "low", resolved: true },
-  { id: 103, dept: "Water", priority: "emergency", resolved: false }
-];
-
-let unresolvedUrgentCount = 0;
-
-for (let i = 0; i < complaints.length; i++) {
-  const item = complaints[i];
-  if (item.resolved === false && (item.priority === "emergency" || item.priority === "high")) {
-    unresolvedUrgentCount++;
-  }
+    exercise: {
+      instruction: 'Write a JavaScript function that evaluates an array of ticket numbers. Return an object summarizing total tickets, resolved count, and pending count.',
+      starterCode: `// Write your audit function below
+function auditTickets(tickets) {
+  // tickets is an array of objects: [{ id: 1, resolved: true }, ...]
 }
+`,
+      hints: [
+        'Initialize let resolvedCount = 0 and let pendingCount = 0.',
+        'Use a for...of loop to iterate through each ticket object.',
+        'Use strict equality (ticket.resolved === true) to increment counters.',
+        'Return an object with total, resolved, and pending properties.'
+      ],
+      tasks: [
+        'Use const or let variables exclusively',
+        'Iterate through the array cleanly',
+        'Count resolved and pending tickets accurately',
+        'Return a structured summary object'
+      ],
+      solution: `function auditTickets(tickets) {
+  let resolvedCount = 0;
+  let pendingCount = 0;
 
-console.log("Unresolved urgent grievances:", unresolvedUrgentCount); // 2`,
-      solutionExplanation: 'Using let for the mutable counter and strict equality checks avoids coercion bugs and guarantees accurate computational counting.'
+  for (const ticket of tickets) {
+    if (ticket.resolved === true) {
+      resolvedCount++;
+    } else {
+      pendingCount++;
+    }
+  }
+
+  return {
+    total: tickets.length,
+    resolved: resolvedCount,
+    pending: pendingCount
+  };
+}`,
+      solutionExplanation: 'This solution uses clean block-scoped variables and for...of iteration. It avoids type coercion bugs by explicitly checking boolean equality and returns a predictable data summary object.'
     },
     quiz: [
       {
-        question: 'What is the primary difference between "const" and "let" in modern JavaScript?',
+        question: 'Why does "console.log(ticketA === ticketB)" return false when ticketA = { id: 1 } and ticketB = { id: 1 }?',
         options: [
-          'const variables are stored on the server, while let variables are stored in the browser.',
-          'const identifiers cannot be reassigned after declaration, whereas let variables can be reassigned.',
-          'let can only store numbers, while const can only store strings.',
-          'const is obsolete and replaced by var.'
+          'JavaScript cannot compare objects.',
+          'Objects are compared by memory reference (Heap address), not by structural value. Since they are two distinct objects in memory, their addresses differ.',
+          'The curly braces cancel each other out.',
+          'The strict equality operator only works on numbers.'
         ],
         correctIndex: 1,
-        explanation: 'const creates an immutable binding that prevents variable identifier reassignment. let permits reassignment.'
+        explanation: 'In JavaScript, reference types are compared by their memory pointer address on the Heap. Two distinct object literals occupy different memory locations, so === evaluates to false.'
       },
       {
-        question: 'What will the expression "0 === false" evaluate to in JavaScript?',
+        question: 'Which of the following values is Truthy in a JavaScript conditional evaluation?',
         options: [
-          'true',
-          'false',
-          'undefined',
-          'NaN'
-        ],
-        correctIndex: 1,
-        explanation: 'Strict equality (===) compares both value and type without coercion. 0 is a Number and false is a Boolean, so they are not strictly equal (evaluates to false).'
-      },
-      {
-        question: 'Which of the following values is considered a primitive type in JavaScript?',
-        options: [
-          'Array',
-          'Object',
-          'String',
-          'Function'
+          '"" (empty string)',
+          '0',
+          '[] (empty array)',
+          'null'
         ],
         correctIndex: 2,
-        explanation: 'Strings, numbers, booleans, null, undefined, symbols, and bigints are primitive values in JavaScript. Arrays, objects, and functions are reference types.'
+        explanation: 'In JavaScript, all objects and arrays (even empty ones like [] and {}) are Truthy. Only the 8 falsy primitives (0, "", null, undefined, NaN, false, -0, 0n) evaluate to false.'
       }
     ],
     takeaways: [
-      'Default to const for all variable declarations; use let only when reassignment is needed; avoid var.',
-      'Primitives (strings, numbers, booleans, null, undefined) are stored by value; objects and arrays are stored by reference.',
-      'Always use strict equality (===) and strict inequality (!==) to avoid hidden type coercion bugs.',
-      'Control flow structures (if/else, switch, for loops) dictate conditional logic and repetition.',
-      'Understanding data types is essential for debugging API responses and state management.'
+      'Default to const for all variables; use let only when reassignment is mandatory; never use var.',
+      'Primitives are stored on the Stack and copied by value; reference types live on the Heap and are passed by reference pointer.',
+      'Always use strict equality (===) to prevent unexpected type coercion bugs.',
+      'Remember that empty arrays [] and empty objects {} are truthy in JavaScript.'
     ],
     caseStudyReference: {
-      title: 'Grievance Filtering & Conditional Status in CRP India',
-      description: 'Observe how CRP India filters complaints by status and urgency in the dashboard using array methods and strict equality comparisons.',
+      title: 'State Variables and Conditionals in CRP India',
+      description: 'Observe how the CRP India frontend defines complaint filters, status checks, and data types in React state hooks.',
       files: [
-        'reference-projects/CRP-India/frontend/src/pages/CitizenDashboard.jsx',
-        'reference-projects/CRP-India/backend/src/controllers/grievanceController.js'
+        'reference-projects/CRP-India/frontend/src/pages/Dashboard.jsx',
+        'reference-projects/CRP-India/backend/models/Complaint.js'
       ]
     }
   },
@@ -231,208 +252,200 @@ console.log("Unresolved urgent grievances:", unresolvedUrgentCount); // 2`,
     courseTitle: 'Course 5: JavaScript Fundamentals',
     title: 'Functions, Parameters, Return Values & Scope',
     category: 'Programming',
-    estimatedTime: '40 min read & practice',
+    estimatedTime: '45 min read & practice',
     objectives: [
-      'Understand functions as reusable computational building blocks: parameters, arguments, and return values.',
-      'Distinguish function declarations, function expressions, and modern ES6 arrow functions.',
-      'Master lexical scope: global scope, function scope, block scope, and the scope chain.',
-      'Understand closures and how inner functions retain access to outer variables.',
-      'Avoid variable shadowing and understand the Temporal Dead Zone.'
+      'Master function declarations, function expressions, and modern arrow functions.',
+      'Implement parameters, default argument values, and rest parameters (...args).',
+      'Understand return values and why unreturned functions evaluate to undefined.',
+      'Master the JavaScript Scope Chain: Global Scope, Function Scope, and Block Scope.',
+      'Understand Lexical Scoping and how Closures preserve access to outer variables.'
     ],
     sections: [
       {
-        heading: 'Functions: The Engines of Reusability',
-        content: `A **function** is an isolated block of reusable code designed to perform a specific computational task. Instead of copying and pasting the same 15 lines of grievance validation code across multiple files, you encapsulate that logic inside a single function and invoke it whenever needed.
+        heading: 'Functions: The Building Blocks of Reusable Logic',
+        content: `A function is a reusable subprogram designed to perform a specific task. Functions accept inputs (**parameters**), perform operations, and yield an output (**return value**).
 
-### Anatomy of a Function:
-\`\`\`javascript
-// Parameter: the variable placeholder declared in the function definition
-function calculateEscalationDeadline(priority, filingDate) {
-  if (priority === "emergency") {
-    return filingDate + 24 * 60 * 60 * 1000; // 24 hours in ms
-  }
-  return filingDate + 7 * 24 * 60 * 60 * 1000; // 7 days in ms
-}
+### The Three Ways to Define Functions in JavaScript:
 
-// Argument: the actual concrete value passed when calling the function
-const deadline = calculateEscalationDeadline("emergency", Date.now());
-\`\`\`
+1. **Function Declaration (Hoisted):**
+   \`\`\`javascript
+   function calculateSLA(priority) {
+     return priority === "urgent" ? 24 : 72; // Returns hours
+   }
+   \`\`\`
+   *Feature:* Hoisted to the top of its scope, meaning you can call \`calculateSLA("urgent")\` *before* the line where it is written.
 
-* **Parameters:** Variables listed in the function definition.
-* **Arguments:** The real values passed into the function when invoked.
-* **\`return\` statement:** Passes a computed result back to the caller and terminates function execution immediately. If a function does not specify a \`return\` statement, it implicitly returns \`undefined\`.`
+2. **Function Expression (Stored in a Variable):**
+   \`\`\`javascript
+   const calculateSLA = function(priority) {
+     return priority === "urgent" ? 24 : 72;
+   };
+   \`\`\`
+   *Feature:* Not hoisted; cannot be invoked before its declaration line.
+
+3. **Arrow Function (ES6 Standard):**
+   \`\`\`javascript
+   const calculateSLA = (priority) => {
+     return priority === "urgent" ? 24 : 72;
+   };
+
+   // Concise one-line implicit return syntax
+   const calculateSLAConcise = (priority) => priority === "urgent" ? 24 : 72;
+   \`\`\`
+   *Feature:* Compact syntax and lexical \`this\` binding (crucial in modern React development).`
       },
       {
-        heading: 'Function Syntax: Declarations vs. Arrow Functions',
-        content: `Modern JavaScript provides multiple ways to declare functions:
+        heading: 'Parameters, Default Values, and Rest Parameters',
+        content: `### Parameters vs. Arguments:
+* **Parameters:** The variable names declared in the function definition signature (\`function logTicket(id, department)\`).
+* **Arguments:** The actual values passed into the function when calling it (\`logTicket(4092, "Public Works")\`).
 
-### 1. Function Declaration (Hoisted)
+### Default Parameters:
+Provide robust fallbacks if an argument is omitted or \`undefined\`:
 \`\`\`javascript
-function formatComplaintId(year, sequence) {
-  return \`CRP-\${year}-\${String(sequence).padStart(5, '0')}\`;
+function createGrievance(title, department = "General Administration", priority = "medium") {
+  return { title, department, priority, createdAt: new Date() };
 }
-\`\`\`
-*Characteristics:* Can be called *before* its line of declaration in the code because declarations are hoisted to the top of their scope by the JavaScript engine.
 
-### 2. Arrow Functions (ES6+ Standard)
+console.log(createGrievance("Pothole on Ring Road"));
+// Department defaults to "General Administration", priority to "medium"
+\`\`\`
+
+### Rest Parameters (\`...rest\`):
+Captures any number of trailing arguments into a standard JavaScript array:
 \`\`\`javascript
-const formatComplaintId = (year, sequence) => {
-  return \`CRP-\${year}-\${String(sequence).padStart(5, '0')}\`;
-};
+function calculateAverageResolutionTime(...timesInHours) {
+  if (timesInHours.length === 0) return 0;
+  const total = timesInHours.reduce((sum, current) => sum + current, 0);
+  return total / timesInHours.length;
+}
 
-// Concise syntax with implicit return (when body is a single expression):
-const double = (n) => n * 2;
-\`\`\`
-*Characteristics:* Concise syntax, does not bind its own \`this\` keyword (inherits \`this\` lexically from enclosing scope), ideal for array callbacks (\`.map(item => item.id)\`).`
+console.log(calculateAverageResolutionTime(12, 24, 48, 16)); // 25
+\`\`\``
       },
       {
-        heading: 'Lexical Scope & The Scope Chain',
-        content: `**Scope** dictates where variables are accessible in your code. JavaScript uses **Lexical Scoping**: variable accessibility is determined by where variables are physically written in the source code:
+        heading: 'The Scope Hierarchy: Global, Function, and Block Scope',
+        content: `**Scope** determines where variables are accessible and where they are hidden and protected from unauthorized modification.
 
-1. **Global Scope:** Variables declared outside any function or block are accessible everywhere. Use sparingly to avoid polluting the global namespace.
-2. **Function Scope:** Variables declared with \`var\`, \`let\`, or \`const\` inside a function are accessible only within that function.
-3. **Block Scope (\`let\` and \`const\`):** Variables declared inside a block (\`if\`, \`for\`, \`while\`) bounded by curly braces \`{}\` exist only within that block.
-
-\`\`\`javascript
-const globalPortal = "CRP India"; // Global scope
-
-function processGrievance() {
-  const officer = "Vikram"; // Function scope
-
-  if (true) {
-    const trackingCode = "CRP-99"; // Block scope
-    console.log(trackingCode); // Accessible
-    console.log(officer);      // Accessible (looks up scope chain)
-  }
-
-  // console.log(trackingCode); // ReferenceError: trackingCode is not defined!
-}
+\`\`\`
+  +-------------------------------------------------------------+
+  | GLOBAL SCOPE (Accessible everywhere across entire script)    |
+  | const appVersion = "2.4.0";                                 |
+  |                                                             |
+  |  +-------------------------------------------------------+  |
+  |  | FUNCTION SCOPE (Inside function body)                 |  |
+  |  | function processComplaint() {                         |  |
+  |  |   const officerName = "Er. Verma";                    |  |
+  |  |                                                       |  |
+  |  |   +-------------------------------------------------+ |  |
+  |  |   | BLOCK SCOPE (Inside if/for/while {})            | |  |
+  |  |   | if (status === "resolved") {                    | |  |
+  |  |   |   const completionStamp = "2026-10-28";         | |  |
+  |  |   | }                                               | |  |
+  |  |   +-------------------------------------------------+ |  |
+  |  +-------------------------------------------------------+  |
+  +-------------------------------------------------------------+
 \`\`\`
 
-### The Scope Chain:
-When JavaScript resolves a variable, it searches the immediate local scope first. If not found, it steps up to the parent scope, continuing outward until it reaches the Global scope. If still not found, it throws a \`ReferenceError\`.`
+### 1. Global Scope:
+Variables declared outside any function or block. Visible everywhere. Polluting the global scope causes naming collisions and hard-to-diagnose bugs.
+
+### 2. Function Scope:
+Variables declared with \`const\`, \`let\`, or \`var\` inside a function are completely private to that function. Outer code cannot access them.
+
+### 3. Block Scope:
+Variables declared with \`const\` and \`let\` inside any pair of curly braces \`{}\` (like an \`if\` condition or \`for\` loop) cannot be accessed outside that block!`
       },
       {
-        heading: 'Closures: Retaining Outer Variables',
-        content: `A **closure** is a function that remembers and retains access to its lexical scope even when the function is executed outside that lexical scope.
+        heading: 'Closures: How Functions Retain Memory',
+        content: `A **Closure** is the combination of a function bundled together with references to its surrounding lexical environment. In simple terms: **a closure allows an inner function to remember and access variables from an outer function, even after the outer function has finished executing!**
 
 \`\`\`javascript
-function createGrievanceCounter(department) {
-  let count = 0; // Private variable trapped inside closure
+function createCounter(initialCount = 0) {
+  let count = initialCount; // Encapsulated private variable
 
-  return function() {
-    count++;
-    return \`\${department} complaint #\${count}\`;
+  return {
+    increment: () => {
+      count++;
+      return count;
+    },
+    getCount: () => count
   };
 }
 
-const sanitationCounter = createGrievanceCounter("Sanitation");
-console.log(sanitationCounter()); // "Sanitation complaint #1"
-console.log(sanitationCounter()); // "Sanitation complaint #2"
+const wardCounter = createCounter(100);
+console.log(wardCounter.increment()); // 101
+console.log(wardCounter.increment()); // 102
+console.log(wardCounter.getCount());  // 102
+// count is completely private and cannot be tampered with directly!
 \`\`\`
-Closures enable data privacy and state encapsulation, and form the foundational basis for React Hooks like \`useState\`.`
+Closures power data privacy, factory functions, and React hooks like \`useState\`!`
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Forgetting the return statement in a function and getting undefined.',
-        whyItHappens: 'Assuming the last calculated expression in a function body is returned automatically.',
-        howToFix: 'In multi-line functions, explicitly write return myResult; otherwise the function returns undefined.'
-      },
-      {
-        mistake: 'Variable shadowing: declaring a parameter or variable with the same name as an outer variable.',
-        whyItHappens: 'Reusing common names like id or data without realizing it hides the outer variable.',
-        howToFix: 'Use specific, descriptive variable names (e.g. complaintId, userId) to avoid accidental shadowing.'
-      },
-      {
-        mistake: 'Trying to access block-scoped variables outside their { } curly braces.',
-        whyItHappens: 'Assuming let and const behave like legacy var.',
-        howToFix: 'Declare variables in the outer scope if you need to read their values after a loop or if-statement finishes.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build a Pure Status Formatting Helper Function',
-      difficulty: 'Beginner',
-      instructions: 'Write a reusable helper function formatGrievanceStatus that accepts a status string and an optional isUrgent boolean flag, returning an accessible badge label string.',
-      starterCode: `// TODO: Define formatGrievanceStatus(status, isUrgent = false)
-// If isUrgent is true and status === 'pending', return 'URGENT: Pending Action'
-// Otherwise return capitalized status string like 'Status: Resolved'`,
-      tasks: [
-        'Define formatGrievanceStatus using ES6 arrow function syntax.',
-        'Provide a default parameter for isUrgent (defaulting to false).',
-        'Handle the urgent pending condition with a clear return string.',
-        'Return formatted strings and test with multiple arguments.'
-      ],
+    exercise: {
+      instruction: 'Create a closure-based ticket ID generator function called createTicketGenerator(prefix). It should return a function that generates auto-incrementing ticket IDs (e.g., "CRP-1", "CRP-2").',
+      starterCode: `// Write your closure factory function below
+function createTicketGenerator(prefix) {
+  // Return an inner function that increments a private counter
+}
+`,
       hints: [
-        'Default parameters are written in the signature: (status, isUrgent = false).',
-        'Use template literals for easy formatting: `Status: ${status}`.'
+        'Declare let counter = 0 inside createTicketGenerator.',
+        'Return an inner function (or arrow function).',
+        'Inside the returned function, increment counter and return `${prefix}-${counter}`.'
       ],
-      solution: `const formatGrievanceStatus = (status, isUrgent = false) => {
-  if (!status) {
-    return "Status: Unknown";
-  }
+      tasks: [
+        'Initialize private counter inside outer function',
+        'Return an inner function that accesses prefix and counter',
+        'Auto-increment counter on each call',
+        'Return formatted string identifier'
+      ],
+      solution: `function createTicketGenerator(prefix) {
+  let counter = 0;
 
-  if (isUrgent && status.toLowerCase() === "pending") {
-    return "URGENT: Action Required";
-  }
-
-  const formatted = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-  return \`Status: \${formatted}\`;
-};
-
-console.log(formatGrievanceStatus("pending", true));  // "URGENT: Action Required"
-console.log(formatGrievanceStatus("resolved"));        // "Status: Resolved"
-console.log(formatGrievanceStatus("IN_PROGRESS"));     // "Status: In_progress"`,
-      solutionExplanation: 'This function encapsulates status formatting logic cleanly, uses default parameters for flexibility, and guarantees predictable return values without modifying external state.'
+  return function() {
+    counter++;
+    return \`\${prefix}-\${counter}\`;
+  };
+}`,
+      solutionExplanation: 'This demonstrates a classic JavaScript closure. The inner returned function maintains a permanent reference to the prefix parameter and the private counter variable in its lexical scope, incrementing it with each invocation without polluting the global scope.'
     },
     quiz: [
       {
-        question: 'What is the default return value of a JavaScript function that does not include an explicit "return" statement?',
+        question: 'What is a JavaScript Closure?',
         options: [
-          '0',
+          'A method used to close the browser window via script.',
+          'An inner function that retains access to variables from its outer enclosing lexical scope, even after the outer function has returned.',
+          'A syntax error that occurs when a curly brace is missing.',
+          'A special CSS selector for closed elements.'
+        ],
+        correctIndex: 1,
+        explanation: 'A closure occurs when an inner function remembers its outer lexical environment, preserving access to private variables across subsequent calls.'
+      },
+      {
+        question: 'What does a JavaScript function return if it executes without reaching an explicit "return" statement?',
+        options: [
           'null',
+          '0',
           'undefined',
           'false'
         ],
         correctIndex: 2,
-        explanation: 'Any JavaScript function that completes execution without reaching an explicit return statement automatically evaluates to undefined.'
-      },
-      {
-        question: 'What is a "closure" in JavaScript?',
-        options: [
-          'A method for shutting down a web browser window.',
-          'A function that retains access to its lexical parent scope even when executed outside that scope.',
-          'A syntax error caused by missing curly braces.',
-          'An encrypted network connection.'
-        ],
-        correctIndex: 1,
-        explanation: 'A closure is the combination of a function and the lexical environment within which that function was declared, enabling persistent private state.'
-      },
-      {
-        question: 'What happens if you attempt to access a block-scoped variable (declared with "let" inside an "if" block) outside of that block?',
-        options: [
-          'It returns null.',
-          'JavaScript throws a ReferenceError.',
-          'It automatically converts to a global variable.',
-          'It prints [Object object].'
-        ],
-        correctIndex: 1,
-        explanation: 'let and const variables are strictly block-scoped and cease to exist outside their enclosing curly braces; accessing them outside throws a ReferenceError.'
+        explanation: 'By default, any JavaScript function that terminates without an explicit return statement returns undefined.'
       }
     ],
     takeaways: [
-      'Functions encapsulate reusable logic with parameters, arguments, and return values.',
-      'Prefer modern ES6 arrow functions for concise syntax and lexical this binding.',
-      'Lexical scope searches from the local block outward through the scope chain to global scope.',
-      'Closures allow functions to retain private state from their enclosing scope.',
-      'Avoid variable shadowing by using clear, distinct variable identifiers.'
+      'Arrow functions provide concise syntax and lexical this binding, making them standard in modern frontends.',
+      'Default parameters provide fallback values when arguments are omitted.',
+      'const and let are strictly block-scoped, preventing accidental leakage outside curly braces.',
+      'Closures allow functions to encapsulate private state and power modern React patterns.'
     ],
     caseStudyReference: {
-      title: 'Controller Middleware Functions in CRP India',
-      description: 'Study how controller functions in CRP India receive req, res, and next parameters, handle asynchronous database queries, and return JSON responses.',
+      title: 'Controller Functions & Middleware Scopes in CRP India',
+      description: 'Examine how Express controller functions and custom middleware in CRP India encapsulate request handling and return formatted JSON responses.',
       files: [
-        'reference-projects/CRP-India/backend/src/controllers/grievanceController.js',
-        'reference-projects/CRP-India/backend/src/middleware/authMiddleware.js'
+        'reference-projects/CRP-India/backend/controllers/complaintController.js',
+        'reference-projects/CRP-India/backend/middleware/auth.js'
       ]
     }
   }

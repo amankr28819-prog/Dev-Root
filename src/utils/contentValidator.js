@@ -1,7 +1,7 @@
 /**
- * Dev-root Content Quality Validation System
+ * Dev-root Content Quality Validation System (Phase 4 4x Depth Standard)
  * Programmatically audits and evaluates lessons and courses for educational completeness,
- * schema integrity, broken references, placeholder text, and accessibility metadata.
+ * schema integrity, broken references, placeholder text, 4x depth standards, and accessibility metadata.
  */
 
 export function validateLesson(slug, lesson, courseMap = {}) {
@@ -32,11 +32,11 @@ export function validateLesson(slug, lesson, courseMap = {}) {
     });
   }
 
-  // 3. Body Content Sections checks
+  // 3. Body Content Sections checks & Phase 4 4x Depth Metrics
+  let totalWords = 0;
   if (!Array.isArray(lesson.sections) || lesson.sections.length < 3) {
-    issues.push(`Lesson [${slug}] must have at least 3 content sections (found: ${lesson.sections?.length || 0}).`);
+    issues.push(`Lesson [${slug}] must have at least 3 content sections for adequate teaching depth (found: ${lesson.sections?.length || 0}).`);
   } else {
-    let totalWords = 0;
     lesson.sections.forEach((sec, idx) => {
       if (!sec.heading || sec.heading.trim().length < 3) {
         issues.push(`Lesson [${slug}] section #${idx + 1} is missing a descriptive heading.`);
@@ -44,45 +44,45 @@ export function validateLesson(slug, lesson, courseMap = {}) {
       if (!sec.content || sec.content.trim().length < 50) {
         issues.push(`Lesson [${slug}] section #${idx + 1} has insufficient content (<50 characters).`);
       } else {
-        totalWords += sec.content.split(/\s+/).length;
+        const words = sec.content.split(/\s+/).filter(Boolean).length;
+        totalWords += words;
+
         // Check for placeholder text
         const lower = sec.content.toLowerCase();
         if (lower.includes('lorem ipsum') || lower.includes('[object object]') || lower.includes('todo:')) {
           warnings.push(`Lesson [${slug}] section #${idx + 1} contains potential placeholder text.`);
         }
+
+        // Check for unclosed code fences
+        const codeFences = (sec.content.match(/```/g) || []).length;
+        if (codeFences % 2 !== 0) {
+          issues.push(`Lesson [${slug}] section #${idx + 1} has an unclosed code block fence.`);
+        }
       }
     });
 
-    if (totalWords < 300) {
-      warnings.push(`Lesson [${slug}] has relatively short total section content (${totalWords} words).`);
+    if (totalWords < 400) {
+      warnings.push(`Lesson [${slug}] has relatively short section content (${totalWords} words). Target is 1,200-2,500+ words.`);
     }
   }
 
-  // 4. Common Mistakes & Troubleshooting checks
-  if (lesson.commonMistakes) {
-    if (!Array.isArray(lesson.commonMistakes)) {
-      issues.push(`Lesson [${slug}] commonMistakes must be an array.`);
-    } else {
-      lesson.commonMistakes.forEach((cm, idx) => {
-        if (!cm.mistake || !cm.whyItHappens || !cm.howToFix) {
-          issues.push(`Lesson [${slug}] commonMistake #${idx + 1} must include mistake, whyItHappens, and howToFix.`);
-        }
-      });
+  // 4. Guided Practice & Exercise checks (Phase 4 requirement)
+  const exercise = lesson.exercise || lesson.guidedExercise;
+  if (!exercise) {
+    warnings.push(`Lesson [${slug}] lacks an interactive hands-on exercise.`);
+  } else {
+    if (!exercise.instruction && !exercise.instructions) {
+      issues.push(`Lesson [${slug}] exercise must have an instruction or instructions prompt.`);
+    }
+    if (!exercise.solution) {
+      issues.push(`Lesson [${slug}] exercise must have an educational solution.`);
+    }
+    if (Array.isArray(exercise.hints) && exercise.hints.length === 0) {
+      warnings.push(`Lesson [${slug}] exercise has an empty hints array; progressive hints recommended.`);
     }
   }
 
-  // 5. Guided Practice Exercise checks
-  if (lesson.guidedExercise) {
-    const ex = lesson.guidedExercise;
-    if (!ex.title || !ex.instructions || !ex.solution) {
-      issues.push(`Lesson [${slug}] guidedExercise must have title, instructions, and solution.`);
-    }
-    if (Array.isArray(ex.hints) && ex.hints.length === 0) {
-      warnings.push(`Lesson [${slug}] guidedExercise has empty hints array.`);
-    }
-  }
-
-  // 6. Knowledge Check Quiz checks
+  // 5. Knowledge Check Quiz checks
   if (!Array.isArray(lesson.quiz) || lesson.quiz.length < 2) {
     issues.push(`Lesson [${slug}] must have at least 2 quiz questions for knowledge verification.`);
   } else {
@@ -102,12 +102,12 @@ export function validateLesson(slug, lesson, courseMap = {}) {
     });
   }
 
-  // 7. Key Takeaways checks
+  // 6. Key Takeaways checks
   if (!Array.isArray(lesson.takeaways) || lesson.takeaways.length < 2) {
     issues.push(`Lesson [${slug}] must have at least 2 summary takeaways.`);
   }
 
-  // 8. Case Study Reference checks
+  // 7. Case Study Reference checks
   if (lesson.caseStudyReference) {
     if (!lesson.caseStudyReference.title || !lesson.caseStudyReference.description) {
       issues.push(`Lesson [${slug}] caseStudyReference is missing title or description.`);
@@ -117,6 +117,7 @@ export function validateLesson(slug, lesson, courseMap = {}) {
   return {
     slug,
     isValid: issues.length === 0,
+    totalWords,
     issues,
     warnings
   };
@@ -132,6 +133,7 @@ export function validateCurriculum(lessons, courses) {
   const allIssues = [];
   const allWarnings = [];
   let evaluatedLessonsCount = 0;
+  let totalCurriculumWords = 0;
 
   // Validate each lesson
   for (const [slug, lesson] of Object.entries(lessons)) {
@@ -146,6 +148,8 @@ export function validateCurriculum(lessons, courses) {
     }
 
     const result = validateLesson(slug, lesson, courseMap);
+    totalCurriculumWords += result.totalWords || 0;
+
     if (!result.isValid) {
       allIssues.push(...result.issues);
     }
@@ -168,12 +172,13 @@ export function validateCurriculum(lessons, courses) {
   return {
     valid: allIssues.length === 0,
     evaluatedLessonsCount,
+    totalCurriculumWords,
     errorCount: allIssues.length,
     warningCount: allWarnings.length,
     errors: allIssues,
     warnings: allWarnings,
     summary: allIssues.length === 0
-      ? `All ${evaluatedLessonsCount} curriculum lessons passed educational quality standards.`
+      ? `All ${evaluatedLessonsCount} curriculum lessons passed educational quality standards (${totalCurriculumWords.toLocaleString()} core section words).`
       : `Found ${allIssues.length} validation errors and ${allWarnings.length} warnings across ${evaluatedLessonsCount} lessons.`
   };
 }

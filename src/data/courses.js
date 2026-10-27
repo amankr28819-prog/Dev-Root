@@ -144,18 +144,18 @@ export const COURSES = [
     title: 'Course 7: Modern JavaScript',
     category: 'Programming',
     level: 'Intermediate',
-    duration: '4 Lessons • 3 Hours',
-    description: 'Advance to modern ES6+ capabilities: arrow functions, array iteration methods (.map, .filter, .reduce), Promises, async/await, Fetch API, and ES Modules.',
-    status: 'planned',
+    duration: '2 Lessons • 2 Hours',
+    description: 'Advance to modern ES6+ capabilities: arrow functions, array iteration methods (.map, .filter, .reduce), Promises, async/await, Fetch API, and the Event Loop.',
+    status: 'available',
     objectives: [
       'Manipulate complex datasets declaratively with higher-order array methods.',
       'Master asynchronous flow control with Promises, async/await, and try/catch.',
-      'Fetch JSON from remote endpoints and handle loading and error states gracefully.'
+      'Understand the JavaScript single-threaded concurrency model and the Event Loop.'
     ],
     prerequisites: 'Course 6: The Browser and the DOM',
     lessons: [
-      { id: 'lesson-7-1', slug: 'es6-syntax-and-array-methods', title: 'ES6+ Syntax, Destructuring & Array Methods', duration: '35 min', status: 'planned' },
-      { id: 'lesson-7-2', slug: 'promises-and-async-await', title: 'Promises, Async/Await & The Event Loop', duration: '40 min', status: 'planned' }
+      { id: 'lesson-7-1', slug: 'es6-syntax-and-array-methods', title: 'ES6+ Syntax, Destructuring & Array Methods', duration: '45 min', status: 'available' },
+      { id: 'lesson-7-2', slug: 'promises-and-async-await', title: 'Promises, Async/Await & The Event Loop', duration: '45 min', status: 'available' }
     ]
   },
   {
@@ -183,9 +183,9 @@ export const COURSES = [
     title: 'Course 9: React from Zero',
     category: 'Frontend',
     level: 'Intermediate',
-    duration: '6 Lessons • 5 Hours',
-    description: 'Build modern Single Page Applications using React: JSX, component composition, props, state with useState, side effects with useEffect, and forms.',
-    status: 'planned',
+    duration: '2 Lessons • 2 Hours',
+    description: 'Build modern Single Page Applications using React: Declarative UI, JSX, component composition, props, state with useState, and side effects with useEffect.',
+    status: 'available',
     objectives: [
       'Understand declarative UI rendering and how React synchronizes the Virtual DOM.',
       'Manage local component state with useState and lift state up across parent-child trees.',
@@ -193,8 +193,8 @@ export const COURSES = [
     ],
     prerequisites: 'Course 7: Modern JavaScript',
     lessons: [
-      { id: 'lesson-9-1', slug: 'react-components-and-jsx', title: 'Components, JSX & Props Data Flow', duration: '35 min', status: 'planned' },
-      { id: 'lesson-9-2', slug: 'react-state-and-lifecycle', title: 'State Management with useState & useEffect', duration: '40 min', status: 'planned' }
+      { id: 'lesson-9-1', slug: 'react-components-and-jsx', title: 'Components, JSX & Props Data Flow', duration: '45 min', status: 'available' },
+      { id: 'lesson-9-2', slug: 'react-state-and-lifecycle', title: 'State Management with useState & useEffect', duration: '45 min', status: 'available' }
     ]
   },
   {
@@ -203,9 +203,9 @@ export const COURSES = [
     title: 'Course 10: Backend Development with Node.js',
     category: 'Backend',
     level: 'Intermediate',
-    duration: '6 Lessons • 4 Hours',
+    duration: '2 Lessons • 2 Hours',
     description: 'Move to server-side engineering: Node.js runtime, package.json dependencies, Express servers, routing, middleware chains, status codes, and CORS.',
-    status: 'planned',
+    status: 'available',
     objectives: [
       'Understand JavaScript outside the browser and asynchronous I/O in Node.js.',
       'Construct Express web servers with structured route handlers and controllers.',
@@ -213,8 +213,8 @@ export const COURSES = [
     ],
     prerequisites: 'Course 7: Modern JavaScript & Course 1: Understanding the Web',
     lessons: [
-      { id: 'lesson-10-1', slug: 'nodejs-runtime-and-modules', title: 'The Node.js Runtime & NPM Ecosystem', duration: '30 min', status: 'planned' },
-      { id: 'lesson-10-2', slug: 'express-servers-and-middleware', title: 'Express Routing & Middleware Architecture', duration: '40 min', status: 'planned' }
+      { id: 'lesson-10-1', slug: 'nodejs-runtime-and-modules', title: 'The Node.js Runtime & NPM Ecosystem', duration: '45 min', status: 'available' },
+      { id: 'lesson-10-2', slug: 'express-servers-and-middleware', title: 'Express Routing & Middleware Architecture', duration: '45 min', status: 'available' }
     ]
   },
   {
@@ -223,9 +223,9 @@ export const COURSES = [
     title: 'Course 11: Databases and MongoDB',
     category: 'Database',
     level: 'Intermediate',
-    duration: '5 Lessons • 4 Hours',
+    duration: '2 Lessons • 2 Hours',
     description: 'Store and query persistent data: relational SQL vs document NoSQL databases, MongoDB collections, Mongoose schemas, CRUD operations, and indexes.',
-    status: 'planned',
+    status: 'available',
     objectives: [
       'Compare relational table schemas with flexible document collections.',
       'Define strongly-typed schemas, default values, and validators using Mongoose.',
@@ -233,8 +233,8 @@ export const COURSES = [
     ],
     prerequisites: 'Course 10: Backend Development with Node.js',
     lessons: [
-      { id: 'lesson-11-1', slug: 'database-concepts-and-mongodb', title: 'Database Foundations & MongoDB Collections', duration: '35 min', status: 'planned' },
-      { id: 'lesson-11-2', slug: 'mongoose-schemas-and-crud', title: 'Mongoose Schemas, Validation & CRUD Queries', duration: '40 min', status: 'planned' }
+      { id: 'lesson-11-1', slug: 'database-concepts-and-mongodb', title: 'Database Foundations & MongoDB Collections', duration: '45 min', status: 'available' },
+      { id: 'lesson-11-2', slug: 'mongoose-schemas-and-crud', title: 'Mongoose Schemas, Validation & CRUD Queries', duration: '45 min', status: 'available' }
     ]
   },
   {
@@ -243,9 +243,9 @@ export const COURSES = [
     title: 'Course 12: Authentication and Authorization',
     category: 'Security',
     level: 'Advanced',
-    duration: '5 Lessons • 4 Hours',
+    duration: '2 Lessons • 2 Hours',
     description: 'Master application security: user registration, bcrypt password hashing, stateless JWT tokens, protected routes, and Role-Based Access Control (RBAC).',
-    status: 'planned',
+    status: 'available',
     objectives: [
       'Distinguish authentication (who you are) from authorization (what you can do).',
       'Hash passwords with bcrypt before persistence and verify them during login.',
@@ -253,8 +253,8 @@ export const COURSES = [
     ],
     prerequisites: 'Course 10: Backend Development & Course 11: Databases',
     lessons: [
-      { id: 'lesson-12-1', slug: 'auth-principles-and-bcrypt', title: 'Authentication Foundations & Password Hashing', duration: '35 min', status: 'planned' },
-      { id: 'lesson-12-2', slug: 'jwt-and-role-based-access', title: 'JWT Tokens & Role-Based Access Control (RBAC)', duration: '40 min', status: 'planned' }
+      { id: 'lesson-12-1', slug: 'authentication-concepts-and-jwt', title: 'Authentication Foundations, Password Hashing & Stateless JWTs', duration: '45 min', status: 'available' },
+      { id: 'lesson-12-2', slug: 'authorization-and-web-security', title: 'Role-Based Access Control, Protected Routes & Web Security', duration: '45 min', status: 'available' }
     ]
   },
   {

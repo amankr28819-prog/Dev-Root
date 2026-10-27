@@ -1,6 +1,6 @@
 /**
- * Dev-root Course 6: The Browser and the DOM - Deep Learning Curriculum
- * Comprehensive lessons covering DOM selection, manipulation, events, and forms.
+ * Dev-root Course 6: The Browser and the DOM - Deep Learning Curriculum (Phase 4 4x Depth Standard)
+ * Comprehensive lessons covering DOM selection, manipulation, event propagation, delegation, and forms.
  */
 
 export const BROWSER_DOM_LESSONS = {
@@ -12,18 +12,31 @@ export const BROWSER_DOM_LESSONS = {
     courseTitle: 'Course 6: The Browser and the DOM',
     title: 'Selecting Elements, Modifying Content & Events',
     category: 'Frontend',
-    estimatedTime: '40 min read & practice',
+    estimatedTime: '45 min read & practice',
     objectives: [
-      'Understand how browsers parse HTML text into the live in-memory Document Object Model (DOM).',
-      'Select elements accurately using document.querySelector and document.querySelectorAll.',
-      'Modify element text, HTML content, attributes, and CSS class lists safely.',
-      'Handle user actions using addEventListener, event bubbling, and event.preventDefault().',
-      'Understand why modern frameworks like React build upon these underlying DOM fundamentals.'
+      'Understand how browsers parse HTML into the live in-memory Document Object Model (DOM) tree.',
+      'Master document.querySelector and querySelectorAll using modern CSS selector syntax.',
+      'Differentiate textContent, innerHTML, and understand Cross-Site Scripting (XSS) risks.',
+      'Manipulate element styles and classes dynamically using the classList API (add, remove, toggle).',
+      'Master event handling with addEventListener, the Event object, and event.preventDefault().',
+      'Understand Event Bubbling, Event Capturing, and implement the performant Event Delegation pattern.'
     ],
     sections: [
       {
         heading: 'What is the Document Object Model (DOM)?',
-        content: `When a browser receives an HTML document, it does not interact with the raw string of HTML text. Instead, its rendering engine parses the tags into an object-oriented, hierarchical tree structure called the **Document Object Model (DOM)**.
+        content: `When a browser receives an HTML document across the network, it does not interact with the raw string of HTML text. Instead, its rendering engine parses the tags into an object-oriented, hierarchical tree structure called the **Document Object Model (DOM)**.
+
+\`\`\`
+                          [ document ]
+                               |
+                            [ <html> ]
+                            /        \\
+                     [ <head> ]     [ <body> ]
+                       /    \\         /      \\
+                 [ <title> ] [ <meta> ] [ <h1> ]  [ <p> ]
+                     |                     |        |
+             "Citizen Portal"        "Welcome"  "Grievance"
+\`\`\`
 
 Every HTML tag becomes an **Element Node** in memory, and the text inside becomes a **Text Node**.
 The global \`document\` object in JavaScript provides an API (Application Programming Interface) allowing your code to:
@@ -53,174 +66,201 @@ const allGrievanceCards = document.querySelectorAll('.grievance-card');
 allGrievanceCards.forEach((card, index) => {
   console.log(\`Card #\${index + 1}\`, card);
 });
+
+// Or convert to a standard JavaScript array using Array.from():
+const cardArray = Array.from(allGrievanceCards);
 \`\`\``
       },
       {
-        heading: 'Modifying Content, Attributes, and CSS Classes',
-        content: `Once an element is selected, you can manipulate it in memory:
+        heading: 'Modifying Content Safely: textContent vs. innerHTML (and XSS Risks)',
+        content: `Once an element is selected, you can modify its content:
 
-### 1. Updating Text: \`textContent\` vs. \`innerHTML\`
-* **\`element.textContent\` (Recommended):** Sets or reads the raw plaintext inside an element. It strips all tags and automatically escapes special characters. **Always use \`textContent\` when rendering untrusted user input to prevent Cross-Site Scripting (XSS) vulnerabilities!**
-* **\`element.innerHTML\`:** Parses the string as HTML tags. Dangerous if used with un-sanitized user input.
-
-### 2. Managing CSS Classes via \`classList\`
-Never modify the \`class\` attribute as a raw string (\`element.className = ...\`). Use the dedicated **\`classList\` API**:
+### 1. \`textContent\` (Safe Plain Text - Preferred):
+Reads or sets text as raw characters. HTML tags are treated as literal text, preventing security vulnerabilities:
 \`\`\`javascript
-const badge = document.querySelector('.badge');
-badge.classList.add('badge-resolved');     // Adds class
-badge.classList.remove('badge-pending');    // Removes class
-badge.classList.toggle('highlighted');      // Adds if missing, removes if present
-badge.classList.contains('badge-resolved'); // Returns boolean true/false
+const titleEl = document.querySelector('#card-title');
+titleEl.textContent = "Ward 12 Road Repair";
 \`\`\`
 
-### 3. Modifying Attributes
+### 2. \`innerHTML\` (HTML Markup Parser - Security Warning!):
+Parses the assigned string into live HTML elements:
 \`\`\`javascript
-const link = document.querySelector('a.report-link');
-link.setAttribute('href', '/reports/2026/04');
-link.setAttribute('aria-expanded', 'true');
+titleEl.innerHTML = "Ward 12 <span class='badge'>Urgent</span>";
+\`\`\`
+
+### The Critical Security Risk: Cross-Site Scripting (XSS)
+Never use \`innerHTML\` to display un-sanitized user-supplied input! If a malicious citizen submits their name as \`<img src="x" onerror="stealSessionCookies()">\`, assigning this string via \`innerHTML\` executes the malicious JavaScript in the victim's browser!
+**Rule:** Always use \`textContent\` for text insertion. When creating structured HTML elements dynamically, use \`document.createElement()\`.`
+      },
+      {
+        heading: 'Dynamic Styling with the classList API',
+        content: `Directly modifying inline styles via \`element.style.color = "red"\` clutters HTML and introduces high-specificity inline overrides. Instead, define CSS classes in your stylesheet and toggle them using the **\`classList\`** API:
+
+\`\`\`javascript
+const card = document.querySelector('.complaint-card');
+
+card.classList.add('is-resolved');       // Adds class
+card.classList.remove('is-pending');     // Removes class
+card.classList.toggle('highlighted');    // Adds if missing; removes if present
+const hasError = card.classList.contains('has-error'); // Returns true or false
 \`\`\``
       },
       {
-        heading: 'Handling Events & event.preventDefault()',
-        content: `Web applications feel interactive because they listen and react to user events:
-
+        heading: 'Creating and Appending Elements with DocumentFragment',
+        content: `To dynamically add new HTML elements to the page:
 \`\`\`javascript
-const form = document.querySelector('#grievance-form');
+// 1. Create the element
+const newCard = document.createElement('div');
 
-form.addEventListener('submit', (event) => {
-  // CRITICAL: Prevent the browser from refreshing the whole page!
-  event.preventDefault();
+// 2. Configure content and classes
+newCard.classList.add('card', 'card-fresh');
+newCard.textContent = "New Grievance Registered";
 
-  const titleInput = document.querySelector('#complaint-title');
-  const titleValue = titleInput.value.trim();
+// 3. Mount it to the parent container
+const container = document.querySelector('#cards-container');
+container.appendChild(newCard);
+\`\`\`
 
-  if (titleValue === '') {
-    alert('Please enter a complaint title.');
-    return;
-  }
+### Performance Optimization: DocumentFragment
+Every time an element is appended to the live DOM, the browser triggers a **Reflow (Layout calculation)** and **Repaint**. If you insert 500 ticket rows in a loop using \`appendChild\`, the browser reflows 500 times, freezing the UI!
+Use a **\`DocumentFragment\`** to batch mutations off-screen:
+\`\`\`javascript
+const fragment = document.createDocumentFragment();
 
-  console.log('Submitting grievance asynchronously:', titleValue);
+tickets.forEach(ticket => {
+  const row = document.createElement('tr');
+  row.textContent = ticket.title;
+  fragment.appendChild(row); // Appended off-screen! Zero reflow.
+});
+
+// Appending the fragment to the DOM triggers exactly ONE single reflow!
+document.querySelector('#ticket-table tbody').appendChild(fragment);
+\`\`\``
+      },
+      {
+        heading: 'Event Handling, Bubbling, and Event Delegation',
+        content: `Events represent user interactions (clicks, keypresses, input changes, form submissions).
+
+### 1. Attaching Event Listeners:
+\`\`\`javascript
+const submitBtn = document.querySelector('#submit-btn');
+
+submitBtn.addEventListener('click', (event) => {
+  console.log('Button clicked!', event);
 });
 \`\`\`
 
-### Event Bubbling & Delegation:
-When an event occurs on a deeply nested element (like a button inside a card inside a list), the event doesn\'t just trigger on the button. It **bubbles up** through every ancestor element in the tree:
-\`Button -> Card -> Section -> Main -> Body -> Document\`
+### 2. Preventing Default Browser Action (\`event.preventDefault()\`):
+When a user submits an HTML \`<form>\`, the browser's default behavior is to reload the entire web page. In Single Page Applications (SPAs), we prevent this reload so JavaScript can handle submission via Fetch API:
+\`\`\`javascript
+const form = document.querySelector('#grievance-form');
 
-With **Event Delegation**, instead of attaching 50 separate event listeners to 50 individual cards, you attach a single listener to the parent container (\`#complaint-list\`) and inspect \`event.target\` to see which specific child was clicked. This dramatically saves browser memory.`
+form.addEventListener('submit', (e) => {
+  e.preventDefault(); // HALT full page reload!
+  const formData = new FormData(form);
+  // Send asynchronous JSON request to backend...
+});
+\`\`\`
+
+### 3. Event Bubbling & The Event Delegation Pattern:
+When an event occurs on an element (e.g., a button inside a table row), it doesn't stop there. It **bubbles** up the DOM tree from the child element, through parent containers, up to \`<body>\` and \`document\`.
+
+\`\`\`
+   [Table Container]   <---- (Event bubbles all the way up!)
+          ^
+     [Table Row]       <---- (Parent receives click event)
+          ^
+    [Delete Button]    <---- (Click event originates here)
+\`\`\`
+
+Instead of adding 1,000 separate event listeners to 1,000 delete buttons in a table (which consumes massive memory), attach **one single listener to the parent table**:
+\`\`\`javascript
+const table = document.querySelector('#complaints-table');
+
+table.addEventListener('click', (e) => {
+  // Check if the clicked target is a delete button
+  if (e.target.matches('.btn-delete')) {
+    const ticketId = e.target.dataset.id;
+    deleteTicket(ticketId);
+  }
+});
+\`\`\``
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Using element.innerHTML with user-supplied text, creating Cross-Site Scripting (XSS) security flaws.',
-        whyItHappens: 'innerHTML seems convenient for inserting text and markup.',
-        howToFix: 'Use element.textContent for raw text. It automatically sanitizes HTML entities and prevents malicious script execution.'
-      },
-      {
-        mistake: 'Forgetting event.preventDefault() on form submit listeners.',
-        whyItHappens: 'Wondering why the page refreshes and state disappears immediately upon clicking submit.',
-        howToFix: 'Standard HTML forms submit via page reload. Always call event.preventDefault() when handling submissions via JavaScript.'
-      },
-      {
-        mistake: 'Attaching duplicate event listeners inside repeated loops without cleanup.',
-        whyItHappens: 'Registering addEventListener inside functions that get called repeatedly.',
-        howToFix: 'Attach event listeners once during initialization, or use event delegation on the parent container.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build an Interactive Dynamic Grievance Counter & Filter',
-      difficulty: 'Intermediate',
-      instructions: 'Write JavaScript that selects a list of complaint items, filters items dynamically when a button is clicked, and updates an interactive counter on screen using textContent and classList.',
-      starterCode: `// HTML STRUCTURE:
-// <span id="counter">0</span> complaints visible
-// <button id="filter-btn">Show Urgent Only</button>
-// <ul id="list">
-//   <li class="item" data-urgent="true">Open Manhole</li>
-//   <li class="item" data-urgent="false">Streetlight Flickering</li>
-// </ul>
-
-// TODO: Write event listener on #filter-btn to hide non-urgent items`,
-      tasks: [
-        'Select the filter button and list items using querySelector and querySelectorAll.',
-        'Add a click event listener to the button.',
-        'Toggle a hidden CSS class on items where data-urgent is not "true".',
-        'Update the #counter textContent to show the count of currently visible complaints.'
-      ],
+    exercise: {
+      instruction: 'Write JavaScript code that intercepts a form submission (#ticket-form), prevents the page reload, extracts the citizen name (#name-input), and appends a new list item (<li>) with class "ticket-item" to #ticket-list.',
+      starterCode: `// Write your DOM event logic below
+const form = document.querySelector('#ticket-form');
+`,
       hints: [
-        'Read dataset attributes using element.dataset.urgent.',
-        'Use item.classList.toggle("hidden") to hide or show items.',
-        'Count visible items by filtering items without the "hidden" class.'
+        'Add an event listener for the "submit" event on form.',
+        'Call e.preventDefault() inside the callback.',
+        'Get the value using document.querySelector("#name-input").value.',
+        'Use document.createElement("li"), assign its textContent and classList, and append it to #ticket-list.'
       ],
-      solution: `const filterBtn = document.querySelector('#filter-btn');
-const counter = document.querySelector('#counter');
-const items = document.querySelectorAll('.item');
+      tasks: [
+        'Listen for submit event on form',
+        'Call event.preventDefault()',
+        'Extract text value safely',
+        'Create <li> element and append to #ticket-list'
+      ],
+      solution: `const form = document.querySelector('#ticket-form');
+const ticketList = document.querySelector('#ticket-list');
 
-filterBtn.addEventListener('click', () => {
-  let visibleCount = 0;
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-  items.forEach(item => {
-    const isUrgent = item.dataset.urgent === 'true';
-    if (!isUrgent) {
-      item.classList.toggle('hidden');
-    }
+  const nameInput = document.querySelector('#name-input');
+  const citizenName = nameInput.value.trim();
 
-    if (!item.classList.contains('hidden')) {
-      visibleCount++;
-    }
-  });
+  if (citizenName.length === 0) return;
 
-  counter.textContent = String(visibleCount);
+  const listItem = document.createElement('li');
+  listItem.classList.add('ticket-item');
+  listItem.textContent = citizenName;
+
+  ticketList.appendChild(listItem);
+  form.reset();
 });`,
-      solutionExplanation: 'This script demonstrates modern DOM manipulation: selecting nodes with querySelector, handling user clicks with addEventListener, toggling CSS classes via classList, and safely updating output with textContent.'
+      solutionExplanation: 'This demonstrates standard modern DOM event handling: halting the default full-page reload, extracting user input safely without innerHTML XSS vulnerabilities, creating an element node, and appending it to the DOM tree.'
     },
     quiz: [
       {
-        question: 'Why should developers use "element.textContent" instead of "element.innerHTML" when rendering user-submitted text?',
+        question: 'Why should a web developer use "textContent" instead of "innerHTML" when displaying user-entered data on a webpage?',
         options: [
-          'textContent runs 10x slower but is easier to read.',
-          'textContent prevents Cross-Site Scripting (XSS) attacks by treating all input as literal plaintext rather than executable HTML markup.',
-          'innerHTML is only supported on mobile devices.',
-          'textContent automatically translates text to English.'
+          'textContent renders text in bold by default.',
+          'innerHTML parses input as HTML markup, creating severe Cross-Site Scripting (XSS) vulnerabilities if the user enters malicious <script> or event tags.',
+          'textContent is only supported on mobile devices.',
+          'innerHTML triggers a permanent page reload.'
         ],
         correctIndex: 1,
-        explanation: 'Setting user input via innerHTML allows malicious users to inject <script> or <img onerror="..."> payloads (XSS). textContent renders characters literally, neutralizing injection attacks.'
+        explanation: 'innerHTML evaluates raw strings as executable HTML. Inserting untrusted user input with innerHTML opens the door to XSS attacks, whereas textContent safely encodes and treats input as plain text.'
       },
       {
-        question: 'What is the purpose of calling "event.preventDefault()" inside a form submit event listener?',
+        question: 'What is the primary architectural advantage of the Event Delegation pattern?',
         options: [
-          'It clears all user passwords from memory.',
-          'It stops the browser from executing its default action (reloading the entire page or navigating away), allowing JavaScript to handle the submission asynchronously.',
-          'It forces the browser to shut down.',
-          'It checks the user\'s internet speed.'
+          'It automatically animates all button clicks.',
+          'It attaches a single event listener to a parent container rather than hundreds of listeners on dynamic child elements, saving memory and handling newly created children automatically.',
+          'It prevents forms from submitting data over HTTPS.',
+          'It bypasses CSS specificity rules.'
         ],
         correctIndex: 1,
-        explanation: 'Default browser behavior on form submission is to make a full synchronous HTTP request and reload the page. Calling event.preventDefault() halts this, enabling smooth Single-Page Application (SPA) interactions.'
-      },
-      {
-        question: 'What does "Event Bubbling" mean in the browser DOM?',
-        options: [
-          'Water bubble animations rendered on canvas.',
-          'When an event fires on an element, it subsequently propagates upward through its parent elements all the way to the root document node.',
-          'Memory leaks that grow over time.',
-          'Events being delayed by network lag.'
-        ],
-        correctIndex: 1,
-        explanation: 'Event bubbling describes how DOM events travel up the ancestor hierarchy, triggering listener callbacks on parent nodes unless event.stopPropagation() is called.'
+        explanation: 'Event delegation leverages event bubbling to handle events at a common ancestor. This dramatically reduces memory footprint and ensures dynamically added elements are handled without re-attaching listeners.'
       }
     ],
     takeaways: [
-      'The DOM is the browser\'s in-memory, object-oriented representation of the HTML document.',
-      'Use querySelector and querySelectorAll with CSS selector syntax for flexible, modern element selection.',
-      'Use textContent for safe plaintext rendering; use classList for clean CSS class management.',
-      'Use addEventListener to listen for user interactions, and event.preventDefault() to handle forms without full page reloads.',
-      'Event bubbling enables event delegation, reducing memory usage by managing events on parent containers.'
+      'The browser creates an in-memory DOM tree from HTML that JavaScript inspects and manipulates.',
+      'Use querySelector and querySelectorAll with modern CSS selectors.',
+      'Always prefer textContent over innerHTML to prevent Cross-Site Scripting (XSS) security vulnerabilities.',
+      'Use event.preventDefault() to halt full-page reloads during form submissions.',
+      'Leverage Event Delegation on parent containers to handle dynamic elements efficiently.'
     ],
     caseStudyReference: {
-      title: 'DOM Event Handlers & State Updates in CRP India',
-      description: 'Observe how form submission events in the grievance portal prevent default page reloads and submit data asynchronously using React event synthetic wrappers.',
+      title: 'DOM Event Listeners and Form Interception in CRP India',
+      description: 'Review the React synthetic event wrappers and form submit handlers in CRP India that prevent browser reloads and send asynchronous Axios API calls.',
       files: [
-        'reference-projects/CRP-India/frontend/src/pages/SubmitGrievance.jsx',
-        'reference-projects/CRP-India/frontend/src/components/GrievanceCard.jsx'
+        'reference-projects/CRP-India/frontend/src/pages/LodgeComplaint.jsx',
+        'reference-projects/CRP-India/frontend/src/components/GrievanceForm.jsx'
       ]
     }
   }

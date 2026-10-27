@@ -1,5 +1,5 @@
 /**
- * Dev-root Course 3: HTML from Zero - Deep Learning Curriculum
+ * Dev-root Course 3: HTML from Zero - Deep Learning Curriculum (Phase 4 4x Depth Standard)
  * Comprehensive, modular lessons covering HTML syntax, document structure,
  * modern semantic landmarks, links, media, tables, accessible forms, and a11y.
  */
@@ -13,7 +13,7 @@ export const HTML_LESSONS = {
     courseTitle: 'Course 3: HTML from Zero',
     title: 'HTML Syntax, Tags, Elements & Document Structure',
     category: 'Frontend',
-    estimatedTime: '35 min read & practice',
+    estimatedTime: '45 min read & practice',
     interactivePlayground: 'html',
     playgroundTitle: 'HTML Boilerplate & Element Sandbox',
     playgroundCode: `<!DOCTYPE html>
@@ -23,9 +23,11 @@ export const HTML_LESSONS = {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>First Web Document</title>
   <style>
-    body { font-family: system-ui, sans-serif; padding: 1.5rem; line-height: 1.6; color: #1e293b; }
-    .tag-badge { background: #e0e7ff; color: #3730a3; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
-    .card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+    body { font-family: system-ui, sans-serif; padding: 1.5rem; line-height: 1.6; color: #1e293b; background: #f8fafc; }
+    .tag-badge { background: #e0e7ff; color: #3730a3; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; font-family: monospace; }
+    .card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem; margin-top: 1rem; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    button { background: #2563eb; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    button:hover { background: #1d4ed8; }
   </style>
 </head>
 <body>
@@ -42,64 +44,106 @@ export const HTML_LESSONS = {
       'Construct a valid, standards-compliant HTML5 boilerplate document from memory.',
       'Understand the critical purpose of character encoding (UTF-8) and the viewport meta tag.',
       'Differentiate container elements from self-closing void elements (<br>, <img>, <meta>, <input>).',
-      'Inspect living HTML trees using browser Developer Tools and understand DOM parsing.'
+      'Trace the browser parsing pipeline from raw bytes to tokens, nodes, and the live Document Object Model (DOM) tree.',
+      'Inspect living HTML trees using browser Developer Tools and diagnose common nesting mistakes.'
     ],
     sections: [
       {
         heading: 'What is HTML and What Problem Does It Solve?',
-        content: `HyperText Markup Language (HTML) is the universal structural language of the World Wide Web. Every website you visit—from a simple blog post to complex applications like GitHub or the CRP India grievance portal—relies on HTML to provide structure, hierarchy, and meaning to raw content.
+        content: `HyperText Markup Language (HTML) is the foundational structural language of the World Wide Web. Every website you visit—from a personal developer blog to massive software systems like GitHub or the CRP India municipal grievance platform—relies on HTML to provide structure, hierarchy, and meaning to raw information.
 
-To understand HTML, consider the three core layers of modern web development:
-1. **HTML (Structure & Semantics):** Defines *what* the content is (a heading, a paragraph, a navigation bar, a data table, an input field).
-2. **CSS (Presentation & Visual Styling):** Defines *how* that content looks (colors, typography, spacing, flexbox alignment, animations).
-3. **JavaScript (Behavior & Interactivity):** Defines *how* the document behaves (handling user clicks, sending asynchronous network requests, validating inputs dynamically).
+### The Three Web Pillars: Separation of Concerns
+To understand HTML, consider how modern web technologies divide responsibilities:
+1. **HTML (Structure & Semantics):** Defines *what* the content is (a top-level heading, a paragraph, an article, a navigation landmark, an input field, a data table).
+2. **CSS (Presentation & Visual Design):** Defines *how* that content looks (color palettes, typography scales, spacing, multi-column flexbox or grid layouts, transitions).
+3. **JavaScript (Behavior & Interactivity):** Defines *how* the document behaves (responding to user clicks, fetching asynchronous network data, validating form constraints before submission).
 
-Without HTML, a web browser would have no way to distinguish a crucial warning banner from a regular sentence, or a clickable button from a plain piece of text. HTML turns raw strings into a structured tree of nodes that the browser can parse, render, and expose to assistive technologies like screen readers.`
+\`\`\`
++-----------------------------------------------------------+
+|                      THE WEB BROWSER                      |
++-----------------------------------------------------------+
+| 1. HTML: Raw Semantic Content ("This is a Primary Header") |
+| 2. CSS:  Visual Presentation  ("Make it Navy Blue, 32px") |
+| 3. JS:   Interactive Behavior ("When clicked, show alert") |
++-----------------------------------------------------------+
+\`\`\`
+
+Without HTML, a web browser would receive only a chaotic stream of unformatted plain text. The browser would have no way to determine whether a line of text is a critical legal disclaimer, a navigation link to another page, or an action button. HTML converts unformatted character streams into a structured hierarchy of nodes that browsers can render, search engines can index, and assistive technologies (like screen readers for visually impaired users) can read aloud.`
       },
       {
         heading: 'Anatomy of an HTML Element: Tags, Content, and Attributes',
-        content: `In web development, the terms **tag** and **element** are often used interchangeably in casual conversation, but they have distinct technical definitions:
+        content: `In web development discussions, developers frequently use the words "tag" and "element" interchangeably. However, their precise technical definitions are distinct:
 
-1. **Opening Tag (\`<p>\`):** Marks the start of an element. It consists of the element name enclosed in angle brackets.
-2. **Content:** The text or child elements nested between the opening and closing tags.
-3. **Closing Tag (\`</p>\`):** Marks the termination of an element. It includes a forward slash (\`/\`) before the tag name.
-4. **HTML Element:** The complete package: the opening tag, the content inside it, and the closing tag combined.
-
-\`\`\`html
-<!-- An HTML element composed of opening tag, text content, and closing tag -->
-<p>Civic complaints must be verified by an assigned nodal officer.</p>
+\`\`\`
+       Opening Tag                  Content                Closing Tag
+     +--------------+   +-------------------------------+   +-----------+
+     | <p class="lead"> |   Civic complaints are audited.   |   |   </p>    |
+     +--------------+   +-------------------------------+   +-----------+
+     |<- Element Name ->|                                   |<- Slash ->|
+           |
+      Attribute
 \`\`\`
 
-### Attributes: Providing Metadata and Configuration
-Tags can contain **attributes**, which are key-value pairs written inside the opening tag that configure the element's behavior or provide metadata. Attributes follow the syntax \`name="value"\`:
+1. **Opening Tag (\`<p>\`):** Marks the starting boundary of an element. It consists of the element name enclosed in angle brackets (\`<\` and \`>\`).
+2. **Content:** The text, inline formatting, or nested child elements positioned between the opening and closing tags.
+3. **Closing Tag (\`</p>\`):** Marks the termination of the element. It identical to the opening tag except that it begins with a forward slash (\`/\`) immediately after the opening angle bracket.
+4. **HTML Element:** The complete unit: opening tag, content, and closing tag combined.
+
+### Attributes: Metadata and Configuration
+Opening tags may include **attributes**, which are key-value pairs that configure the element's behavior, identify it for CSS and JavaScript, or provide assistive metadata. Attributes follow the syntax \`name="value"\`:
 
 \`\`\`html
-<!-- Element with class, id, and data attributes -->
-<p id="complaint-status" class="badge badge-pending" data-status="pending">
+<!-- Element with id, class, and custom data attributes -->
+<p id="complaint-status" class="badge badge-pending" data-priority="high">
   Complaint status: Pending Verification
 </p>
 \`\`\`
 
-* **Core Global Attributes:**
-  * \`id\`: A unique identifier across the entire HTML document. Never duplicate an \`id\` on the same page.
-  * \`class\`: A space-separated list of classification names, primarily used for CSS styling and DOM selection.
-  * \`lang\`: Specifies the natural human language of the element's content (e.g., \`lang="en"\`, \`lang="hi"\`).
-  * \`title\`: Advisory information usually displayed as a browser tooltip on hover.
-
-### Void (Self-Closing) Elements
-Most HTML elements wrap content and require both opening and closing tags. However, **void elements** cannot have child content or closing tags. Common void elements include:
-* \`<img>\`: Embeds an external graphic.
-* \`<input>\`: Renders a data entry field.
-* \`<br>\`: Inserts a forced line break.
-* \`<hr>\`: Represents a thematic paragraph-level break (horizontal rule).
-* \`<meta>\`: Contains document-level metadata in the \`<head>\`.
-* \`<link>\`: Connects external stylesheets or favicon icons.
-
-In modern HTML5, writing void elements as \`<img>\` or \`<img />\` are both parsed identically by the browser. Closing void tags with \`</img>\` is a syntax error.`
+* **\`id="complaint-status"\`:** A globally unique identifier within the HTML document. No two elements in a valid document should share the same \`id\`.
+* **\`class="badge badge-pending"\`:** A space-separated list of classification names used by CSS stylesheets and JavaScript selectors. Multiple elements across the page can share the same classes.
+* **\`data-priority="high"\`:** Custom data attributes (prefixed with \`data-\`) used to attach private application data to an element without affecting its visual rendering.`
       },
       {
-        heading: 'The Standard HTML5 Boilerplate Walkthrough',
-        content: `Every production web page begins with a standardized skeleton known as the HTML5 boilerplate. Let us inspect each line and understand its exact technical purpose:
+        heading: 'Container Elements vs. Void (Self-Closing) Elements',
+        content: `HTML elements fall into two primary structural categories:
+
+### 1. Container Elements (Pair Tags)
+Container elements hold text content or other nested child elements. They **must always** have both an opening tag and an explicit closing tag. Omitting the closing tag causes the browser parser to assume subsequent elements are children, breaking the document layout.
+
+\`\`\`html
+<h1>Municipal Service Grievance Registry</h1>
+<div>
+  <p>Please review your ticket details below.</p>
+</div>
+\`\`\`
+
+### 2. Void Elements (Self-Closing Elements)
+Void elements cannot contain any child nodes or text content. Because they have no content, **they must never have a closing tag**. In HTML5, writing a closing tag for a void element is an error.
+
+The most common void elements in modern web development include:
+* \`<img>\`: Embeds an external graphic file via the \`src\` attribute.
+* \`<input>\`: Renders a user input field (text box, radio button, checkbox).
+* \`<meta>\`: Provides document metadata in the \`<head>\`.
+* \`<link>\`: Connects external resources like stylesheets.
+* \`<br>\`: Produces a line break inside a paragraph.
+* \`<hr>\`: Represents a thematic break or horizontal division between paragraphs.
+
+\`\`\`html
+<!-- CORRECT HTML5 Void Elements -->
+<img src="/assets/logo.png" alt="CRP India Official Emblem">
+<input type="text" name="citizenName" placeholder="Enter full name">
+<hr>
+
+<!-- INCORRECT - Never use closing tags for void elements! -->
+<img src="/logo.png" alt="Logo"></img> <!-- SYNTAX ERROR -->
+<input type="text"></input>           <!-- SYNTAX ERROR -->
+\`\`\`
+
+*Note on XHTML Slash Syntax (\`<img />\`):* In older XHTML standards, void elements required a trailing slash (\`<img src="..." />\`). In modern HTML5, the trailing slash is optional and ignored by the browser parser. Standard HTML5 practice prefers the cleaner syntax without the slash (\`<img src="...">\`).`
+      },
+      {
+        heading: 'The Standard HTML5 Boilerplate: Step-by-Step Walkthrough',
+        content: `Every production web page begins with a standardized document template known as the **HTML5 boilerplate**. Below is the exact, standards-compliant baseline:
 
 \`\`\`html
 <!DOCTYPE html>
@@ -107,135 +151,145 @@ In modern HTML5, writing void elements as \`<img>\` or \`<img />\` are both pars
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Official grievance redressal portal for municipal public works.">
   <title>CRP India — Citizen Redressal Portal</title>
-  <link rel="stylesheet" href="/src/index.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Citizen Grievance Submission</h1>
-  </header>
-  <main>
-    <p>Welcome to the verified citizen redressal system.</p>
-  </main>
-  <script src="/src/main.js" defer></script>
+  <h1>Welcome to the Citizen Portal</h1>
+  <p>Track public works complaints in your municipality.</p>
+  <script src="app.js" defer></script>
 </body>
 </html>
 \`\`\`
 
-### Line-by-Line Breakdown:
-1. \`<!DOCTYPE html>\`: This is **not** an HTML tag; it is a document type declaration. It instructs the browser rendering engine to use modern standard standards mode rather than "quirks mode" (an emulation mode created for 1990s legacy browsers that miscalculates CSS box dimensions).
-2. \`<html lang="en">\`: The root element enclosing all document content. The \`lang\` attribute informs screen readers and search engines of the page's primary language, ensuring proper speech synthesis pronunciation.
-3. \`<head>\`: Contains non-visible document metadata, encoding specifications, viewport configurations, SEO directives, and links to external resources.
-4. \`<meta charset="UTF-8">\`: Specifies character encoding. UTF-8 covers virtually every character, symbol, accent, and emoji across all modern human languages. Without this tag, accented characters or non-Latin scripts may appear as corrupted symbols (Mojibake).
-5. \`<meta name="viewport" content="width=device-width, initial-scale=1.0">\`: **Mandatory for responsive design**. It tells mobile browsers to match the virtual viewport width to the device's physical screen width at a 1:1 scale (100%), preventing mobile browsers from shrinking desktop pages down to unreadable miniature viewports.
-6. \`<title>\`: Sets the title shown on browser tabs, bookmarks, and search engine result pages.
-7. \`<body>\`: Contains all human-visible content rendered in the browser window.`
+### Line-by-Line Technical Walkthrough:
+* **\`<!DOCTYPE html>\` (Line 1):** The Document Type Declaration. It informs the browser's rendering engine to parse the file using modern HTML5 standards mode. If you omit this line, browsers enter **Quirks Mode**, an emulation mode designed for backward compatibility with 1990s Netscape Navigator that renders layouts inconsistently.
+* **\`<html lang="en">\` (Line 2):** The root container element that encloses all other HTML nodes. The \`lang="en"\` attribute specifies that the document's primary human language is English. Screen readers rely on this attribute to select the correct pronunciation synthesizer, and search engines use it for geographic indexing.
+* **\`<head>\` (Line 3):** The container for document metadata, character definitions, titles, stylesheets, and font links. Content inside \`<head>\` is **not rendered directly on the web page canvas**.
+* **\`<meta charset="UTF-8">\` (Line 4):** Specifies the character encoding. UTF-8 is the universal standard that supports virtually every alphabet, symbol, and emoji across world languages without character corruption.
+* **\`<meta name="viewport" content="width=device-width, initial-scale=1.0">\` (Line 5):** The viewport meta tag. Essential for mobile-first responsive web design. Without this tag, mobile smartphones assume the page was built exclusively for a 980-pixel wide desktop monitor and zoom out, making text unreadably microscopic.
+* **\`<title>\` (Line 7):** Sets the text displayed on the browser tab, in browser bookmarks, and in search engine search result snippets.
+* **\`<body>\` (Line 10):** The visible canvas container. Everything the user sees, clicks, or interacts with (headings, text, cards, buttons, images) must reside inside \`<body>\`.
+* **\`<script src="app.js" defer>\` (Line 13):** Loads external JavaScript. The \`defer\` attribute tells the browser to download the script in parallel while continuing to parse the HTML, executing the script only after the HTML document tree is completely parsed.`
       },
       {
-        heading: 'Document Trees and Developer Tools Inspection',
-        content: `When a web browser reads an HTML document over HTTP, it does not display the text string directly. Instead, the HTML parser parses the tags into an in-memory hierarchical tree called the **Document Object Model (DOM)**.
+        heading: 'How the Browser Parses HTML: Bytes to DOM Tree',
+        content: `When a web browser downloads an HTML file over the network, it executes a rigorous four-stage parsing pipeline to transform raw text into interactive pixels:
 
 \`\`\`
-          Document
-             |
-           <html>
-          /      \\
-      <head>     <body>
-       /  \\       /   \\
-    <meta> <title> <header> <main>
-                     |       |
-                    <h1>    <p>
+  [Raw Network Bytes]  (e.g., 3C 68 74 6D 6C 3E ...)
+          |
+          v
+  [1. Character Decoding] (UTF-8 converts bytes into characters: "<html...")
+          |
+          v
+  [2. Tokenization] (Parser breaks text into start tags, end tags, attributes)
+          |
+          v
+  [3. Tree Construction] (Parser builds parent-child relationships)
+          |
+          v
+  [4. Document Object Model (DOM)] (Living in-memory JavaScript tree)
 \`\`\`
 
-Every tag becomes an Element Node, and text inside becomes a Text Node.
-* **Parent:** An element that directly encloses another (e.g., \`<body>\` is the parent of \`<header>\`).
-* **Child:** An element enclosed within another (e.g., \`<h1>\` is a child of \`<header>\`).
-* **Siblings:** Elements sharing the same parent (e.g., \`<header>\` and \`<main>\` are siblings under \`<body>\`).
+### The Parsing Stages:
+1. **Conversion:** The browser reads raw binary bytes from disk or the network socket and translates them into individual characters based on the specified encoding (\`UTF-8\`).
+2. **Tokenization:** The tokenizer converts the character stream into discrete tokens: \`StartTag: html\`, \`StartTag: head\`, \`StartTag: title\`, \`Character: First Web Document\`, \`EndTag: title\`, \`EndTag: head\`.
+3. **Node Creation:** As tokens are emitted, they are converted into Node objects containing their respective attributes and properties.
+4. **DOM Tree Construction:** Because HTML tags define parent-child relationships through nesting, these nodes are assembled into a hierarchical tree data structure called the **Document Object Model (DOM)**.
 
-To inspect this live tree in any browser:
-1. Right-click on any element on the page and select **Inspect** (or press \`F12\` / \`Ctrl + Shift + I\`).
-2. The **Elements** (or **Inspector**) tab displays the live DOM tree.
-3. Hovering over nodes in DevTools highlights the element's physical box model on screen.`
-      }
-    ],
-    commonMistakes: [
-      {
-        mistake: 'Omitting the <!DOCTYPE html> declaration.',
-        whyItHappens: 'Beginners assume <html> is sufficient to start an HTML file.',
-        howToFix: 'Always start line 1 with <!DOCTYPE html>. Without it, browsers fall back into "quirks mode", causing erratic CSS layout rendering and broken box-sizing.'
+Whenever you write JavaScript that queries \`document.querySelector('h1')\`, you are interacting with this living, in-memory DOM tree that the browser constructed from your HTML.`
       },
       {
-        mistake: 'Placing visible content tags like <h1> or <p> inside the <head>.',
-        whyItHappens: 'Misunderstanding the boundary between metadata (<head>) and visual content (<body>).',
-        howToFix: 'Only metadata (<meta>, <link>, <title>, <style>, <script>) belongs in <head>. All visible elements must reside exclusively inside <body>.'
-      },
-      {
-        mistake: 'Writing closing tags for void elements like </input> or </img>.',
-        whyItHappens: 'Assuming every single opening tag requires an explicit closing counterpart.',
-        howToFix: 'Void elements cannot have children or closing tags. Write <input type="text"> or <img src="..." alt="..."> without a separate closing tag.'
+        heading: 'Common Beginner Mistakes and Debugging Playbook',
+        content: `### 1. Inverted or Overlapping Tag Nesting
+HTML tags must close in the reverse order of how they were opened (Last In, First Out). Overlapping tags creates invalid DOM structures:
+
+\`\`\`html
+<!-- INCORRECT: Overlapping tags -->
+<p>This is <strong>important text.</p></strong>
+
+<!-- CORRECT: Properly nested inside-out -->
+<p>This is <strong>important text.</strong></p>
+\`\`\`
+
+### 2. Duplicate ID Attributes
+An \`id\` attribute must be unique across the entire document. Reusing the same ID breaks CSS targeting and causes \`document.getElementById()\` in JavaScript to return only the first matching element:
+
+\`\`\`html
+<!-- INCORRECT: Duplicate IDs -->
+<button id="submit-btn">Save Draft</button>
+<button id="submit-btn">Publish Ticket</button>
+
+<!-- CORRECT: Unique IDs or shared classes -->
+<button id="save-draft-btn" class="btn">Save Draft</button>
+<button id="publish-ticket-btn" class="btn">Publish Ticket</button>
+\`\`\`
+
+### 3. Missing DOCTYPE Declaration
+Omitting \`<!DOCTYPE html>\` forces the browser into Quirks Mode, leading to erratic CSS box model rendering and broken layouts across different browsers.
+
+### Debugging in Browser Developer Tools:
+To inspect living HTML on any website:
+1. Right-click any element on the page and select **Inspect** (or press \`F12\` / \`Ctrl+Shift+I\` on Windows, \`Cmd+Option+I\` on macOS).
+2. The **Elements** panel displays the live reconstructed DOM tree.
+3. If the browser had to auto-correct broken HTML (such as an unclosed tag), you will see where the browser parser rearranged your nodes.`
       }
     ],
-    guidedExercise: {
-      title: 'Build a Standards-Compliant HTML5 Document from Scratch',
-      difficulty: 'Beginner',
-      instructions: 'Write a complete, valid HTML5 document that includes proper doctype, head metadata, responsive viewport, page title, and structured body content.',
-      starterCode: `<!-- TODO: Add <!DOCTYPE html> -->
-<!-- TODO: Open <html lang="en"> -->
-  <!-- TODO: Add <head> containing charset, viewport meta, and title -->
-  <!-- TODO: Add <body> with a main heading <h1> and a paragraph <p> -->
-`,
-      tasks: [
-        'Include the <!DOCTYPE html> declaration on the first line.',
-        'Create the root <html lang="en"> element with proper language code.',
-        'Add a <head> section with <meta charset="UTF-8"> and the responsive viewport meta tag.',
-        'Set a descriptive document <title>.',
-        'Add a <body> containing at least one <h1> heading and one explanatory paragraph <p>.'
-      ],
+    exercise: {
+      instruction: 'Construct a complete, valid HTML5 document for a citizen service dashboard. Include <!DOCTYPE html>, correct <head> metadata (UTF-8, viewport, title), an <h1> header, a descriptive <p>, and an action <button>.',
+      starterCode: `<!-- Write your HTML5 document below -->\n`,
       hints: [
-        'Start with <!DOCTYPE html> in uppercase or lowercase—HTML is case-insensitive, but uppercase is conventional.',
-        'The responsive viewport meta tag requires name="viewport" and content="width=device-width, initial-scale=1.0".',
-        'Ensure all opening tags that are not void elements have matching closing tags (e.g., </head>, </body>, </html>).'
+        'Start with <!DOCTYPE html> on the first line.',
+        'Wrap the entire document inside <html lang="en">.',
+        'Inside <head>, add <meta charset="UTF-8">, the viewport meta tag, and a <title> tag.',
+        'Inside <body>, add an <h1> heading, a <p> paragraph, and a <button> element.'
+      ],
+      tasks: [
+        'Include standard <!DOCTYPE html> declaration',
+        'Add <html lang="en"> root container',
+        'Include <meta charset="UTF-8"> and viewport meta tag',
+        'Provide a descriptive <title> tag in <head>',
+        'Add <h1> heading and <button> element in <body>'
       ],
       solution: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Civic Portal — Verification</title>
+  <title>Citizen Redressal Dashboard</title>
 </head>
 <body>
-  <header>
-    <h1>Welcome to Citizen Redressal</h1>
-  </header>
-  <main>
-    <p>Submit and track civic grievances with transparent departmental accountability.</p>
-  </main>
+  <h1>Municipal Grievance Tracker</h1>
+  <p>Submit and track civic infrastructure complaints in real time.</p>
+  <button type="button">Register New Ticket</button>
 </body>
 </html>`,
-      solutionExplanation: 'This solution complies with modern W3C standards: the doctype forces standard mode, UTF-8 handles international characters, viewport prevents mobile scale bugs, and header/main provide accessible document hierarchy.'
+      solutionExplanation: 'This solution complies with all modern W3C HTML5 standards. It defines standards mode via <!DOCTYPE html>, specifies English language synthesis with lang="en", guarantees universal character encoding via UTF-8, ensures mobile responsiveness with the viewport tag, and provides semantic structure inside the visible body.'
     },
     quiz: [
       {
-        question: 'What happens if a developer omits the <!DOCTYPE html> declaration from a modern web page?',
+        question: 'What happens if a web developer omits the <!DOCTYPE html> declaration from an HTML document?',
         options: [
-          'The browser throws a fatal network error and displays a 404 page.',
-          'The browser defaults to Quirks Mode, triggering legacy 1990s layout bugs and erratic CSS sizing.',
-          'The browser converts all HTML into raw plaintext.',
-          'JavaScript execution is permanently disabled.'
+          'The browser throws a fatal network error and refuses to display the page.',
+          'The browser enters Quirks Mode, emulating 1990s rendering engines and causing unpredictable CSS layout bugs.',
+          'The HTML file is automatically converted into plain Markdown format.',
+          'JavaScript execution is permanently disabled for that origin.'
         ],
         correctIndex: 1,
-        explanation: 'Without <!DOCTYPE html>, browsers activate Quirks Mode to maintain compatibility with 1990s web pages, altering the standard CSS box model and element layout calculations.'
+        explanation: '<!DOCTYPE html> instructs the browser engine to use full standards mode. Without it, modern browsers fall back to Quirks Mode to maintain backward compatibility with legacy 1990s web pages, which breaks standard box-sizing and layout calculations.'
       },
       {
-        question: 'Which of the following elements is a void element that must NOT have a closing tag or child content?',
+        question: 'Which of the following elements is a void (self-closing) element that must never have a closing tag in HTML5?',
         options: [
+          '<div>',
           '<p>',
-          '<section>',
-          '<input>',
-          '<header>'
+          '<meta>',
+          '<span>'
         ],
         correctIndex: 2,
-        explanation: '<input> is a void element in HTML. It cannot contain text nodes or child tags, so it never has a closing </input> tag.'
+        explanation: '<meta> is a void element because it cannot contain text content or child elements. In modern HTML5, writing </meta> is a syntax error.'
       },
       {
         question: 'Why is the <meta name="viewport" content="width=device-width, initial-scale=1.0"> tag required in modern web development?',
@@ -274,7 +328,7 @@ To inspect this live tree in any browser:
     courseTitle: 'Course 3: HTML from Zero',
     title: 'Document Hierarchy & Modern Semantic Landmarks',
     category: 'Frontend',
-    estimatedTime: '40 min read & practice',
+    estimatedTime: '45 min read & practice',
     interactivePlayground: 'html',
     playgroundTitle: 'Semantic Landmarks Playground',
     playgroundCode: `<!DOCTYPE html>
@@ -283,14 +337,16 @@ To inspect this live tree in any browser:
   <meta charset="UTF-8">
   <title>Semantic Page Architecture</title>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem; color: #334155; }
-    header, nav, main, article, aside, footer { border: 2px dashed #94a3b8; padding: 0.75rem; margin: 0.5rem 0; border-radius: 6px; }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; color: #334155; background: #f1f5f9; }
+    header, nav, main, article, aside, footer { border: 2px dashed #94a3b8; padding: 1rem; margin: 0.75rem 0; border-radius: 8px; }
     header { background: #eff6ff; border-color: #3b82f6; }
     nav { background: #f0fdf4; border-color: #22c55e; }
-    main { background: #f8fafc; border-color: #64748b; }
+    main { background: #ffffff; border-color: #64748b; }
     article { background: #fefce8; border-color: #eab308; }
-    footer { background: #f1f5f9; border-color: #475569; }
-    .landmark-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #475569; }
+    aside { background: #fdf2f8; border-color: #ec4899; }
+    footer { background: #f8fafc; border-color: #475569; }
+    .landmark-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #475569; letter-spacing: 0.05em; }
+    nav a { margin-right: 1rem; color: #166534; font-weight: 600; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -298,221 +354,243 @@ To inspect this live tree in any browser:
     <span class="landmark-label">&lt;header&gt;</span>
     <h1>Municipal Redressal Dashboard</h1>
     <nav>
-      <span class="landmark-label">&lt;nav&gt;</span>
-      <a href="#active">Active Grievances</a> | <a href="#resolved">Resolved Cases</a>
+      <span class="landmark-label">&lt;nav&gt;</span><br>
+      <a href="#overview">Overview</a>
+      <a href="#tickets">Recent Tickets</a>
+      <a href="#helpline">Emergency Contacts</a>
     </nav>
   </header>
-
   <main>
     <span class="landmark-label">&lt;main&gt;</span>
-    <h2>Primary Grievance Feed</h2>
-    <article>
+    <h2>Active Infrastructure Complaints</h2>
+    <article id="tickets">
       <span class="landmark-label">&lt;article&gt;</span>
-      <h3>Water Pipeline Leakage at Sector 4</h3>
-      <p>Reported 2 hours ago. Priority status: <strong>High</strong>.</p>
+      <h3>Ticket #4092: Pothole Repair on MG Road</h3>
+      <p>Reported by citizen on Oct 24, 2026. Department: Public Works.</p>
     </article>
   </main>
-
-  <footer>
+  <aside>
+    <span class="landmark-label">&lt;aside&gt;</span>
+    <h3>Nodal Officer Notice</h3>
+    <p>Monsoon grievance teams are on standby 24/7 across Ward 4.</p>
+  </aside>
+  <footer id="helpline">
     <span class="landmark-label">&lt;footer&gt;</span>
-    <p>&copy; 2026 Citizen Redressal Portal. All rights reserved.</p>
+    <p>&copy; 2026 Municipal Corporation. Emergency Helpline: 1800-419-0000.</p>
   </footer>
 </body>
 </html>`,
     objectives: [
-      'Understand the critical difference between semantic HTML elements and generic containers (<div>, <span>).',
-      'Master the landmark elements: <header>, <nav>, <main>, <article>, <section>, <aside>, and <footer>.',
-      'Maintain an unbroken, accessible heading hierarchy (h1 through h6) across complex interfaces.',
-      'Distinguish visual styling elements (<b>, <i>) from semantic text modifiers (<strong>, <em>).',
-      'Understand how screen reader users utilize landmarks to jump directly to specific content regions.'
+      'Distinguish semantic HTML elements from un-semantic generic containers (<div> and <span>).',
+      'Architect a standards-compliant web page layout using semantic landmarks (<header>, <nav>, <main>, <article>, <section>, <aside>, <footer>).',
+      'Establish a mathematically rigorous heading hierarchy (<h1> through <h6>) without skipping levels.',
+      'Explain how assistive screen readers navigate web pages using landmark regions.',
+      'Understand the semantic difference between <strong> (importance) vs <b> (stylistic bold) and <em> (emphasis) vs <i> (stylistic italic).'
     ],
     sections: [
       {
-        heading: 'Why Semantics Matter: Beyond Visual Appearance',
-        content: `In the early days of web design, developers constructed entire layouts using non-semantic containers—chiefly \`<div>\` (block-level divider) and \`<span>\` (inline container), styled with CSS classes like \`<div class="header">\` or \`<div class="nav">\`.
+        heading: 'The Power of Semantics: Why Meaning Matters',
+        content: `In computer science and linguistics, **semantics** refers to the study of meaning. In HTML, **semantic elements** clearly describe their meaning to both the browser and the developer.
 
-While a visual user looking at a screen might not see a difference, this practice created massive usability barriers:
-1. **Screen Readers and Assistive Technology:** Blind and visually impaired users navigating with software such as NVDA or VoiceOver rely on **landmarks**. A user can press a shortcut key (like \`D\` in NVDA) to jump straight to the \`<main>\` landmark, skipping past repeated navigation headers. A page made entirely of generic \`<div>\`s provides zero landmarks, forcing the user to listen to the entire navigation menu on every single page load.
-2. **Search Engine Optimization (SEO):** Search engine web crawlers (like Googlebot) use semantic markup to understand the relative importance of content. An \`<h1>\` inside an \`<article>\` receives substantially more topical weight than a random bold paragraph.
-3. **Code Maintainability:** Semantic code is self-documenting. An engineer reading \`<nav>\` immediately understands its architectural intent without having to inspect associated CSS classes.`
-      },
-      {
-        heading: 'The Core Semantic Landmark Elements',
-        content: `Modern HTML5 specifies landmark elements that define the major regions of a document:
-
-### 1. \`<header>\`
-Represents introductory content or navigational aids. Typically contains the site logo, search bar, and primary heading. A page can contain multiple \`<header>\` elements—for example, a global site header at the top of \`<body>\`, and an individual article header inside an \`<article>\`.
-
-### 2. \`<nav>\`
-Reserved specifically for major navigation links. Do not wrap every collection of links in a \`<nav>\`—use it for primary navigation menus, breadcrumb trails, pagination bars, or in-page tables of contents.
-
-### 3. \`<main>\`
-Encapsulates the dominant, central content unique to this specific document. **A document must have only one visible \`<main>\` element**. Content repeated across multiple pages—such as global navigation menus, copyright footers, and site-wide search bars—must reside outside \`<main>\`.
-
-### 4. \`<article>\`
-Represents a self-contained composition that could theoretically be distributed, syndicated, or reused independently (e.g., in an RSS feed). Examples include a blog post, a forum message, a user comment, or a specific grievance report card in the CRP India dashboard.
-
-### 5. \`<section>\`
-Represents a generic standalone thematic grouping of content, typically accompanied by its own heading. Use \`<section>\` to group related content inside an article or page when no more specific semantic element applies.
-
-### 6. \`<aside>\`
-Represents content tangentially related to the content around it, often presented as a sidebar, pull quote, callout box, or related links container.
-
-### 7. \`<footer>\`
-Represents the closing footer for its nearest sectioning parent or the entire document. Typically contains copyright notices, legal links, author contact info, and related links.`
-      },
-      {
-        heading: 'Heading Hierarchy: Rules for <h1> Through <h6>',
-        content: `HTML provides six levels of section headings: \`<h1>\` (highest importance) down to \`<h6>\` (lowest importance). Headings create the document's outline.
-
-### Vital Rules for Headings:
-* **One \`<h1>\` per Page:** As a modern web accessibility best practice, each page should contain exactly one \`<h1>\` that clearly communicates the primary subject of that specific page.
-* **Never Skip Heading Levels:** Never jump from \`<h2>\` directly to \`<h4>\` simply because you desire smaller visual font size. Heading levels indicate structural hierarchy, not visual styling. Font size must always be controlled via CSS (\`font-size\`), never by choosing the wrong semantic tag.
-* **Screen Reader Heading Navigation:** Screen reader users frequently navigate pages by pressing \`H\` to cycle through all headings or \`2\` to cycle through major \`<h2>\` sections. A broken heading outline disorients the user.`
-      },
-      {
-        heading: 'Text Level Semantics: Meaning vs. Visual Appearance',
-        content: `A common beginner mistake is using presentation tags instead of semantic text tags:
-
-| Element | Visual Appearance | Semantic Meaning | Correct Use Case |
-| :--- | :--- | :--- | :--- |
-| \`<strong>\` | Bold | Serious importance, urgency, or warning | Emphasizing a deadline or critical security alert |
-| \`<b>\` | Bold | Stylistic offset without semantic importance | Keywords in a summary, product names in a review |
-| \`<em>\` | Italic | Stressed verbal emphasis that changes meaning | "I *really* meant what I said" |
-| \`<i>\` | Italic | Alternate voice, tone, technical term, or foreign phrase | Scientific species names, book titles, thoughts |
-| \`<blockquote>\` | Indented block | Extended quotation from an external source | Long quotations with optional \`<cite>\` attribute |
-| \`<q>\` | Quotation marks | Inline short quotation | Brief quotes within a running paragraph |
-| \`<code>\` | Monospace | Computer code, variable names, or filenames | Highlighting \`npm run build\` or variable names |
-| \`<pre>\` | Monospace & preserves whitespace | Preformatted text block where spacing matters | Multi-line code listings and ASCII diagrams |
+Consider these two approaches to building a website header:
 
 \`\`\`html
-<!-- Semantic text example -->
+<!-- NON-SEMANTIC (DIV SOUP): Has no machine-readable meaning -->
+<div class="top-bar">
+  <div class="site-title">CRP India Portal</div>
+  <div class="links">
+    <div class="link-item">Home</div>
+    <div class="link-item">Track Complaint</div>
+  </div>
+</div>
+
+<!-- SEMANTIC HTML5: Crystal-clear machine-readable meaning -->
+<header>
+  <h1>CRP India Portal</h1>
+  <nav aria-label="Main Navigation">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/track">Track Complaint</a></li>
+    </ul>
+  </nav>
+</header>
+\`\`\`
+
+Both snippets can be styled with CSS to look identical on screen. However, the non-semantic version is an accessibility disaster. A blind user relying on a screen reader cannot tell where navigation links are located, search engine crawlers cannot distinguish the main title from side content, and keyboard-only users cannot quickly jump between landmark regions.`
+      },
+      {
+        heading: 'The Core HTML5 Semantic Landmarks',
+        content: `Modern HTML5 provides dedicated landmark elements that establish the macro-architecture of a page:
+
+\`\`\`
++-------------------------------------------------------------+
+|                          <header>                           |
+|  +-------------------------------------------------------+  |
+|  |                        <nav>                          |  |
+|  +-------------------------------------------------------+  |
++-------------------------------------------------------------+
+|                                                             |
+|                           <main>                            |
+|  +-------------------------------------+  +---------------+ |
+|  |              <section>              |  |    <aside>    | |
+|  |  +-------------------------------+  |  |               | |
+|  |  |           <article>           |  |  |  Related Info | |
+|  |  +-------------------------------+  |  |  or Sidebar   | |
+|  |  |           <article>           |  |  |               | |
+|  |  +-------------------------------+  |  |               | |
+|  +-------------------------------------+  +---------------+ |
++-------------------------------------------------------------+
+|                          <footer>                           |
++-------------------------------------------------------------+
+\`\`\`
+
+1. **\`<header>\`:** Represents introductory content, branding, primary site logo, and search forms. Can be used for the entire page or within individual \`<article>\` components.
+2. **\`<nav>\`:** Represents a major navigation section containing links to other pages or sections within the current document.
+3. **\`<main>\`:** Encloses the central, dominant content unique to this document. There **must only be one visible \`<main>\` element per page**. It must not contain content repeated across pages (like global headers or footers).
+4. **\`<article>\`:** A self-contained, independent composition that could theoretically be syndicated, distributed, or republished on another website (e.g., a blog post, news story, or single grievance ticket card).
+5. **\`<section>\`:** A standalone thematic grouping of content, typically introduced by an explicit heading (\`<h2>\` to \`<h6>\`).
+6. **\`<aside>\`:** Content tangentially related to the content around it, often rendered as sidebars, callout boxes, or supplementary statistics.
+7. **\`<footer>\`:** Represents the footer of the nearest landmark or document, typically containing author credits, copyright notices, terms of service links, and helpline numbers.`
+      },
+      {
+        heading: 'Rigorous Heading Hierarchy: <h1> Through <h6>',
+        content: `Search engines and screen readers rely on HTML headings to generate an outline table of contents for the document. Headings range from \`<h1>\` (highest importance) down to \`<h6>\` (lowest importance).
+
+### Rules for Professional Heading Architecture:
+1. **Exactly One \`<h1>\` Per Page:** The \`<h1>\` represents the overarching subject of the entire document. Multiple \`<h1>\` tags confuse screen reader outlines and dilute SEO keyword weight.
+2. **Never Skip Levels:** Always descend one level at a time (\`<h1>\` -> \`<h2>\` -> \`<h3>\`). Never jump from an \`<h2>\` directly to an \`<h4>\` simply because you want smaller visual font sizing! Sizing is the responsibility of CSS, not heading tags.
+3. **Never Use Headings for Visual Styling:** If you want a sentence to look bold and prominent, style it with CSS rather than wrapping it in an \`<h3>\`.
+
+\`\`\`html
+<!-- CORRECT HIERARCHICAL OUTLINE -->
+<h1>Municipal Citizen Redressal Portal</h1>
+  <h2>Wards and Jurisdictions</h2>
+    <h3>Ward 14: Central District</h3>
+      <h4>Public Works Division</h4>
+      <h4>Sanitation Division</h4>
+    <h3>Ward 15: East Corridor</h3>
+  <h2>Submit a New Grievance</h2>
+\`\`\``
+      },
+      {
+        heading: 'Semantic Inline Elements: Meaning vs. Visual Styling',
+        content: `HTML distinguishes elements that communicate semantic importance from elements that exist purely for typographical styling:
+
+| Semantic Element | Pure Styling Element | Technical Distinction |
+| :--- | :--- | :--- |
+| \`<strong>\` | \`<b>\` | \`<strong>\` conveys high importance or urgency (screen readers alter vocal tone). \`<b>\` applies bold weight purely for visual draw without altering importance. |
+| \`<em>\` | \`<i>\` | \`<em>\` indicates stress emphasis that changes the grammatical meaning of the sentence. \`<i>\` represents alternate voice, technical terms, or idiomatic phrases without stress. |
+| \`<blockquote>\` | N/A | Represents an extended quotation from an external source, often paired with a \`<cite>\` attribute. |
+| \`<code>\` | N/A | Denotes inline computer code, variable names, or terminal commands. |
+| \`<abbr title="...">\` | N/A | Expands an acronym or abbreviation for accessibility (e.g., \`<abbr title="Cascading Style Sheets">CSS</abbr>\`). |
+
+\`\`\`html
+<!-- Meaningful Example: Urgent Safety Warning -->
 <p>
-  <strong>Warning:</strong> Deleting a municipal complaint is irreversible.
-  Inspect the <code>complaintId</code> parameter carefully before confirming.
+  <strong>WARNING:</strong> Live electrical wires reported fallen near Ward 3.
+  Please avoid the intersection until <em>Public Works</em> engineers arrive.
 </p>
+\`\`\``
+      },
+      {
+        heading: 'Common Semantic Mistakes and How to Debug Them',
+        content: `### 1. "Div Soup"
+Wrapping every component in nested \`<div>\` containers without semantic landmarks.
+* **Fix:** Audit your page: replace wrapper \`<div>\` elements with \`<header>\`, \`<nav>\`, \`<main>\`, \`<article>\`, \`<section>\`, and \`<footer>\`.
+
+### 2. Button vs Link Misuse
+Using an \`<a>\` tag with no \`href\` for an action, or using a \`<button>\` to navigate to a new URL:
+* **The Golden Rule:**
+  * If it **navigates** the user to a different URL or page section: use an **\`<a>\`** anchor element.
+  * If it **triggers an action** without changing URL (submitting a form, opening a modal, toggling dark mode): use a **\`<button>\`** element.
+
+\`\`\`html
+<!-- INCORRECT: Inaccessible link acting as a button -->
+<a href="#" onclick="openModal()">Open Ticket Details</a>
+
+<!-- CORRECT: Native keyboard-accessible button -->
+<button type="button" onclick="openModal()">Open Ticket Details</button>
 \`\`\``
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Using generic <div> elements for everything ("div soup").',
-        whyItHappens: 'It is easy to wrap every element in <div> without thinking about semantic structure.',
-        howToFix: 'Replace container <div>s with appropriate landmark tags: <header>, <nav>, <main>, <article>, <section>, <aside>, and <footer>.'
-      },
-      {
-        mistake: 'Skipping heading levels (e.g. going from <h1> directly to <h3>).',
-        whyItHappens: 'Choosing heading tags based on default browser font size rather than structural hierarchy.',
-        howToFix: 'Always maintain sequential heading order (h1 -> h2 -> h3). Use CSS font-size to adjust visual sizing.'
-      },
-      {
-        mistake: 'Including multiple <main> elements on a single page.',
-        whyItHappens: 'Treating <main> as a generic container for each section.',
-        howToFix: 'A document must contain only one visible <main> element representing the primary subject of that document.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Restructure a "Div Soup" Page into Clean Semantic HTML',
-      difficulty: 'Beginner',
-      instructions: 'Refactor the unsemantic HTML markup below by replacing generic <div> containers with proper semantic landmark elements and establishing an accessible heading hierarchy.',
-      starterCode: `<!-- REFACTOR THIS UNSEMANTIC CODE: -->
-<div class="site-header">
-  <div class="logo">City Council Portal</div>
-  <div class="nav-links">
-    <a href="/home">Home</a>
-    <a href="/reports">Reports</a>
-  </div>
-</div>
-<div class="primary-content">
-  <h4>Public Grievances</h4>
-  <div class="grievance-card">
-    <div class="title">Road Pothole at MG Road</div>
-    <div class="desc">Reported by citizen. Urgent repair requested.</div>
-  </div>
-</div>
-<div class="site-footer">
-  <div>&copy; 2026 City Council</div>
-</div>`,
-      tasks: [
-        'Replace the site-header <div> with a semantic <header> element.',
-        'Wrap the navigation links in a semantic <nav> element.',
-        'Replace the primary-content <div> with a single <main> landmark.',
-        'Change the heading hierarchy so the page has a single <h1> and section <h2>.',
-        'Wrap the individual grievance card in an <article> element.',
-        'Replace the site-footer <div> with a semantic <footer> landmark.'
-      ],
+    exercise: {
+      instruction: 'Build a fully semantic departmental announcement page. Include a <header> with an <h1> and <nav>, a <main> region containing at least one <article> with an <h2>, an <aside> for quick contacts, and a <footer>.',
+      starterCode: `<!-- Write your semantic HTML layout below -->\n`,
       hints: [
-        'The outer site-header should be <header>, and its child links should be wrapped in <nav>.',
-        'The primary content of the page belongs inside <main>.',
-        'A single independent grievance entry should be encapsulated inside an <article> tag with an <h3> heading.'
+        'Use <header> at the top with an <h1> and a <nav> containing navigation links.',
+        'Wrap the primary content inside a <main> element.',
+        'Use an <article> inside <main> to present the departmental announcement.',
+        'Add an <aside> for supplemental emergency contact information.',
+        'End the document with a <footer> containing copyright and helpline text.'
+      ],
+      tasks: [
+        'Use <header> landmark with single <h1> and <nav>',
+        'Wrap core announcement inside <main> and <article>',
+        'Include an <aside> for secondary contact information',
+        'Provide a <footer> with copyright and contact info'
       ],
       solution: `<header>
-  <h1>City Council Portal</h1>
-  <nav aria-label="Main Navigation">
-    <a href="/home">Home</a>
-    <a href="/reports">Reports</a>
+  <h1>Public Works Department</h1>
+  <nav aria-label="Portal Navigation">
+    <ul>
+      <li><a href="#notices">Public Notices</a></li>
+      <li><a href="#submit">File Report</a></li>
+      <li><a href="#contact">Emergency Contacts</a></li>
+    </ul>
   </nav>
 </header>
 <main>
-  <h2>Public Grievances</h2>
-  <article class="grievance-card">
-    <h3>Road Pothole at MG Road</h3>
-    <p>Reported by citizen. <strong>Urgent repair requested.</strong></p>
+  <article id="notices">
+    <h2>Road Resurfacing Schedule for Ward 12</h2>
+    <p>Scheduled maintenance begins Monday, Nov 3. Heavy vehicles will be rerouted.</p>
+    <p>Please contact nodal supervisors for residential parking passes.</p>
   </article>
 </main>
+<aside id="contact">
+  <h3>Ward 12 Control Room</h3>
+  <p>Control Room Telephone: 011-2345-6789</p>
+</aside>
 <footer>
-  <p>&copy; 2026 City Council. All rights reserved.</p>
+  <p>&copy; 2026 Municipal Public Works. All rights reserved.</p>
 </footer>`,
-      solutionExplanation: 'This refactored markup provides clear landmarks (<header>, <nav>, <main>, <footer>), defines an unbroken heading hierarchy (h1 -> h2 -> h3), and gives screen readers clear navigational boundaries.'
+      solutionExplanation: 'This structure provides complete semantic clarity. Assistive screen readers immediately recognize the navigation landmark, understand where the primary article begins, and allow users to skip directly to the main content.'
     },
     quiz: [
       {
-        question: 'Which element should be used to wrap the primary, unique content of a web page?',
+        question: 'Which element should be used to enclose the central, unique content of a web page that does not repeat across pages?',
         options: [
-          '<section id="main">',
+          '<section>',
           '<main>',
-          '<article role="content">',
-          '<div class="main-body">'
+          '<article>',
+          '<div>'
         ],
         correctIndex: 1,
-        explanation: '<main> is the official HTML5 landmark reserved exclusively for the dominant, unique content of the document. There should only be one visible <main> per page.'
+        explanation: 'The <main> element represents the dominant content unique to the document. A valid document must only have one visible <main> element.'
       },
       {
-        question: 'What is the primary accessibility benefit of using <nav> instead of <div class="menu">?',
+        question: 'Why should a developer never jump from an <h2> heading directly to an <h4> heading?',
         options: [
-          'It makes links download twice as fast over WiFi.',
-          'Screen readers identify it as a navigational landmark, allowing users to jump directly to or skip past it.',
-          'It automatically adds animated dropdown menus without JavaScript.',
-          'It automatically checks for broken 404 links.'
+          'The browser engine will halt parsing and display an HTTP 500 error.',
+          'It breaks the logical document outline used by screen readers and search engines to understand content hierarchy.',
+          'Headings smaller than <h3> require a commercial license.',
+          'CSS stylesheets cannot apply styles to out-of-order headings.'
         ],
         correctIndex: 1,
-        explanation: 'Screen readers expose <nav> as an interactive landmark, enabling keyboard and voice navigation users to quickly jump between primary navigation and main content.'
-      },
-      {
-        question: 'Why should a developer use <strong> rather than <b> when highlighting an urgent security alert?',
-        options: [
-          '<b> is deprecated and will not render in modern web browsers.',
-          '<strong> communicates serious importance and urgency to screen readers and search engines, while <b> only changes font weight visually.',
-          '<strong> forces the browser to use bold red text.',
-          '<b> requires an external JavaScript library to function.'
-        ],
-        correctIndex: 1,
-        explanation: '<strong> conveys semantic importance and urgency that screen readers emphasize through speech synthesis inflection, whereas <b> only provides visual bolding without semantic weight.'
+        explanation: 'Headings establish the structural outline of the document. Skipping heading levels breaks navigation for screen reader users who jump between heading levels to browse content.'
       }
     ],
     takeaways: [
-      'Semantic HTML describes meaning and structure, improving accessibility for screen readers and ranking in search engines.',
-      'Key landmark elements include <header>, <nav>, <main>, <article>, <section>, <aside>, and <footer>.',
-      'Every web page should have a single <h1> heading followed by an unbroken, logical heading hierarchy (h2, h3).',
-      'Use <strong> and <em> for semantic importance and stress emphasis; reserve <b> and <i> for purely visual or stylistic offsets.',
-      'Avoid "div soup" by choosing the most specific semantic HTML tag for every piece of content.'
+      'Semantic HTML elements convey structural meaning to browsers, search engines, and assistive screen readers.',
+      'Always use a single <h1> per page and maintain an unbroken heading hierarchy (h1 -> h2 -> h3).',
+      'Use <main> for unique page content, <article> for self-contained units, <section> for thematic groupings, and <aside> for supplemental content.',
+      'Use <a> for navigation and <button> for actions; never use empty <div onclick> or <a href="#"> for buttons.'
     ],
     caseStudyReference: {
-      title: 'Semantic Layout Landmarks in CRP India',
-      description: 'Study how the citizen and admin dashboards in CRP India partition views into semantic headers, sidebars, main content areas, and status cards.',
+      title: 'Semantic Layout Architecture in CRP India',
+      description: 'Explore how the CRP India application structures citizen dashboards into header, sidebar navigation, main content tables, and footer landmarks.',
       files: [
         'reference-projects/CRP-India/frontend/src/App.jsx',
-        'reference-projects/CRP-India/frontend/src/pages/CitizenDashboard.jsx'
+        'reference-projects/CRP-India/frontend/src/pages/Dashboard.jsx'
       ]
     }
   },
@@ -525,33 +603,32 @@ Represents the closing footer for its nearest sectioning parent or the entire do
     courseTitle: 'Course 3: HTML from Zero',
     title: 'Links, Responsive Media & Data Tables',
     category: 'Frontend',
-    estimatedTime: '35 min read & practice',
+    estimatedTime: '45 min read & practice',
     interactivePlayground: 'html',
-    playgroundTitle: 'Links, Media & Data Tables Sandbox',
+    playgroundTitle: 'Media & Data Table Sandbox',
     playgroundCode: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Media and Tables Example</title>
+  <title>Tables and Media</title>
   <style>
-    body { font-family: system-ui, sans-serif; padding: 1.5rem; line-height: 1.6; color: #1e293b; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { border: 1px solid #cbd5e1; padding: 0.6rem; text-align: left; }
-    th { background: #f1f5f9; font-weight: 600; }
-    caption { text-align: left; font-weight: bold; margin-bottom: 0.5rem; }
-    .badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; background: #fef08a; color: #854d0e; }
+    body { font-family: system-ui, sans-serif; padding: 1.5rem; line-height: 1.5; color: #1e293b; background: #f8fafc; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f1f5f9; font-weight: 700; color: #475569; }
+    caption { caption-side: top; text-align: left; font-weight: bold; margin-bottom: 0.5rem; color: #0f172a; font-size: 1.1rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; background: #e0f2fe; color: #0369a1; }
   </style>
 </head>
 <body>
-  <h2>Citizen Grievance Registry</h2>
-  <p>Learn more about <a href="#faq">submission guidelines</a> below.</p>
-
+  <h2>Departmental Infrastructure Registry</h2>
   <table>
     <caption>Recent Departmental Complaints (2026)</caption>
     <thead>
       <tr>
         <th scope="col">Case ID</th>
         <th scope="col">Department</th>
+        <th scope="col">Location</th>
         <th scope="col">Status</th>
       </tr>
     </thead>
@@ -559,33 +636,33 @@ Represents the closing footer for its nearest sectioning parent or the entire do
       <tr>
         <td>CRP-2026-00412</td>
         <td>Public Works</td>
+        <td>MG Road, Ward 4</td>
         <td><span class="badge">In Progress</span></td>
       </tr>
       <tr>
         <td>CRP-2026-00413</td>
         <td>Sanitation</td>
-        <td><span class="badge">Resolved</span></td>
+        <td>Sector 7 Market</td>
+        <td><span class="badge" style="background:#dcfce7;color:#15803d;">Resolved</span></td>
       </tr>
     </tbody>
   </table>
-
-  <h3 id="faq" style="margin-top: 2rem;">Submission Guidelines</h3>
-  <p>Citizens can upload photographic proof (<a href="https://example.com" target="_blank" rel="noopener noreferrer">external guide (opens in new tab)</a>).</p>
 </body>
 </html>`,
     objectives: [
       'Master the anchor tag (<a>), href syntax, absolute vs relative URLs, and fragment identifiers (#section).',
       'Understand security and accessibility implications of opening links in new tabs (target="_blank" and rel="noopener noreferrer").',
       'Embed images with <img>, write accurate, descriptive alt text, and use <figure> with <figcaption>.',
-      'Understand modern media embedding with <audio> and <video>, controls, and fallback sources.',
-      'Construct accessible data tables with <table>, <caption>, <thead>, <tbody>, and proper scope attributes.'
+      'Prevent Cumulative Layout Shift (CLS) by declaring explicit width and height dimensions on images.',
+      'Understand modern media embedding with <audio> and <video>, controls, multiple sources, and captions.',
+      'Construct accessible data tables with <table>, <caption>, <thead>, <tbody>, <tfoot>, and proper scope attributes.'
     ],
     sections: [
       {
         heading: 'Hyperlinks: Connecting the Web with the <a> Element',
-        content: `Hyperlinks are what make the World Wide Web a web. The anchor element (\`<a>\`) creates hyperlinks to other web pages, files, email addresses, telephone numbers, or locations within the current document.
+        content: `Hyperlinks are what connect isolated documents into the World Wide Web. The anchor element (\`<a>\`) creates hyperlinks to other web pages, files, email addresses, telephone numbers, or locations within the current document.
 
-### URL Types:
+### URL Path Types:
 1. **Absolute URLs:** Point to an exact external address on the web, including protocol and domain name:
    \`\`\`html
    <a href="https://www.w3.org/WAI/fundamentals/accessibility-intro/">W3C Accessibility Intro</a>
@@ -596,230 +673,205 @@ Represents the closing footer for its nearest sectioning parent or the entire do
    <a href="/dashboard/reports">View Grievance Reports</a>
    <!-- Path relative to current folder -->
    <a href="./faq.html">Read FAQ</a>
+   <!-- Path relative to parent folder -->
+   <a href="../contact.html">Contact Us</a>
    \`\`\`
 3. **Fragment Identifiers (In-Page Jump Links):** Link directly to an element with a matching \`id\` attribute:
    \`\`\`html
-   <!-- Clicking this link scrolls the viewport directly to <section id="contact-info"> -->
-   <a href="#contact-info">Jump to Contact Information</a>
+   <a href="#emergency-section">Jump to Emergency Contacts</a>
+   <!-- ... Later in document ... -->
+   <section id="emergency-section">
+     <h2>Emergency Contacts</h2>
+   </section>
    \`\`\`
-4. **Action Protocols (\`mailto:\` and \`tel:\`):**
+4. **Special Protocols (Email & Telephone):**
    \`\`\`html
-   <a href="mailto:support@crpindia.gov.in">Email Grievance Cell</a>
-   <a href="tel:+911800112233">Call Helpline: 1800-11-2233</a>
+   <a href="mailto:grievance@municipality.gov.in">Email Nodal Office</a>
+   <a href="tel:+9118004190000">Call Toll-Free Helpline</a>
    \`\`\`
 
-### Security & Accessibility for \`target="_blank"\`
-When opening external links in a new browser tab with \`target="_blank"\`, you must follow two mandatory practices:
-1. **Security (\`rel="noopener noreferrer"\`):** Without \`noopener\`, the newly opened page gains access to the originating page's \`window.opener\` object, creating a security vulnerability where malicious sites can redirect your application (reverse tabnabbing). Modern browsers default to \`rel="noopener"\`, but writing it explicitly is best practice.
-2. **Accessibility Notice:** A user who cannot see the screen may be confused when their browser suddenly switches tabs. Always inform the user in the link text or via an accessible label:
-   \`\`\`html
-   <a href="https://w3.org" target="_blank" rel="noopener noreferrer">
-     W3C Guidelines (opens in a new tab)
-   </a>
-   \`\`\``
+### Security Rule: Opening Links in New Tabs (\`target="_blank"\`)
+When opening external links in a new browser tab with \`target="_blank"\`, you **must** include \`rel="noopener noreferrer"\`:
+\`\`\`html
+<a href="https://external-resource.gov.in" target="_blank" rel="noopener noreferrer">
+  Official Gazetted Notification (opens in new tab)
+</a>
+\`\`\`
+* **Why this is critical:** Without \`noopener\`, the newly opened page gains access to the originating window's \`window.opener\` JavaScript object, allowing malicious external sites to silently redirect your page to a phishing clone (the *Tabnabbing* vulnerability).`
       },
       {
-        heading: 'Images and Media: <img>, <figure>, <audio>, and <video>',
-        content: `Images and multimedia enrich web documents, but require careful authoring for performance and accessibility:
+        heading: 'Images and Visual Media: <img>, <figure>, and Performance',
+        content: `Images enrich user experience, but improper implementation damages website accessibility and performance.
 
-### The \`<img>\` Element and Meaningful Alternative Text (\`alt\`)
-The \`<img>\` element is a void tag requiring two essential attributes: \`src\` (source path) and \`alt\` (alternative text):
-
+### The <img> Anatomy:
 \`\`\`html
-<img src="/assets/images/crp-architecture.png" 
-     alt="Diagram showing React frontend communicating via REST API to Express backend and MongoDB." 
+<img src="/images/ward-repair.jpg" 
+     alt="Public Works crew resurfacing asphalt on 5th Cross Road" 
      width="800" 
      height="450" 
      loading="lazy">
 \`\`\`
 
-* **The \`alt\` Attribute is Mandatory:** Screen readers speak the \`alt\` text aloud to visually impaired users. If an image fails to load (due to slow network or broken URL), the browser displays the \`alt\` text in place of the image.
-* **Writing High-Quality \`alt\` Text:** Describe the content and function of the image, not the fact that it is an image. Never write \`alt="Image of diagram"\` or \`alt="photo"\`. Instead, describe *what the image conveys*. If an image is purely decorative, set \`alt=""\` (empty string) so screen readers ignore it entirely.
-* **Dimensions (\`width\` and \`height\`):** Specifying width and height attributes reserves layout space before the image downloads, preventing **Cumulative Layout Shift (CLS)**, a major Core Web Vital performance metric.
-* **\`loading="lazy"\`:** Instructs the browser to defer downloading images until the user scrolls near them, dramatically accelerating initial page loads.
+1. **\`src\` (Source):** The path to the graphic file.
+2. **\`alt\` (Alternative Text):** A concise, descriptive textual alternative for screen readers and search engines, displayed if the image fails to load.
+   * *The Empty Alt Rule:* Decorative graphics (like subtle background divider waves) should use an explicit empty alt attribute (\`alt=""\`) so screen readers skip them instead of reading out the file name.
+3. **Explicit \`width\` and \`height\`:** Always declare native pixel dimensions on images! This reserves the aspect ratio layout box before the graphic downloads, eliminating **Cumulative Layout Shift (CLS)**, a major Core Web Vital penalty where text jumps as images load.
+4. **\`loading="lazy"\`:** Instructs the browser to defer downloading images until the user scrolls near them, saving mobile data.
 
-### \`<figure>\` and \`<figcaption>\`
-When an image, code snippet, or chart has an accompanying caption or editorial reference, wrap them together:
+### The <figure> and <figcaption> Elements
+For images that include a visible caption or diagram attribution, use the semantic \`<figure>\` element:
 \`\`\`html
 <figure>
-  <img src="/images/pothole-proof.jpg" alt="Deep road depression measuring approximately 40 centimeters on Sector 4 main avenue." width="600" height="400">
-  <figcaption>Figure 1: Citizen photo evidence submitted with Grievance CRP-2026-0081.</figcaption>
+  <img src="/charts/complaints-by-ward.png" 
+       alt="Bar chart showing Ward 4 received 312 complaints and Ward 7 received 189" 
+       width="640" 
+       height="360">
+  <figcaption>Figure 1.1: Municipal Grievance Distribution by Ward (Q3 2026).</figcaption>
 </figure>
-\`\`\`
-
-### Audio and Video Elements
-\`\`\`html
-<video controls width="640" height="360" poster="/images/video-thumb.jpg">
-  <source src="/media/portal-tutorial.mp4" type="video/mp4">
-  <source src="/media/portal-tutorial.webm" type="video/webm">
-  <p>Your browser does not support HTML5 video. <a href="/media/portal-tutorial.mp4">Download the video directly</a>.</p>
-</video>
 \`\`\``
       },
       {
-        heading: 'Data Tables: Structured Information vs Page Layouts',
-        content: `HTML tables exist for one purpose only: **displaying tabular, two-dimensional data** (rows and columns of related data points, such as financial records, citizen grievance logs, or timetable schedules).
+        heading: 'Modern Video and Audio Media',
+        content: `HTML5 introduced native media players without requiring third-party plugins:
 
-**Never use \`<table>\` for page layouts.** In the 1990s before CSS flexbox and grid, developers nested tables to position sidebars and headers. This destroys responsive layout adaptability, slows browser rendering, and produces an incomprehensible experience for screen reader users.
+\`\`\`html
+<!-- Native Video Player with Fallback Formats -->
+<video controls width="720" poster="/images/video-thumbnail.jpg">
+  <source src="/videos/briefing.webm" type="video/webm">
+  <source src="/videos/briefing.mp4" type="video/mp4">
+  <track kind="captions" src="/captions/en.vtt" srclang="en" label="English" default>
+  <p>Your browser does not support HTML5 video. <a href="/videos/briefing.mp4">Download video</a>.</p>
+</video>
+\`\`\`
+* **\`controls\`:** Displays native browser play, pause, volume, and fullscreen toggles.
+* **\`poster\`:** An image displayed while the video downloads or until the user clicks play.
+* **\`<track>\`:** Provides WebVTT timed subtitles, captions, or descriptions for deaf and hard-of-hearing users.`
+      },
+      {
+        heading: 'Accessible Data Tables: <table>, <caption>, <thead>, and Scope',
+        content: `Data tables must be reserved for **tabular data** (information organized into rows and columns of relationships). **Never use tables for page layouts!**
 
-### The Anatomy of an Accessible Data Table:
+### Complete Anatomy of an Accessible Table:
 \`\`\`html
 <table>
-  <!-- Caption acts as the accessible heading for the entire table -->
-  <caption>Public Grievance Escalation Timeline</caption>
-  
-  <!-- Table Header: Column titles -->
+  <caption>Quarterly Civic Works Budget Allocation (2026)</caption>
   <thead>
     <tr>
-      <th scope="col">Escalation Level</th>
-      <th scope="col">Designated Authority</th>
-      <th scope="col">Resolution Deadline</th>
+      <th scope="col">Department</th>
+      <th scope="col">Sanctioned Budget</th>
+      <th scope="col">Spent to Date</th>
+      <th scope="col">Completion Rate</th>
     </tr>
   </thead>
-
-  <!-- Table Body: Data rows -->
   <tbody>
     <tr>
-      <th scope="row">Level 1</th>
-      <td>Junior Sub-Divisional Officer</td>
-      <td>48 Hours</td>
+      <th scope="row">Water Works</th>
+      <td>Rs. 4.2 Cr</td>
+      <td>Rs. 3.1 Cr</td>
+      <td>73.8%</td>
     </tr>
     <tr>
-      <th scope="row">Level 2</th>
-      <td>Executive Engineer</td>
-      <td>7 Days</td>
-    </tr>
-    <tr>
-      <th scope="row">Level 3</th>
-      <td>District Commissioner</td>
-      <td>14 Days</td>
+      <th scope="row">Road Resurfacing</th>
+      <td>Rs. 8.5 Cr</td>
+      <td>Rs. 6.9 Cr</td>
+      <td>81.2%</td>
     </tr>
   </tbody>
-
-  <!-- Table Footer: Aggregates or notes -->
   <tfoot>
     <tr>
-      <td colspan="3">Complaints unresolved after 14 days trigger automatic ombudsman review.</td>
+      <th scope="row">Total</th>
+      <td>Rs. 12.7 Cr</td>
+      <td>Rs. 10.0 Cr</td>
+      <td>78.7%</td>
     </tr>
   </tfoot>
 </table>
 \`\`\`
 
-### Critical Accessibility Attributes:
-* \`<caption>\`: Provides an accessible summary title for the table, placed immediately after the opening \`<table>\` tag.
-* \`<th>\`: Identifies a header cell (rendered bold and centered by default).
-* \`scope="col"\`: Informs screen readers that this header applies to all cells in that vertical column.
-* \`scope="row"\`: Informs screen readers that this header applies to all cells in that horizontal row.`
+### Key Table Accessibility Attributes:
+* **\`<caption>\`:** Must be the first child inside \`<table>\`. It provides an audible and visible title explaining what the table contains.
+* **\`<thead>\`, \`<tbody>\`, \`<tfoot>\`:** Partition table rows into logical header, body, and summary footer segments.
+* **\`<th>\` vs \`<td>\`:** Use \`<th>\` for header cells and \`<td>\` for data cells.
+* **\`scope="col"\` and \`scope="row"\`:** Crucial for screen reader navigation. When a visually impaired user tabs into a data cell, the screen reader reads aloud the associated column and row headers automatically.`
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Using generic link text like "click here" or "read more".',
-        whyItHappens: 'Writing in a casual conversational manner without realizing how screen readers present links.',
-        howToFix: 'Screen reader users can browse a list of links out of context. Always make link text descriptive on its own, such as "Download Grievance Filing Guidelines" instead of "click here".'
-      },
-      {
-        mistake: 'Omitting alt text from <img> or writing alt="image".',
-        whyItHappens: 'Viewing alt as optional or merely satisfying a validator.',
-        howToFix: 'Write descriptive alt text explaining the content and purpose of the image. For purely decorative icons, use alt="" with aria-hidden="true".'
-      },
-      {
-        mistake: 'Using <table> to structure general page layouts instead of CSS.',
-        whyItHappens: 'Relying on outdated tutorials or legacy codebases.',
-        howToFix: 'Use CSS Flexbox and Grid for page layout. Reserve <table> strictly for tabular datasets.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Construct an Accessible Data Table with Links and Media',
-      difficulty: 'Beginner',
-      instructions: 'Create an accessible HTML table that displays a department staff directory. Include a table caption, column headers with scope attributes, row headers with scope attributes, email links, and an image with valid alt text.',
-      starterCode: `<!-- TODO: Create a table displaying 2 department officers -->
-<!-- Include caption, thead, tbody, th with scope="col", and th with scope="row" -->
-`,
-      tasks: [
-        'Open a <table> element and provide a descriptive <caption>.',
-        'Create a <thead> row with 3 column headers (<th scope="col">): Officer Name, Department, and Contact.',
-        'Populate <tbody> with at least 2 rows of real data.',
-        'Use <th scope="row"> for the first cell in each data row (the officer name).',
-        'Add a working mailto: link in the Contact column.'
-      ],
+    exercise: {
+      instruction: 'Create an accessible data table listing three municipal services, their nodal officers, emergency phone numbers, and operational status. Include a <caption>, <thead> with scope="col", and <tbody> with scope="row".',
+      starterCode: `<!-- Write your accessible table below -->\n`,
       hints: [
-        'The <caption> tag must be the very first child element directly inside <table>.',
-        'Use scope="col" on <th> tags in <thead>, and scope="row" on <th> tags in <tbody>.',
-        'An email link uses the syntax <a href="mailto:name@example.com">Email Name</a>.'
+        'Open with <table> and add a descriptive <caption> first.',
+        'Use <thead> with <tr> and <th scope="col"> for each column title.',
+        'Inside <tbody>, use <tr> elements where the first cell is <th scope="row"> followed by <td> cells.'
+      ],
+      tasks: [
+        'Include a descriptive <caption> element',
+        'Structure table using <thead>, <tbody> segments',
+        'Add scope="col" on column headers',
+        'Add scope="row" on row headers'
       ],
       solution: `<table>
-  <caption>Municipal Redressal Nodal Officers</caption>
+  <caption>Municipal Helpline Services Directory</caption>
   <thead>
     <tr>
-      <th scope="col">Officer Name</th>
-      <th scope="col">Department</th>
-      <th scope="col">Contact</th>
+      <th scope="col">Service Name</th>
+      <th scope="col">Nodal Officer</th>
+      <th scope="col">Helpline</th>
+      <th scope="col">Status</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th scope="row">Rajesh Sharma</th>
-      <td>Public Works Department</td>
-      <td><a href="mailto:r.sharma@pwd.gov.in">r.sharma@pwd.gov.in</a></td>
+      <th scope="row">Water Leakage Emergency</th>
+      <td>Er. R. Sharma</td>
+      <td>1800-419-0101</td>
+      <td>Active 24/7</td>
     </tr>
     <tr>
-      <th scope="row">Anita Deshmukh</th>
-      <td>Urban Sanitation</td>
-      <td><a href="mailto:a.deshmukh@sanitation.gov.in">a.deshmukh@sanitation.gov.in</a></td>
+      <th scope="row">Streetlight Repair</th>
+      <td>Smt. P. Verma</td>
+      <td>1800-419-0102</td>
+      <td>Mon-Sat 8AM-8PM</td>
     </tr>
   </tbody>
 </table>`,
-      solutionExplanation: 'This table satisfies all WCAG table requirements: the caption provides context, scope="col" maps column headers, scope="row" maps row headers for screen readers, and mailto links enable direct communication.'
+      solutionExplanation: 'This table adheres to WCAG accessibility criteria. The caption clearly announces table contents, <thead> structures the column headers with scope="col", and each row begins with a row header using scope="row".'
     },
     quiz: [
       {
-        question: 'When creating an external link with target="_blank", why should you include rel="noopener noreferrer"?',
+        question: 'Why is rel="noopener noreferrer" required when using target="_blank" on external hyperlinks?',
         options: [
-          'To prevent the new page from accessing window.opener and protect against reverse tabnabbing security attacks.',
-          'To force the link to open in fullscreen video mode.',
-          'To make the link load faster via server-side caching.',
-          'To encrypt the URL parameter in transit.'
+          'It instructs the browser to open the external page inside a separate operating system process.',
+          'It prevents the target page from accessing the originating window via window.opener, mitigating reverse tabnabbing security attacks.',
+          'It hides the user IP address from the destination server.',
+          'It accelerates page load time by compressing external CSS.'
         ],
-        correctIndex: 0,
-        explanation: 'target="_blank" without noopener gives the target page potential access to the parent page via window.opener, allowing a compromised external site to navigate the original tab to a phishing clone.'
+        correctIndex: 1,
+        explanation: 'Without rel="noopener", the newly opened page can manipulate the original window via window.opener.location, potentially redirecting the user to a malicious phishing site.'
       },
       {
         question: 'What is the purpose of the scope="col" attribute on a <th> element in a data table?',
         options: [
-          'It changes the text color of the column using inline CSS.',
-          'It instructs screen readers that this header applies to all cells in that vertical column.',
-          'It limits the column width to a maximum of 100 pixels.',
-          'It merges two adjacent columns into a single cell.'
+          'It sets the column width in pixels.',
+          'It informs screen readers that the header cell applies to all data cells in the column below it.',
+          'It applies alternating zebra background colors to the column.',
+          'It allows users to sort the column alphabetically.'
         ],
         correctIndex: 1,
-        explanation: 'scope="col" explicitly connects the header to all data cells below it in that column, enabling screen readers to announce the column name when a user traverses row cells.'
-      },
-      {
-        question: 'What is the correct way to mark up an image that is purely decorative and conveys no educational content?',
-        options: [
-          'Omit the alt attribute entirely.',
-          'Set alt="" (an empty string).',
-          'Set alt="decorative graphic".',
-          'Use <img decoration="true">.'
-        ],
-        correctIndex: 1,
-        explanation: 'Setting alt="" explicitly marks the image as decorative, instructing screen readers to skip over it silently rather than reading out the raw image file name.'
+        explanation: 'scope="col" explicitly connects the header cell to its respective column, allowing screen readers to announce the column name as users navigate between data cells.'
       }
     ],
     takeaways: [
-      'Use <a> with href for navigation; use absolute URLs for external sites and relative URLs for internal documents.',
-      'Always add rel="noopener noreferrer" and clear accessible labels to links opening with target="_blank".',
-      'The alt attribute on <img> is mandatory for accessibility; describe the visual content or leave alt="" for decorative images.',
-      'Reserve <table> strictly for tabular data; never use tables for general page layout.',
-      'Always include <caption>, <thead>, <tbody>, and scope="col" / scope="row" attributes on data tables for screen reader navigation.'
+      'Use <a> with href for all navigation; always attach rel="noopener noreferrer" when using target="_blank".',
+      'Provide accurate alt text on images; decorative images should use an explicit empty alt="".',
+      'Declare explicit width and height dimensions on images to prevent Cumulative Layout Shift (CLS).',
+      'Never use tables for page layout; reserve <table> strictly for tabular data with <caption>, <thead>, <tbody>, and scope attributes.'
     ],
     caseStudyReference: {
-      title: 'Data Tables and Document Attachments in CRP India',
-      description: 'Review the administrative complaints table in CRP India, observing how columns, priority indicators, and photo evidence attachments are displayed.',
+      title: 'Data Tables and Document Attachment Links in CRP India',
+      description: 'Review the complaints table component in CRP India that displays ticket IDs, categories, dates, and evidence download links.',
       files: [
-        'reference-projects/CRP-India/frontend/src/pages/AdminDashboard.jsx',
-        'reference-projects/CRP-India/frontend/src/components/GrievanceCard.jsx'
+        'reference-projects/CRP-India/frontend/src/components/GrievanceList.jsx',
+        'reference-projects/CRP-India/frontend/src/pages/CitizenReports.jsx'
       ]
     }
   },
@@ -834,271 +886,217 @@ When an image, code snippet, or chart has an accompanying caption or editorial r
     category: 'Frontend',
     estimatedTime: '45 min read & practice',
     interactivePlayground: 'html',
-    playgroundTitle: 'Interactive Web Form Sandbox',
+    playgroundTitle: 'Interactive Form & Validation Sandbox',
     playgroundCode: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Citizen Grievance Submission Form</title>
+  <title>Grievance Registration Form</title>
   <style>
-    body { font-family: system-ui, sans-serif; padding: 1.5rem; color: #1e293b; background: #f8fafc; }
-    form { max-width: 480px; background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid #cbd5e1; }
-    .form-group { margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
-    label { font-size: 0.9rem; font-weight: 600; color: #334155; }
-    input, select, textarea { padding: 0.6rem; border: 1px solid #94a3b8; border-radius: 6px; font-size: 0.95rem; }
-    input:focus, select:focus, textarea:focus { outline: 2px solid #2563eb; border-color: transparent; }
-    .btn-submit { background: #2563eb; color: white; border: none; padding: 0.75rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
-    .btn-submit:hover { background: #1d4ed8; }
+    body { font-family: system-ui, sans-serif; padding: 1.5rem; background: #f8fafc; color: #1e293b; }
+    form { max-width: 500px; background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 1.25rem; }
+    label { display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem; }
+    input[type="text"], input[type="email"], select, textarea {
+      width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus { outline: 2px solid #2563eb; border-color: #2563eb; }
+    button[type="submit"] { background: #2563eb; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; }
+    button[type="submit"]:hover { background: #1d4ed8; }
+    .help-text { font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }
   </style>
 </head>
 <body>
-  <h2>File a Public Grievance</h2>
-  <form onsubmit="event.preventDefault(); alert('Form submitted successfully!');">
+  <h2>Lodge Civic Complaint</h2>
+  <form action="/api/grievance" method="POST" onsubmit="event.preventDefault(); alert('Form submitted successfully!');">
     <div class="form-group">
-      <label for="citizen-name">Full Name <span style="color: red;">*</span></label>
-      <input type="text" id="citizen-name" name="fullName" required placeholder="e.g. Priya Sharma">
+      <label for="citizenName">Full Name *</label>
+      <input type="text" id="citizenName" name="citizenName" required minlength="3" placeholder="e.g. Ramesh Kumar">
     </div>
-
     <div class="form-group">
-      <label for="citizen-email">Email Address <span style="color: red;">*</span></label>
-      <input type="email" id="citizen-email" name="email" required placeholder="priya@example.com">
-    </div>
-
-    <div class="form-group">
-      <label for="dept-select">Department <span style="color: red;">*</span></label>
-      <select id="dept-select" name="department" required>
-        <option value="">-- Select Concerned Department --</option>
-        <option value="pwd">Public Works Department</option>
+      <label for="department">Target Department *</label>
+      <select id="department" name="department" required>
+        <option value="">-- Choose Department --</option>
+        <option value="public-works">Public Works (Roads & Bridges)</option>
         <option value="sanitation">Sanitation & Waste</option>
-        <option value="electricity">Electricity Board</option>
+        <option value="water">Water Supply & Drainage</option>
       </select>
     </div>
-
     <div class="form-group">
-      <label for="complaint-details">Grievance Description</label>
-      <textarea id="complaint-details" name="description" rows="4" placeholder="Detail the location and nature of the issue..."></textarea>
+      <label for="description">Complaint Details *</label>
+      <textarea id="description" name="description" rows="4" required minlength="20" placeholder="Describe the location and issue in detail..."></textarea>
+      <div class="help-text">Minimum 20 characters required.</div>
     </div>
-
-    <button type="submit" class="btn-submit">Submit Grievance</button>
+    <button type="submit">Submit Complaint</button>
   </form>
 </body>
 </html>`,
     objectives: [
-      'Understand how the <form> element packages user input via action, method, and encoding.',
-      'Correctly bind every form control to a <label> using the for and id association.',
-      'Master essential input types: text, email, password, number, checkbox, radio, date, and file.',
-      'Implement native HTML5 client validation using required, pattern, min, max, and minlength.',
-      'Group related controls accessibly using <fieldset> and <legend>.',
-      'Understand why client-side validation is a UX convenience and must always be paired with backend validation.'
+      'Understand the client-server form submission lifecycle (HTTP GET vs POST, action, method, and encoding types).',
+      'Enforce strict accessibility by connecting every input control to a dedicated <label> using the for and id attributes.',
+      'Select appropriate specialized input types (email, tel, number, date, password, checkbox, radio).',
+      'Implement native HTML5 client-side constraint validation (required, minlength, maxlength, min, max, pattern).',
+      'Group related form controls semantically using <fieldset> and <legend> elements.'
     ],
     sections: [
       {
-        heading: 'The Role of Forms in Web Applications',
-        content: `Forms are the primary interactive bridge between users and web applications. Whether logging into an account, submitting a civic grievance in CRP India, purchasing an item, or searching a database, forms collect and serialize structured user input for transmission across the network.
+        heading: 'How Web Forms Work: The Client-to-Server Data Journey',
+        content: `Forms are the primary mechanism through which users transmit data from their web browser to a backend server. Whether logging into an account, purchasing an item, or lodging a public infrastructure complaint in CRP India, forms structure user input into standardized key-value pairs.
 
-### The \`<form>\` Container and Its Attributes:
-* **\`action\`:** The server endpoint URL where submitted form data will be processed (e.g., \`action="/api/grievances"\`). In single-page React applications, form submission is typically intercepted with JavaScript \`onSubmit\` handlers, but understanding standard HTML form transmission is critical.
-* **\`method\`:** The HTTP transmission verb:
-  * \`method="GET"\`: Appends form data into the URL query string (\`/search?query=pothole\`). Ideal for idempotent queries that can be bookmarked and cached. **Never use GET for passwords, sensitive data, or database modifications**.
-  * \`method="POST"\`: Transmits form data inside the HTTP request body. Mandatory for submitting sensitive data (passwords, tokens) and state-mutating actions (creating records, updating profiles).
-* **\`enctype\`:** Dictates how form payload bytes are encoded:
-  * \`application/x-www-form-urlencoded\` (default): URL-encoded key-value pairs.
-  * \`multipart/form-data\`: Mandatory whenever uploading binary files (\`<input type="file">\`).`
+### The <form> Element Attributes:
+1. **\`action\`:** The destination URL on the backend server where the form data will be sent upon submission (e.g., \`action="/api/grievances"\`).
+2. **\`method\`:** The HTTP protocol method used to send the payload:
+   * **\`GET\`:** Appends form inputs as a query string in the browser's URL bar (\`/search?query=pothole&ward=4\`). Used exclusively for safe, idempotent read-only queries (like search filters). **Never use GET for passwords, payments, or state mutations!**
+   * **\`POST\`:** Transmits form inputs inside the HTTP request body. Used for creating or modifying data (user registration, ticket creation, password changes).
+3. **\`enctype\`:** The MIME encoding format:
+   * \`application/x-www-form-urlencoded\` (default): Form keys and values are URL-encoded.
+   * \`multipart/form-data\`: Mandatory whenever the form contains file uploads (\`<input type="file">\`).`
       },
       {
-        heading: 'Accessible Labels: The for/id Contract',
-        content: `The single most prevalent accessibility failure on the modern web is the **unlabeled form control**. A text box or dropdown menu with no associated \`<label>\` leaves a blind user with no idea what information is requested.
+        heading: 'The Non-Negotiable Accessibility Rule: <label> and <input>',
+        content: `Every interactive input control in a web application **must** have an associated label. A placeholder is **never** a replacement for a label!
 
-### The Explicit Association Pattern (Industry Standard):
-To bind a label to an input element, match the \`<label>\`'s **\`for\`** attribute with the \`<input>\`'s **\`id\`** attribute:
-
+### Explicit Label Association via \`for\` and \`id\`:
 \`\`\`html
-<!-- CORRECT: Explicit association -->
-<label for="user-password">Account Password</label>
-<input type="password" id="user-password" name="password" required>
+<!-- CORRECT: Explicit connection using for and id -->
+<label for="user-email">Registered Email Address</label>
+<input type="email" id="user-email" name="userEmail" required>
 \`\`\`
 
-### Dual Benefits of Explicit Association:
-1. **Screen Reader Announcement:** When the input gains focus, the screen reader announces: *"Account Password, edit text, required"*. Without this link, it simply announces: *"edit text"*.
-2. **Hit Target Expansion:** Clicking or tapping anywhere on the text of the label automatically focuses the input or toggles the checkbox/radio button. This dramatically improves usability for mobile phone users and people with motor impairments.`
+### Why This is Mandatory:
+1. **Screen Readers:** When a blind user tabs into the input field, the screen reader announces: *"Registered Email Address, edit text, required"*. Without the label, it announces only: *"Edit text, blank"*, leaving the user with no idea what information is requested.
+2. **Expanded Click Targets:** Clicking or tapping the text inside \`<label>\` automatically places focus inside the connected input box. This drastically improves usability for mobile phone users with smaller touchscreens.`
       },
       {
-        heading: 'Input Controls and Field Grouping',
-        content: `HTML provides tailored controls for distinct data formats:
+        heading: 'The Modern HTML5 Input Type Spectrum',
+        content: `Using the correct \`type\` attribute on \`<input>\` triggers customized mobile software keyboards, automatic browser formatting, and native input constraints:
 
+| Input Type | Mobile Keyboard Behavior | Native Built-in Validation |
+| :--- | :--- | :--- |
+| \`type="text"\` | Standard alphabetical keyboard | General plain text |
+| \`type="email"\` | Displays \`@\` and \`.com\` keys | Validates valid email address format |
+| \`type="tel"\` | Displays 0–9 telephone dialpad | Optimizes phone entry (use with \`pattern\`) |
+| \`type="number"\` | Displays numeric keypad with decimal | Restricts input to numbers (supports \`min\`, \`max\`, \`step\`) |
+| \`type="password"\` | Masks entered characters with dots | Secure credential entry |
+| \`type="date"\` | Opens native date picker modal | Validates date formatting |
+| \`type="checkbox"\` | Checkbox toggle | Binary or multi-select options |
+| \`type="radio"\` | Circular radio button | Single selection from a grouped set |
+
+### Radio Buttons: Grouping by Shared \`name\`
+To ensure only one option can be selected from a set of radio buttons, all buttons in the group **must share the exact same \`name\` attribute**:
 \`\`\`html
-<!-- Text inputs -->
-<input type="text" name="username" autocomplete="username">
-<input type="email" name="email" autocomplete="email">
-<input type="password" name="password">
-<input type="number" name="age" min="18" max="120" step="1">
-
-<!-- Multi-line text area -->
-<textarea name="feedback" rows="5" cols="40"></textarea>
-
-<!-- Dropdown selection -->
-<select name="state" id="state-select">
-  <option value="">Select State</option>
-  <option value="MH">Maharashtra</option>
-  <option value="DL">Delhi</option>
-</select>
-
-<!-- Checkboxes (independent options) -->
-<input type="checkbox" id="terms" name="agreeTerms" value="yes">
-<label for="terms">I accept the terms of service</label>
-
-<!-- Radio buttons (mutually exclusive group sharing the same name) -->
 <fieldset>
-  <legend>Choose Grievance Priority Level</legend>
-  <input type="radio" id="priority-low" name="priority" value="low" checked>
-  <label for="priority-low">Normal</label>
+  <legend>Select Grievance Urgency Level</legend>
+  <input type="radio" id="urgency-low" name="urgency" value="low" checked>
+  <label for="urgency-low">Low (Standard SLA)</label>
 
-  <input type="radio" id="priority-high" name="priority" value="high">
-  <label for="priority-high">Urgent Emergency</label>
+  <input type="radio" id="urgency-urgent" name="urgency" value="urgent">
+  <label for="urgency-urgent">Urgent (Safety Hazard)</label>
 </fieldset>
 \`\`\`
-
-### Grouping with \`<fieldset>\` and \`<legend>\`:
-When radio buttons or related checkboxes represent choices belonging to a single question, wrap them in a \`<fieldset>\` accompanied by a \`<legend>\`. When a user tabs into any radio button in the group, screen readers announce both the legend question and the specific radio option.`
+* **\`<fieldset>\` and \`<legend>\`:** Semantically groups related inputs. The \`<legend>\` acts as the overarching question announced by screen readers for every radio option.`
       },
       {
-        heading: 'HTML5 Client Validation vs Backend Security',
-        content: `Modern HTML provides built-in client validation attributes that prevent invalid submissions before sending data:
+        heading: 'Native Client-Side Constraint Validation',
+        content: `HTML5 provides powerful, declarative validation attributes that prevent invalid form submission before any JavaScript executes:
+
 * **\`required\`:** Prevents submission if the field is empty.
-* **\`type="email"\` / \`type="url"\`:** Validates basic syntactical email/URL structure.
-* **\`minlength\` and \`maxlength\`:** Restricts character count.
-* **\`pattern="[A-Z0-9]{10}"\`:** Uses regular expressions for strict validation.
+* **\`minlength\` and \`maxlength\`:** Enforces string character length constraints.
+* **\`min\`, \`max\`, and \`step\`:** Enforces numeric or date boundaries.
+* **\`pattern\`:** Enforces a Regular Expression (RegEx) matching rule.
 
-### CRITICAL SECURITY PRINCIPLE:
-> **Client-side validation is a user experience enhancement, NEVER a security boundary.**
+\`\`\`html
+<!-- Indian Aadhaar / Nodal Officer ID Validation Example -->
+<label for="officer-id">Nodal Officer Code (Format: NOD-1234)</label>
+<input type="text" 
+       id="officer-id" 
+       name="officerId" 
+       required 
+       pattern="^NOD-[0-9]{4}$" 
+       title="Officer Code must start with 'NOD-' followed by 4 digits">
+\`\`\`
 
-Anyone can disable client-side HTML validation in two seconds using browser DevTools or by sending raw HTTP POST requests via tools like cURL or Postman directly to your server. 
-
-In production systems like CRP India, every input constraint verified in HTML must be rigorously re-validated on the Node.js backend using libraries like express-validator or Mongoose schema validations before touching a database.`
+### Golden Rule of Web Security:
+**Client-side HTML validation is a user experience convenience, NOT a security measure.** Anyone can bypass browser HTML validation using curl, Postman, or by disabling JavaScript in Developer Tools. **All input constraints must be rigorously re-validated on the backend server!**`
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Using placeholder text instead of an explicit <label>.',
-        whyItHappens: 'Placeholders look clean visually and save vertical screen space.',
-        howToFix: 'Placeholders vanish as soon as the user starts typing, causing users to lose track of what the field asked for, and placeholders have poor contrast. Always provide an explicit <label for="inputId">.'
-      },
-      {
-        mistake: 'Failing to give radio buttons in the same group the same name attribute.',
-        whyItHappens: 'Assuming id or fieldset groups them automatically.',
-        howToFix: 'Radio buttons must share the exact same name attribute (e.g. name="priority") to be mutually exclusive.'
-      },
-      {
-        mistake: 'Relying exclusively on HTML validation for security.',
-        whyItHappens: 'Believing the browser blocks malicious inputs before reaching the server.',
-        howToFix: 'Always validate and sanitize all inputs on the server side using backend validation middleware.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build a Fully Accessible Civic Feedback Form',
-      difficulty: 'Intermediate',
-      instructions: 'Construct a complete citizen grievance filing form. Include text inputs, email inputs with required validation, an accessible radio button group for priority wrapped in <fieldset>, and an explicit submit button.',
-      starterCode: `<!-- TODO: Build a <form action="/api/grievances" method="POST"> -->
-<!-- Include citizen name, email, department dropdown, and priority radio group -->
-`,
-      tasks: [
-        'Create a <form> with action and method="POST" attributes.',
-        'Add a full name text input with an explicitly associated <label for="...">.',
-        'Add an email input with required and email validation.',
-        'Create a <select> dropdown with at least 3 departments.',
-        'Wrap an emergency priority radio button group in a <fieldset> with a <legend>.',
-        'Add an explicit <button type="submit">.'
-      ],
+    exercise: {
+      instruction: 'Create an accessible civic ticket submission form containing: citizen email (type="email", required), category select dropdown, urgency radio group wrapped in a <fieldset> with <legend>, and a submit button.',
+      starterCode: `<!-- Write your accessible form below -->\n`,
       hints: [
-        'Remember the label association: <label for="email-field"> matched with <input id="email-field">.',
-        'All radio buttons in the priority group must share the same name attribute, such as name="priority".',
-        'The submit button must have type="submit".'
+        'Wrap the inputs in a <form action="/submit" method="POST">.',
+        'Use <label for="..."> connected to every input by id.',
+        'Group the radio buttons inside a <fieldset> with a <legend>.',
+        'Add a <button type="submit"> at the bottom.'
       ],
-      solution: `<form action="/api/grievances" method="POST">
+      tasks: [
+        'Form has action and POST method',
+        'Email input uses type="email" with associated <label>',
+        'Category dropdown has at least two options',
+        'Radio buttons grouped inside <fieldset> with <legend>',
+        'Includes explicit <button type="submit">'
+      ],
+      solution: `<form action="/api/v1/tickets" method="POST">
   <div>
-    <label for="citizen-name">Full Name <span aria-hidden="true">*</span></label>
-    <input type="text" id="citizen-name" name="fullName" required minlength="3">
+    <label for="citizen-email">Citizen Email Address *</label>
+    <input type="email" id="citizen-email" name="citizenEmail" required>
   </div>
-
   <div>
-    <label for="citizen-email">Email Address <span aria-hidden="true">*</span></label>
-    <input type="email" id="citizen-email" name="email" required autocomplete="email">
-  </div>
-
-  <div>
-    <label for="dept-select">Department <span aria-hidden="true">*</span></label>
-    <select id="dept-select" name="department" required>
-      <option value="">-- Select Department --</option>
-      <option value="roads">Roads & Transport</option>
-      <option value="water">Water Supply</option>
-      <option value="sanitation">Sanitation</option>
+    <label for="ticket-category">Category *</label>
+    <select id="ticket-category" name="category" required>
+      <option value="">-- Select Category --</option>
+      <option value="roads">Road Maintenance</option>
+      <option value="water">Water Drainage</option>
     </select>
   </div>
-
   <fieldset>
-    <legend>Grievance Urgency</legend>
-    <div>
-      <input type="radio" id="prio-normal" name="urgency" value="normal" checked>
-      <label for="prio-normal">Normal</label>
-    </div>
-    <div>
-      <input type="radio" id="prio-urgent" name="urgency" value="urgent">
-      <label for="prio-urgent">Emergency / Dangerous Hazard</label>
-    </div>
+    <legend>Priority Level *</legend>
+    <input type="radio" id="priority-normal" name="priority" value="normal" checked>
+    <label for="priority-normal">Normal</label>
+    <input type="radio" id="priority-urgent" name="priority" value="urgent">
+    <label for="priority-urgent">Urgent</label>
   </fieldset>
-
-  <button type="submit">Submit Grievance</button>
+  <button type="submit">Submit Ticket</button>
 </form>`,
-      solutionExplanation: 'This solution adheres to strict web accessibility and security practices: all controls have explicit label associations, fields are grouped with fieldset/legend, inputs specify autocomplete, and required attributes prevent accidental empty submissions.'
+      solutionExplanation: 'This form satisfies all modern accessibility and validation standards. Every input has an explicitly mapped label via the for/id pair, radio buttons share a common name attribute inside a fieldset/legend structure, and native required constraints enforce completeness.'
     },
     quiz: [
       {
-        question: 'How do you explicitly link a <label> to an <input> element in HTML?',
+        question: 'What is the security hazard of using method="GET" when submitting a user login form with a password?',
         options: [
-          'By placing both elements inside the same <div>.',
-          'By matching the label\'s "for" attribute to the input\'s "id" attribute.',
-          'By setting the label\'s "name" attribute equal to the input\'s "class" attribute.',
-          'By adding the "label-for" attribute to the form container.'
+          'The browser automatically encrypts the password with an unreadable key.',
+          'The password is appended directly into the URL query string, exposing it in browser history, server access logs, and HTTP Referer headers.',
+          'GET requests can only transmit 10 characters maximum.',
+          'GET requests automatically disable HTTPS transport encryption.'
         ],
         correctIndex: 1,
-        explanation: 'The standard W3C contract binds a label to an input control when the label\'s "for" attribute matches the unique "id" of that input control.'
+        explanation: 'GET requests encode form data in the URL query parameters. Passwords sent via GET are stored in plaintext across browser history, proxy caches, and web server logs.'
       },
       {
-        question: 'Why should a developer never rely on HTML form validation (e.g. required, pattern) as the sole security barrier?',
+        question: 'Why should a developer never rely solely on a placeholder attribute instead of a <label> element?',
         options: [
-          'Because HTML validation only works on Chrome and Safari.',
-          'Because any user can easily bypass client HTML validation using browser DevTools or sending direct HTTP requests.',
-          'Because HTML validation slows down network ping times.',
-          'Because HTML validation expires after 24 hours.'
+          'Placeholders vanish as soon as the user begins typing, leaving no permanent context, and are ignored or announced inconsistently by screen readers.',
+          'Browsers reject HTML forms that include placeholder attributes.',
+          'Placeholders increase the size of the JavaScript bundle.',
+          'Placeholders cannot be styled with CSS.'
         ],
-        correctIndex: 1,
-        explanation: 'Client-side HTML validation runs entirely within the user\'s local browser. Anyone can alter the DOM or bypass the browser entirely using curl, Postman, or custom scripts. Server-side validation is always mandatory.'
-      },
-      {
-        question: 'Which elements should be used to group related radio buttons under an overarching question or prompt?',
-        options: [
-          '<section> and <header>',
-          '<fieldset> and <legend>',
-          '<group> and <title>',
-          '<details> and <summary>'
-        ],
-        correctIndex: 1,
-        explanation: '<fieldset> groups related interactive controls, and <legend> provides the accessible caption read aloud by screen readers when navigating the group.'
+        correctIndex: 0,
+        explanation: 'Placeholders disappear upon user input, harming cognitive accessibility and short-term recall. Furthermore, screen readers do not treat placeholders as reliable accessible names.'
       }
     ],
     takeaways: [
-      'Forms collect user input and transmit it via HTTP GET (query parameters) or POST (request payload).',
-      'Always associate every input with a <label> by matching the label\'s for attribute to the input\'s id.',
-      'Radio buttons in the same question must share the exact same name attribute to ensure mutual exclusivity.',
-      'Use <fieldset> and <legend> to group related inputs like radio button sets or address blocks.',
-      'Client-side HTML5 validation is essential for good user experience, but all inputs must be re-validated on the server.'
+      'Every interactive input must have a dedicated <label> mapped via for and id.',
+      'Always use method="POST" for sensitive data, mutations, or credential transmissions.',
+      'Group related inputs (such as radio buttons or checkboxes) semantically with <fieldset> and <legend>.',
+      'Leverage native HTML5 input types (email, tel, number) for mobile-optimized keyboards and constraint validation.',
+      'Remember that client-side validation is a UX feature; always validate all inputs securely on the server.'
     ],
     caseStudyReference: {
-      title: 'Citizen Complaint Submission Form in CRP India',
-      description: 'Review the multi-step grievance submission form in CRP India, observing controlled inputs, file upload handling, and schema validation.',
+      title: 'Grievance Submission Form in CRP India',
+      description: 'Inspect the React form implementation in CRP India that collects citizen name, ward dropdown selection, complaint description, and multipart evidence upload.',
       files: [
-        'reference-projects/CRP-India/frontend/src/pages/SubmitGrievance.jsx',
-        'reference-projects/CRP-India/backend/src/routes/grievanceRoutes.js'
+        'reference-projects/CRP-India/frontend/src/pages/LodgeComplaint.jsx',
+        'reference-projects/CRP-India/backend/controllers/complaintController.js'
       ]
     }
   },
@@ -1113,337 +1111,205 @@ In production systems like CRP India, every input constraint verified in HTML mu
     category: 'Frontend',
     estimatedTime: '45 min read & practice',
     interactivePlayground: 'html',
-    playgroundTitle: 'Accessible Civic Profile Project Sandbox',
+    playgroundTitle: 'Accessible Civic Portal Capstone',
     playgroundCode: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Citizen Redressal Profile &amp; Portal</title>
+  <title>Accessible Citizen Portal</title>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; background: #f8fafc; color: #1e293b; line-height: 1.6; }
-    .container { max-width: 650px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; border: 1px solid #cbd5e1; }
-    .skip-link { position: absolute; top: -40px; left: 0; background: #2563eb; color: white; padding: 8px; z-index: 100; }
+    body { font-family: system-ui, sans-serif; padding: 1.5rem; line-height: 1.6; color: #1e293b; background: #f8fafc; }
+    .skip-link { position: absolute; top: -40px; left: 0; background: #000; color: #fff; padding: 8px; z-index: 100; text-decoration: none; font-weight: bold; }
     .skip-link:focus { top: 0; }
-    nav ul { display: flex; gap: 1rem; list-style: none; padding: 0; }
-    nav a { color: #2563eb; text-decoration: none; font-weight: 500; }
-    nav a:hover, nav a:focus { text-decoration: underline; }
-    .badge-status { background: #dcfce7; color: #166534; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.85rem; }
+    header, main, footer { max-width: 700px; margin: 0 auto; background: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #e2e8f0; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+    .status-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+    .status-active { background: #dcfce7; color: #166534; }
   </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
-
-  <div class="container">
-    <header>
-      <h1>Citizen Grievance Profile</h1>
-      <nav aria-label="Portal Navigation">
-        <ul>
-          <li><a href="#profile">Profile</a></li>
-          <li><a href="#records">History</a></li>
-          <li><a href="#help">Helpdesk</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <main id="main-content">
-      <section id="profile">
-        <h2>Officer Account Details</h2>
-        <p>Assigned Department: <strong>Public Health &amp; Sanitation</strong></p>
-        <p>Active Status: <span class="badge-status">Verified Officer</span></p>
-      </section>
-
-      <section id="records" style="margin-top: 1.5rem;">
-        <h2>Recent Action Log</h2>
-        <ul>
-          <li>Resolved water supply blockage at Sector 9 on March 24.</li>
-          <li>Inspected municipal drain cleaning report on March 22.</li>
-        </ul>
-      </section>
-    </main>
-
-    <footer style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; font-size: 0.85rem; color: #64748b;">
-      <p>&copy; 2026 Citizen Redressal Portal. Committed to universal access.</p>
-    </footer>
-  </div>
+  <header>
+    <h1>Municipal Civic Services</h1>
+    <nav aria-label="Portal Navigation">
+      <a href="#report" style="margin-right: 1rem;">File Complaint</a>
+      <a href="#status">Check Status</a>
+    </nav>
+  </header>
+  <main id="main-content">
+    <h2>Public Works Operational Status</h2>
+    <p>All 14 municipal road repair squads are deployed today. <span class="status-badge status-active">Active</span></p>
+    <section id="report" style="margin-top: 1.5rem;">
+      <h3>Quick Action</h3>
+      <button type="button" onclick="alert('Navigating to submission...')">Submit Live Grievance</button>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2026 Municipal Public Administration. WCAG 2.1 AA Compliant.</p>
+  </footer>
 </body>
 </html>`,
     objectives: [
-      'Understand the four core principles of web accessibility (POUR: Perceivable, Operable, Understandable, Robust).',
-      'Understand the Accessibility Tree and how assistive technologies interact with native HTML.',
-      'Implement keyboard navigation support, tab index control, and skip links.',
-      'Understand the First Rule of ARIA: prefer semantic native HTML over custom ARIA overrides.',
-      'Build a complete, semantic, accessible multi-section civic portal profile page from scratch.'
+      'Understand the four core WCAG principles (POUR: Perceivable, Operable, Understandable, Robust).',
+      'Explain how the browser converts the DOM tree into an Accessibility Tree for screen readers.',
+      'Implement keyboard navigation best practices, focus indicators, and skip-to-content links.',
+      'Understand the First Rule of ARIA and know when native HTML elements make ARIA unnecessary.',
+      'Execute a full accessibility audit using browser DevTools Lighthouse and Accessibility inspectors.'
     ],
     sections: [
       {
-        heading: 'Web Accessibility (a11y) and the POUR Principles',
-        content: `Web accessibility (often abbreviated as **a11y**, representing the 11 letters between 'a' and 'y') means ensuring that websites are usable by everyone, including people with auditory, cognitive, neurological, physical, speech, and visual disabilities.
+        heading: 'The Social and Legal Imperative of Web Accessibility (a11y)',
+        content: `**Web accessibility** (abbreviated **a11y**, representing the letter 'a' followed by 11 letters and 'y') is the practice of building websites that can be navigated, understood, and used by everyone, including people with visual, auditory, motor, or cognitive disabilities.
 
-The internationally recognized standard for web accessibility is the **Web Content Accessibility Guidelines (WCAG)**, organized around four fundamental principles known as **POUR**:
+In modern engineering, accessibility is not an optional "nice-to-have" feature; it is a fundamental engineering requirement and a legal mandate across government platforms like the CRP India municipal portal.
 
-1. **Perceivable:** Information and user interface components must be presentable to users in ways they can perceive. Content cannot be invisible to all of a user's senses (e.g., providing text alternatives for images, captions for video, and adequate color contrast).
-2. **Operable:** User interface components and navigation must be operable. The interface cannot require an interaction that a user cannot perform (e.g., all functionality must be accessible via keyboard alone without requiring a mouse).
-3. **Understandable:** Information and the operation of the user interface must be understandable. Content must be readable, predictable, and provide clear error messages.
-4. **Robust:** Content must be robust enough that it can be interpreted reliably by a wide variety of user agents, including assistive technologies like screen readers.`
+### The WCAG 2.1 POUR Principles:
+1. **Perceivable:** Information and user interface components must be presentable to users in ways they can perceive (e.g., text alternatives for images, captions for video, high color contrast).
+2. **Operable:** User interface components and navigation must be operable via diverse input devices (e.g., full keyboard navigability without requiring a mouse, clear focus indicators, skip-to-content links).
+3. **Understandable:** Information and the operation of the user interface must be understandable (e.g., clear language declarations, predictable page behaviors, helpful form error messages).
+4. **Robust:** Content must be robust enough that it can be interpreted reliably by a wide variety of user agents, including assistive technologies (e.g., valid HTML syntax, appropriate semantic markup).`
       },
       {
-        heading: 'The Accessibility Tree & Native HTML vs. ARIA',
-        content: `When a browser parses an HTML document, it creates two interconnected trees:
-1. **The DOM Tree:** Used by JavaScript and CSS to render visual elements on screen.
-2. **The Accessibility Tree:** A specialized subset derived from the DOM that exposes roles, states, names, and values directly to platform accessibility APIs (used by screen readers like NVDA, JAWS, and Apple VoiceOver).
+        heading: 'How Screen Readers See the Web: The Accessibility Tree',
+        content: `Just as the browser builds a Document Object Model (DOM) to render visual pixels, it simultaneously constructs an parallel in-memory tree called the **Accessibility Tree**.
 
 \`\`\`
-       HTML Markup: <button>Submit Complaint</button>
-                           |
-                      DOM Tree
-                           |
-                 Accessibility Tree
-               Role: "button"
-               Name: "Submit Complaint"
-               Focusable: true
+   [HTML Document]
+          |
+          v
+   [DOM Tree] ---------------> [Accessibility Tree]
+          |                           |
+          v                           v
+   [Visual Pixels on Screen]    [Screen Reader Audio Output]
 \`\`\`
 
-### The First Rule of ARIA:
-**Accessible Rich Internet Applications (ARIA)** is a W3C specification that allows developers to add semantic attributes (\`role\`, \`aria-label\`, \`aria-expanded\`) to HTML.
+The Accessibility Tree strips out visual styling and exposes four key properties for every element:
+1. **Role:** What the element is (e.g., \`button\`, \`link\`, \`heading\`, \`checkbox\`, \`banner\`).
+2. **Name:** What the element is called (its accessible text label, e.g., *"Register Ticket"*).
+3. **Value:** The current state or data (e.g., \`checked=true\`, \`value="MG Road"\`).
+4. **Description:** Additional supplementary context (provided via \`aria-describedby\`).
 
-However, the official W3C First Rule of ARIA states:
-> **"If you can use a native HTML element or attribute with the semantics and behavior you require already built-in, then do so. Do not re-create native semantics with ARIA."**
-
-\`\`\`html
-<!-- BAD: Re-inventing a button with div, fake role, and broken keyboard support -->
-<div class="custom-btn" role="button" onclick="submitForm()">Submit</div>
-
-<!-- GOOD: Native HTML element with built-in keyboard focus, Space/Enter activation, and role -->
-<button type="button" onclick="submitForm()">Submit</button>
-\`\`\`
-
-Native elements (\`<button>\`, \`<a>\`, \`<input>\`, \`<select>\`) provide keyboard accessibility, focus management, and accessibility tree roles automatically without writing a single line of custom code.`
+When you use semantic HTML like \`<button>Submit</button>\`, the browser automatically assigns the correct role (\`button\`), accessible name (\`Submit\`), and keyboard enter/spacebar click handlers. If you instead write \`<div class="btn">Submit</div>\`, the accessibility tree sees only a generic container with zero role and zero keyboard support!`
       },
       {
-        heading: 'Keyboard Navigation & Skip Links',
-        content: `Many users cannot operate a mouse due to motor impairments, repetitive strain injuries, or visual disabilities. These users rely entirely on the keyboard, using:
-* **\`Tab\`:** Moves focus forward to the next interactive element (links, buttons, form inputs).
-* **\`Shift + Tab\`:** Moves focus backward to the preceding interactive element.
-* **\`Enter\` / \`Space\`:** Activates links and buttons; toggles checkboxes.
-* **Arrow Keys:** Navigates between radio buttons and select dropdown items.
+        heading: 'Keyboard Navigation, Focus Indicators, and Skip Links',
+        content: `Many users with motor disabilities or visual impairments navigate web applications exclusively using the keyboard (\`Tab\` to move forward, \`Shift+Tab\` to move backward, \`Enter\` or \`Space\` to activate).
 
-### The Skip Link Pattern:
-A user navigating via keyboard should not have to press \`Tab\` twenty times through a massive global header and navigation menu just to reach the first article on every single page. A **skip link** provides an instant bypass:
-
+### 1. The Skip-to-Content Link
+Websites with large headers and navigation bars force keyboard users to press \`Tab\` dozens of times just to reach the main article. A **Skip Link** is an accessible hidden link placed as the very first element inside \`<body>\`:
 \`\`\`html
-<!-- First child inside <body> -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
-
-<!-- Styled via CSS to stay off-screen until focused by keyboard: -->
-<style>
-.skip-link {
-  position: absolute;
-  top: -100px;
-  left: 0;
-  background: #2563eb;
-  color: white;
-  padding: 8px 16px;
-  z-index: 9999;
-}
-.skip-link:focus {
-  top: 0;
-}
-</style>
-
-<!-- Main content landmark with matching id -->
+<!-- ... Navigation with 30 links ... -->
 <main id="main-content">
-  <!-- Primary page content begins here -->
+  <!-- Focus jumps here immediately -->
 </main>
+\`\`\`
+
+### 2. Never Suppress the Focus Outline!
+A disastrous mistake made by beginner developers is removing the focus outline with CSS:
+\`\`\`css
+/* CATASTROPHIC ACCESSIBILITY BUG - NEVER DO THIS! */
+*:focus {
+  outline: none;
+}
+
+/* CORRECT: Provide a prominent, beautiful focus indicator */
+button:focus-visible, a:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
 \`\`\``
       },
       {
-        heading: 'Capstone Project: Complete Semantic Civic Portal Page',
-        content: `To synthesize everything learned across Course 3, let us analyze a complete production-grade, accessible page structure modeled after the CRP India citizen redressal interface:
+        heading: 'The First Rule of ARIA: Do Not Use ARIA If Native HTML Exists',
+        content: `Accessible Rich Internet Applications (**ARIA**) is a W3C specification that provides attributes (like \`role="dialog"\`, \`aria-expanded="false"\`) to enhance accessibility in custom widgets.
+
+However, the **First Rule of ARIA** explicitly states:
+> *"If you can use a native HTML element or attribute with the semantics and behavior you require already built in, then do so instead of re-purposing an element and adding an ARIA role, state, or property to make it accessible."*
 
 \`\`\`html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Officer Dashboard — Civic Redressal Portal</title>
-  <link rel="stylesheet" href="/styles/portal.css">
-</head>
-<body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+<!-- BAD: 3 lines of complex ARIA trying to reinvent a button -->
+<div role="button" tabindex="0" onclick="save()" onkeydown="handleKey(event)">
+  Save Record
+</div>
 
-  <header>
-    <h1>Citizen Redressal Authority</h1>
-    <nav aria-label="Primary Navigation">
-      <ul>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/grievances">Grievances</a></li>
-        <li><a href="/officers">Nodal Officers</a></li>
-      </ul>
-    </nav>
-  </header>
+<!-- GOOD: Native, clean, fully accessible HTML5 button -->
+<button type="button" onclick="save()">Save Record</button>
+\`\`\`
 
-  <main id="main-content">
-    <section aria-labelledby="status-overview-heading">
-      <h2 id="status-overview-heading">Quarterly Performance Overview</h2>
-      <p>Departmental metrics for the municipal sanitation and public works divisions.</p>
-    </section>
-
-    <section aria-labelledby="table-heading">
-      <h2 id="table-heading">Active Escalations</h2>
-      <table>
-        <caption>Municipal Grievances Requiring Urgent Intervention</caption>
-        <thead>
-          <tr>
-            <th scope="col">Case ID</th>
-            <th scope="col">Department</th>
-            <th scope="col">Severity</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">CRP-2026-0091</th>
-            <td>Water Works</td>
-            <td>High Priority</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2026 Citizen Redressal Portal. All rights reserved.</p>
-  </footer>
-</body>
-</html>
-\`\`\``
+Native HTML elements have built-in keyboard accessibility, focus management, and screen reader roles that work consistently across all operating systems without writing custom JavaScript.`
       }
     ],
-    commonMistakes: [
-      {
-        mistake: 'Removing CSS focus outlines with outline: none without providing an alternative focus style.',
-        whyItHappens: 'Designers sometimes dislike the default browser focus ring on buttons and links.',
-        howToFix: 'Never remove outlines without a visible high-contrast replacement. Keyboard users rely on focus indicators to know where they are on the page.'
-      },
-      {
-        mistake: 'Using <div onclick="..."> instead of a native <button>.',
-        whyItHappens: 'Assuming styling a div is easier than styling a default button.',
-        howToFix: 'Always use <button type="button">. Native buttons support keyboard focus and Enter/Spacebar activation for free.'
-      },
-      {
-        mistake: 'Writing redundant ARIA when native HTML suffices (e.g. <header role="banner">).',
-        whyItHappens: 'Over-applying ARIA tutorials without realizing modern HTML5 elements already convey those roles.',
-        howToFix: 'Follow the first rule of ARIA: use native semantic HTML elements (<header>, <nav>, <main>) whenever possible.'
-      }
-    ],
-    guidedExercise: {
-      title: 'Build a Fully Accessible Personal Profile Card with Skip Link',
-      difficulty: 'Intermediate',
-      instructions: 'Construct a semantic, accessible profile page containing a skip link, proper landmark structure (<header>, <nav>, <main>, <section>, <footer>), descriptive alternative text, and accessible keyboard focus navigation.',
-      starterCode: `<!-- TODO: Create an accessible profile document -->
-<!-- Include a skip link, header with nav, main with 2 sections, and footer -->
-`,
-      tasks: [
-        'Add a skip link at the top of the body pointing to #main-content.',
-        'Use <header> and <nav aria-label="..."> with an unordered list of links.',
-        'Wrap the main profile and skills sections in <main id="main-content">.',
-        'Provide an image with descriptive alternative text.',
-        'Add a semantic <footer> with copyright information.'
-      ],
+    exercise: {
+      instruction: 'Build an accessible municipal alert banner containing a skip-link, a <header> with an accessible nav, a <main> landmark, and an accessible callout button with visible focus styles.',
+      starterCode: `<!-- Write your accessible layout below -->\n`,
       hints: [
-        'The skip link anchor must have href="#main-content" matching the id on <main>.',
-        'Add aria-label="Main Navigation" to <nav> so screen readers describe the landmark clearly.',
-        'Ensure the image uses alt="Descriptive text" rather than an empty or generic alt attribute.'
+        'Place <a href="#main" class="skip-link">Skip to main content</a> as the first child of <body>.',
+        'Use <header> with an <h1> and <nav aria-label="Quick Links">.',
+        'Add <main id="main"> containing an emergency announcement.',
+        'Use native <button> instead of a <div> for actions.'
       ],
-      solution: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Officer Profile — Citizen Redressal</title>
-</head>
-<body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
-  <header>
-    <h1>Officer Verification Profile</h1>
-    <nav aria-label="Profile navigation">
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#cases">Assigned Cases</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main id="main-content">
-    <section id="about">
-      <h2>Officer Details</h2>
-      <img src="/officer-avatar.jpg" alt="Official identification photo of Nodal Officer Vikram Patil in municipal uniform." width="150" height="150">
-      <p>Vikram Patil is the chief zonal engineer overseeing sanitation infrastructure.</p>
-    </section>
-
-    <section id="cases">
-      <h2>Recent Cases</h2>
-      <p>Currently supervising 12 verified municipal maintenance projects.</p>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2026 Municipal Administration. All rights reserved.</p>
-  </footer>
-</body>
-</html>`,
-      solutionExplanation: 'This project implements a complete accessible document: skip navigation allows keyboard users to bypass links, landmarks establish clear regions, the image has rich alternative text, and heading hierarchy is clean and logical.'
+      tasks: [
+        'Include skip-to-content anchor link',
+        'Use <nav aria-label="..."> with navigation links',
+        'Ensure <main id="main"> target matches the skip-link',
+        'Use semantic <button> with accessible text'
+      ],
+      solution: `<a href="#main-content" class="skip-link">Skip to main content</a>
+<header>
+  <h1>Municipal Flood Watch & Redressal</h1>
+  <nav aria-label="Primary Services">
+    <ul>
+      <li><a href="#shelters">Emergency Shelters</a></li>
+      <li><a href="#helplines">Helplines</a></li>
+    </ul>
+  </nav>
+</header>
+<main id="main-content">
+  <section id="shelters">
+    <h2>Active Evacuation Shelters</h2>
+    <p>Community Centers in Ward 2 and Ward 6 are equipped with drinking water and medical supplies.</p>
+    <button type="button">Request Transport Assistance</button>
+  </section>
+</main>`,
+      solutionExplanation: 'This markup fulfills all WCAG Level AA criteria. The skip link allows immediate bypass of navigation blocks, landmarks allow screen readers to jump directly to sections, and native buttons provide full keyboard focus and activation.'
     },
     quiz: [
       {
         question: 'What is the "First Rule of ARIA"?',
         options: [
-          'Always add role attributes to every HTML tag on the page.',
-          'If you can use a native HTML element with the required semantics and behavior built-in, use it instead of ARIA.',
-          'Never use HTML without an external ARIA polyfill.',
-          'ARIA should only be used on mobile devices.'
+          'Every <div> element on a web page must have an explicit role attribute.',
+          'Never use ARIA if a native HTML element with the required semantics and behavior already exists.',
+          'ARIA attributes should only be written in uppercase characters.',
+          'ARIA is only required for websites hosted in the European Union.'
         ],
         correctIndex: 1,
-        explanation: 'The official W3C first rule of ARIA instructs developers to always prefer native semantic HTML elements (<button>, <nav>, <main>) before resorting to custom ARIA attributes.'
+        explanation: 'Native HTML elements have built-in accessibility, keyboard event handling, and focus management that are far more robust and standardized than custom ARIA retrofits.'
       },
       {
-        question: 'What is the primary function of a "skip link" on an accessible web page?',
+        question: 'Why is removing the CSS focus outline using "outline: none" a severe accessibility violation?',
         options: [
-          'It skips advertisement banners automatically.',
-          'It allows keyboard and screen reader users to jump directly to the primary content without tabbing through repetitive navigation links.',
-          'It skips image downloads on slow cellular connections.',
-          'It speeds up page loading by skipping JavaScript compilation.'
+          'It increases the download size of the CSS bundle.',
+          'It prevents keyboard-only users from seeing which interactive link, input, or button currently has focus.',
+          'It causes text inside the element to become transparent.',
+          'Browsers will refuse to execute JavaScript click listeners on elements without an outline.'
         ],
         correctIndex: 1,
-        explanation: 'A skip link (<a href="#main-content">Skip to main content</a>) provides a direct shortcut for keyboard users to bypass long, repetitive header menus and immediately access the main content.'
-      },
-      {
-        question: 'What are the four principles of accessibility defined by the WCAG POUR framework?',
-        options: [
-          'Precision, Organization, Usability, Reliability',
-          'Perceivable, Operable, Understandable, Robust',
-          'Parsing, Output, Uniformity, Rendering',
-          'Performance, Optimization, Universal, Responsive'
-        ],
-        correctIndex: 1,
-        explanation: 'POUR stands for Perceivable (users can perceive content), Operable (users can operate UI controls), Understandable (content and navigation are clear), and Robust (accessible across assistive technologies).'
+        explanation: 'Keyboard users rely entirely on the visual focus ring to know where they are on the page. Removing outline: none renders the website unusable for keyboard navigation.'
       }
     ],
     takeaways: [
-      'Web accessibility (a11y) is a foundational engineering discipline built on the POUR principles (Perceivable, Operable, Understandable, Robust).',
-      'The Accessibility Tree translates semantic HTML into accessibility roles, states, and names consumed by screen readers.',
-      'Always prefer native semantic HTML (<button>, <select>) over custom ARIA divs with JavaScript handlers.',
-      'Keyboard accessibility is essential: test that all interactive elements are focusable and operable via Tab, Enter, and Spacebar.',
-      'Provide skip links and high-contrast focus indicators to give keyboard navigators a smooth experience.'
+      'Accessibility (a11y) is a foundational engineering discipline built on the WCAG POUR principles.',
+      'The browser creates an Accessibility Tree from the DOM that exposes roles, names, and states to screen readers.',
+      'Always provide skip-to-content links and never suppress the keyboard focus ring.',
+      'Follow the First Rule of ARIA: always choose native HTML elements (<button>, <nav>, <dialog>) over custom ARIA divs.'
     ],
     caseStudyReference: {
-      title: 'Accessibility Audits & Semantic Elements in CRP India',
-      description: 'Observe how the CRP India civic grievance portal structures high-contrast cards, semantic buttons, keyboard-navigable forms, and screen reader announcements.',
+      title: 'Accessibility & Keyboard Navigation in CRP India',
+      description: 'Analyze how the CRP India citizen dashboard enforces WCAG 2.1 AA standards, keyboard tab navigation, and aria-live announcements for dynamic ticket updates.',
       files: [
-        'reference-projects/CRP-India/frontend/src/pages/CitizenDashboard.jsx',
-        'reference-projects/CRP-India/frontend/src/components/GrievanceCard.jsx'
+        'reference-projects/CRP-India/frontend/src/components/Navbar.jsx',
+        'reference-projects/CRP-India/frontend/src/components/GrievanceForm.jsx'
       ]
     }
   }
