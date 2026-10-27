@@ -55,18 +55,23 @@ export const COURSES = [
     title: 'Course 3: HTML from Zero',
     category: 'Frontend',
     level: 'Beginner',
-    duration: '2 Lessons • 2 Hours',
-    description: 'Learn HTML as the structural skeleton of the web: tags, elements, document hierarchy, semantic sections, accessible forms, inputs, and validation.',
+    duration: '5 Lessons • 4 Hours',
+    description: 'Learn HTML as the structural skeleton of the web: tags, elements, void elements, document hierarchy, head metadata, semantic landmarks, media, data tables, accessible forms, inputs, and validation.',
     status: 'available',
     objectives: [
-      'Construct valid HTML5 documents with semantic elements (<header>, <nav>, <main>, <article>, <section>, <footer>).',
-      'Build accessible web forms with associated labels, validation attributes, and various input types.',
-      'Understand how accessibility trees and screen readers interpret semantic document structures.'
+      'Understand HTML syntax: opening/closing tags, attributes, void elements, and nesting rules.',
+      'Construct valid HTML5 documents with semantic landmarks (<header>, <nav>, <main>, <article>, <section>, <footer>).',
+      'Embed accessible media, structured data tables, and navigation links correctly.',
+      'Build production-grade accessible forms with associated labels, validation constraints, and user input types.',
+      'Understand how the Accessibility Tree and screen readers interpret native semantic HTML.'
     ],
     prerequisites: 'Course 2: Developer Setup & Essential Tools',
     lessons: [
-      { id: 'lesson-3-1', slug: 'html-document-structure-and-semantics', title: 'Semantic HTML & Document Hierarchy', duration: '30 min', status: 'available' },
-      { id: 'lesson-3-2', slug: 'html-forms-and-accessible-inputs', title: 'Accessible Forms, Inputs & Data Entry', duration: '35 min', status: 'available' }
+      { id: 'lesson-3-1', slug: 'html-foundations-and-syntax', title: 'HTML Syntax, Tags, Elements & Document Structure', duration: '35 min', status: 'available' },
+      { id: 'lesson-3-2', slug: 'html-document-structure-and-semantics', title: 'Document Hierarchy & Modern Semantic Landmarks', duration: '40 min', status: 'available' },
+      { id: 'lesson-3-3', slug: 'html-links-media-and-tables', title: 'Links, Responsive Media & Data Tables', duration: '35 min', status: 'available' },
+      { id: 'lesson-3-4', slug: 'html-forms-and-accessible-inputs', title: 'Accessible Web Forms, Inputs & Client Validation', duration: '45 min', status: 'available' },
+      { id: 'lesson-3-5', slug: 'html-accessibility-and-projects', title: 'Web Accessibility (a11y), Screen Readers & Capstone Project', duration: '45 min', status: 'available' }
     ]
   },
   {
@@ -75,18 +80,23 @@ export const COURSES = [
     title: 'Course 4: CSS from Zero',
     category: 'Frontend',
     level: 'Beginner',
-    duration: '2 Lessons • 2 Hours',
-    description: 'Style web pages systematically: the CSS Box Model, specificity, selectors, fluid layouts with Flexbox and Grid, CSS variables, and mobile-first responsive design.',
+    duration: '5 Lessons • 4.5 Hours',
+    description: 'Style web pages systematically: the CSS Box Model, specificity, selectors, cascade, modern units, fluid layouts with Flexbox and Grid, CSS variables, transitions, and mobile-first responsive design.',
     status: 'available',
     objectives: [
-      'Master the CSS Box Model (content, padding, border, margin, box-sizing: border-box).',
-      'Build responsive layouts using modern Flexbox alignment and auto-fit CSS Grid.',
-      'Use CSS custom properties (variables) to implement consistent light and dark design tokens.'
+      'Master CSS selectors, inheritance, specificity calculations, and cascade resolution rules.',
+      'Understand the CSS Box Model in depth (content, padding, border, margin, and box-sizing: border-box).',
+      'Build responsive layouts using modern 1D Flexbox alignment and 2D auto-fit CSS Grid.',
+      'Implement mobile-first responsive media queries, fluid typography, and design tokens with CSS custom properties.',
+      'Craft smooth, performant transitions, 2D/3D transforms, and keyframe animations.'
     ],
     prerequisites: 'Course 3: HTML from Zero',
     lessons: [
-      { id: 'lesson-4-1', slug: 'css-box-model-and-selectors', title: 'The CSS Box Model, Selectors & Cascade', duration: '30 min', status: 'available' },
-      { id: 'lesson-4-2', slug: 'css-flexbox-and-grid', title: 'Responsive Layouts with Flexbox & CSS Grid', duration: '35 min', status: 'available' }
+      { id: 'lesson-4-1', slug: 'css-fundamentals-and-syntax', title: 'CSS Syntax, Selectors, Specificity & The Cascade', duration: '35 min', status: 'available' },
+      { id: 'lesson-4-2', slug: 'css-colors-units-and-typography', title: 'Colors, Modern Units, Web Typography & Visual Styling', duration: '40 min', status: 'available' },
+      { id: 'lesson-4-3', slug: 'css-box-model-and-selectors', title: 'The CSS Box Model, Normal Flow & Positioning', duration: '45 min', status: 'available' },
+      { id: 'lesson-4-4', slug: 'css-flexbox-and-grid', title: '1D Layouts with Flexbox & 2D Layouts with CSS Grid', duration: '45 min', status: 'available' },
+      { id: 'lesson-4-5', slug: 'css-responsive-and-animations', title: 'Mobile-First Responsive Design, Transforms & Keyframe Animations', duration: '45 min', status: 'available' }
     ]
   },
   {

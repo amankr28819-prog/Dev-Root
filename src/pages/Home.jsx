@@ -6,6 +6,8 @@ import { COURSES } from '../data/courses';
 import { CRP_INDIA_CASE_STUDY } from '../data/caseStudies';
 import Badge from '../components/Badge';
 import ProgressBar from '../components/ProgressBar';
+import Hero3D from '../components/Hero3D';
+import Roadmap3D from '../components/Roadmap3D';
 
 export default function Home() {
   const { completedLessons, lastOpenedLesson, getOverallProgress } = useProgress();
@@ -60,7 +62,7 @@ export default function Home() {
               Every concept is taught from first principles and grounded in real-world application code.
             </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
               <Link to={`/lessons/${resumeLessonSlug}`} className="btn btn-primary btn-lg">
                 <span>{hasStarted ? 'Continue Learning' : 'Start with Lesson 1'}</span>
                 <ArrowRight size={18} aria-hidden="true" />
@@ -72,8 +74,11 @@ export default function Home() {
               </Link>
             </div>
 
+            {/* Interactive 3D Web Stack Hero Element */}
+            <Hero3D />
+
             {lastOpenedLesson && (
-              <div style={{ marginTop: '1rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+              <div style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
                 <span>Jump back into your last viewed lesson: </span>
                 <Link to={`/lessons/${lastOpenedLesson}`} style={{ fontWeight: 600 }}>
                   {lastOpenedLesson.replace(/-/g, ' ')} →
@@ -262,8 +267,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Interactive 3D Learning Roadmap */}
+      <section style={{ paddingTop: '3.5rem', paddingBottom: '1rem' }}>
+        <div className="container">
+          <Roadmap3D />
+        </div>
+      </section>
+
       {/* Planned Curriculum Path Grid */}
-      <section style={{ paddingTop: '3.5rem', paddingBottom: '3.5rem' }}>
+      <section style={{ paddingTop: '2.5rem', paddingBottom: '3.5rem' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
             <div>

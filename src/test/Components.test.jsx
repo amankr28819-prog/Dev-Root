@@ -4,6 +4,10 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import Quiz from '../components/Quiz';
 import Exercise from '../components/Exercise';
+import HtmlPlayground from '../components/HtmlPlayground';
+import CssPlayground from '../components/CssPlayground';
+import BoxModel3D from '../components/BoxModel3D';
+import Hero3D from '../components/Hero3D';
 import { ProgressProvider } from '../context/ProgressContext';
 
 describe('MarkdownRenderer Component', () => {
@@ -108,5 +112,48 @@ describe('Exercise Component', () => {
     const solveBtn = screen.getByRole('button', { name: /Mark as Solved/i });
     fireEvent.click(solveBtn);
     expect(screen.getByText(/Exercise Solved!/i)).toBeInTheDocument();
+  });
+});
+
+describe('Phase 3 Interactive Playgrounds and 3D Components', () => {
+  it('renders HtmlPlayground with code editor, sandbox iframe, and action buttons', () => {
+    const { container } = render(
+      <HtmlPlayground
+        initialCode="<h1>Hello World</h1>"
+        title="Test Sandbox"
+      />
+    );
+    expect(screen.getByText('Test Sandbox')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /Live HTML Code Editor/i })).toBeInTheDocument();
+    expect(container.querySelector('iframe')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Reset to starter HTML code/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Copy HTML code/i })).toBeInTheDocument();
+  });
+
+  it('renders CssPlayground with interactive sliders and updates generated CSS', () => {
+    render(<CssPlayground />);
+    expect(screen.getByText(/Interactive CSS Box & Layout Playground/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /border-box/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /content-box/i })).toBeInTheDocument();
+  });
+
+  it('renders BoxModel3D with 3D perspective layers and controls', () => {
+    render(<BoxModel3D />);
+    expect(screen.getByText(/Interactive 3D CSS Box Model Demonstrator/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Margin/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Border/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Padding/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: /Exploded \(On\)/i })).toBeInTheDocument();
+  });
+
+  it('renders Hero3D with interactive layer cards and controls', () => {
+    render(<Hero3D />);
+    expect(screen.getByText(/3D Web Stack:/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /HTML \(Structure\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /CSS \(Design\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /JS \(Logic\)/i })).toBeInTheDocument();
+    expect(screen.getByText(/1\. HTML5 SKELETON/i)).toBeInTheDocument();
+    expect(screen.getByText(/2\. CSS PRESENTATION/i)).toBeInTheDocument();
+    expect(screen.getByText(/3\. JAVASCRIPT BRAIN/i)).toBeInTheDocument();
   });
 });

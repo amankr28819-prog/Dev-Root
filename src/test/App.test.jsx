@@ -63,9 +63,9 @@ describe('Dev-root Application Routing & Pages', () => {
     renderWithProviders(['/lessons/how-websites-work']);
     expect(screen.getByRole('heading', { name: /How Websites Work: Clients, Servers & The Web/i })).toBeInTheDocument();
     expect(screen.getByText(/What You Will Learn/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/1. The Client-Server Dialogue/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/The Client-Server Architecture Model/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Knowledge Check Quiz/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Inspecting the Client-Server Dialogue/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Analyze Client and Server Responsibilities/i).length).toBeGreaterThan(0);
     const markButtons = screen.getAllByRole('button', { name: /Mark.*Complete/i });
     expect(markButtons.length).toBeGreaterThan(0);
   });

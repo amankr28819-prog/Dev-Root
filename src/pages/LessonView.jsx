@@ -20,6 +20,9 @@ import CodeBlock from '../components/CodeBlock';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import Quiz from '../components/Quiz';
 import Exercise from '../components/Exercise';
+import HtmlPlayground from '../components/HtmlPlayground';
+import CssPlayground from '../components/CssPlayground';
+import BoxModel3D from '../components/BoxModel3D';
 
 export default function LessonView() {
   const { slug } = useParams();
@@ -132,6 +135,13 @@ export default function LessonView() {
                 </a>
               </li>
             )}
+            {lesson.interactivePlayground && (
+              <li>
+                <a href="#interactive-playground" className="lesson-toc-link">
+                  <span>• Interactive Laboratory / Playground</span>
+                </a>
+              </li>
+            )}
             {lesson.guidedExercise && (
               <li>
                 <a href="#guided-exercise" className="lesson-toc-link">
@@ -212,6 +222,35 @@ export default function LessonView() {
             </section>
           ))}
         </article>
+
+        {/* Interactive Laboratory / Playground */}
+        {lesson.interactivePlayground && (
+          <section id="interactive-playground" style={{ marginTop: '3rem', marginBottom: '2.5rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-brand-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Interactive Laboratory
+              </span>
+              <h2 style={{ fontSize: '1.45rem', marginTop: '0.2rem' }}>
+                Live Code Experimentation
+              </h2>
+            </div>
+
+            {lesson.interactivePlayground === 'html' && (
+              <HtmlPlayground
+                initialCode={lesson.playgroundCode}
+                title={lesson.playgroundTitle || 'HTML Interactive Sandbox'}
+              />
+            )}
+
+            {lesson.interactivePlayground === 'css' && (
+              <CssPlayground />
+            )}
+
+            {lesson.interactivePlayground === 'box-model-3d' && (
+              <BoxModel3D />
+            )}
+          </section>
+        )}
 
         {/* Common Mistakes & Troubleshooting */}
         {lesson.commonMistakes && lesson.commonMistakes.length > 0 && (
