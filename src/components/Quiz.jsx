@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { HelpCircle, CheckCircle2, XCircle, RotateCcw, Award } from 'lucide-react';
+import { HelpCircle, CheckCircle2, XCircle, RotateCcw, Award, Bookmark, BookmarkCheck } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import CodeBlock from './CodeBlock';
 
 export default function Quiz({ lessonId, questions = [] }) {
-  const { recordQuizScore, getQuizScore } = useProgress();
+  const { recordQuizScore, getQuizScore, toggleFlaggedQuestion, isQuestionFlagged } = useProgress();
   const existingScore = getQuizScore ? getQuizScore(lessonId) : null;
 
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -12,21 +12,50 @@ export default function Quiz({ lessonId, questions = [] }) {
 
   if (!questions || questions.length === 0) return null;
 
-  const handleSelect = (qIdx, optIdx) => {
+  const handleSelect = (qIdx, optIdx, isMulti = false) => {
     if (submitted) return;
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [qIdx]: optIdx
-    }));
+
+    if (isMulti) {
+      const currentSelected = Array.isArray(selectedAnswers[qIdx]) ? [...selectedAnswers[qIdx]] : [];
+      if (currentSelected.includes(optIdx)) {
+        setSelectedAnswers((prev) => ({
+          ...prev,
+          [qIdx]: currentSelected.filter((i) => i !== optIdx)
+        }));
+      } else {
+        setSelectedAnswers((prev) => ({
+          ...prev,
+          [qIdx]: [...currentSelected, optIdx].sort((a, b) => a - b)
+        }));
+      }
+    } else {
+      setSelectedAnswers((prev) => ({
+        ...prev,
+        [qIdx]: optIdx
+      }));
+    }
   };
 
-  const answeredCount = Object.keys(selectedAnswers).length;
+  const answeredCount = Object.keys(selectedAnswers).filter((k) => {
+    const val = selectedAnswers[k];
+    return Array.isArray(val) ? val.length > 0 : val !== undefined;
+  }).length;
   const isComplete = answeredCount === questions.length;
+
+  const isQuestionCorrect = (q, qIdx) => {
+    const userChoice = selectedAnswers[qIdx];
+    if (q.type === 'multiple-select' || Array.isArray(q.correctIndex)) {
+      const expected = Array.isArray(q.correctIndex) ? [...q.correctIndex].sort() : [q.correctIndex];
+      const actual = Array.isArray(userChoice) ? [...userChoice].sort() : [];
+      return expected.length === actual.length && expected.every((val, idx) => val === actual[idx]);
+    }
+    return userChoice === q.correctIndex;
+  };
 
   const calculateScore = () => {
     let score = 0;
     questions.forEach((q, idx) => {
-      if (selectedAnswers[idx] === q.correctIndex) {
+      if (isQuestionCorrect(q, idx)) {
         score += 1;
       }
     });
@@ -54,7 +83,7 @@ export default function Quiz({ lessonId, questions = [] }) {
 
   return (
     <section className="card quiz-card" style={{ marginTop: '2.5rem', marginBottom: '2.5rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <HelpCircle size={22} style={{ color: 'var(--color-brand-primary)' }} aria-hidden="true" />
           <h3 style={{ fontSize: '1.25rem', margin: 0 }}>Knowledge Check Quiz</h3>
@@ -67,12 +96,15 @@ export default function Quiz({ lessonId, questions = [] }) {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
         {questions.map((q, qIdx) => {
           const userChoice = selectedAnswers[qIdx];
-          const isCorrect = submitted && userChoice === q.correctIndex;
-          const isIncorrect = submitted && userChoice !== undefined && userChoice !== q.correctIndex;
+          const isCorrect = submitted && isQuestionCorrect(q, qIdx);
+          const isIncorrect = submitted && !isCorrect;
+          const isMulti = q.type === 'multiple-select' || Array.isArray(q.correctIndex);
+          const qId = q.id || `${lessonId}-q-${qIdx}`;
+          const isFlagged = isQuestionFlagged ? isQuestionFlagged(qId) : false;
 
           return (
             <div
-              key={q.id || qIdx}
+              key={qId}
               className="quiz-question-box"
               style={{
                 padding: '1.25rem',
@@ -81,22 +113,48 @@ export default function Quiz({ lessonId, questions = [] }) {
                 border: '1px solid var(--color-border)'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.85rem' }}>
-                <span
-                  style={{
-                    backgroundColor: 'var(--color-brand-subtle)',
-                    color: 'var(--color-brand-text)',
-                    fontWeight: 700,
-                    fontSize: '0.8rem',
-                    padding: '0.2rem 0.55rem',
-                    borderRadius: 'var(--radius-sm)'
-                  }}
-                >
-                  Q{qIdx + 1}
-                </span>
-                <p style={{ fontWeight: 600, color: 'var(--color-text-primary)', margin: 0, fontSize: '1.05rem', lineHeight: 1.45 }}>
-                  {q.question}
-                </p>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.6rem', marginBottom: '0.85rem' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
+                  <span
+                    style={{
+                      backgroundColor: 'var(--color-brand-subtle)',
+                      color: 'var(--color-brand-text)',
+                      fontWeight: 700,
+                      fontSize: '0.8rem',
+                      padding: '0.2rem 0.55rem',
+                      borderRadius: 'var(--radius-sm)'
+                    }}
+                  >
+                    Q{qIdx + 1}
+                  </span>
+                  <div>
+                    <p style={{ fontWeight: 600, color: 'var(--color-text-primary)', margin: 0, fontSize: '1.05rem', lineHeight: 1.45 }}>
+                      {q.question}
+                    </p>
+                    {isMulti && (
+                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+                        (Select all that apply)
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {toggleFlaggedQuestion && (
+                  <button
+                    type="button"
+                    onClick={() => toggleFlaggedQuestion(qId)}
+                    title={isFlagged ? 'Remove from Revision Flagged' : 'Flag Question for Revision'}
+                    style={{
+                      border: 'none',
+                      background: 'transparent',
+                      cursor: 'pointer',
+                      color: isFlagged ? '#eab308' : 'var(--color-text-muted)',
+                      padding: '0.2rem'
+                    }}
+                  >
+                    {isFlagged ? <BookmarkCheck size={18} /> : <Bookmark size={18} />}
+                  </button>
+                )}
               </div>
 
               {q.codeSnippet && (
@@ -107,7 +165,10 @@ export default function Quiz({ lessonId, questions = [] }) {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '0.75rem' }}>
                 {q.options.map((option, optIdx) => {
-                  const isSelected = userChoice === optIdx;
+                  const isSelected = isMulti
+                    ? Array.isArray(userChoice) && userChoice.includes(optIdx)
+                    : userChoice === optIdx;
+
                   let optionStyle = {
                     display: 'flex',
                     alignItems: 'center',
@@ -129,11 +190,15 @@ export default function Quiz({ lessonId, questions = [] }) {
                   }
 
                   if (submitted) {
-                    if (optIdx === q.correctIndex) {
+                    const isTargetCorrect = isMulti
+                      ? Array.isArray(q.correctIndex) && q.correctIndex.includes(optIdx)
+                      : optIdx === q.correctIndex;
+
+                    if (isTargetCorrect) {
                       optionStyle.borderColor = 'var(--color-brand-primary)';
                       optionStyle.backgroundColor = 'rgba(16, 185, 129, 0.15)';
                       optionStyle.color = 'var(--color-text-primary)';
-                    } else if (isSelected && optIdx !== q.correctIndex) {
+                    } else if (isSelected && !isTargetCorrect) {
                       optionStyle.borderColor = 'var(--color-error)';
                       optionStyle.backgroundColor = 'rgba(239, 68, 68, 0.12)';
                     } else {
@@ -145,7 +210,7 @@ export default function Quiz({ lessonId, questions = [] }) {
                     <button
                       key={optIdx}
                       type="button"
-                      onClick={() => handleSelect(qIdx, optIdx)}
+                      onClick={() => handleSelect(qIdx, optIdx, isMulti)}
                       style={optionStyle}
                       disabled={submitted}
                       className={!submitted ? 'quiz-option-hover' : ''}
@@ -155,7 +220,7 @@ export default function Quiz({ lessonId, questions = [] }) {
                         style={{
                           width: '1.4rem',
                           height: '1.4rem',
-                          borderRadius: '50%',
+                          borderRadius: isMulti ? '4px' : '50%',
                           border: isSelected ? '2px solid var(--color-brand-primary)' : '1px solid var(--color-border)',
                           backgroundColor: isSelected ? 'var(--color-brand-primary)' : 'transparent',
                           color: '#ffffff',
@@ -167,7 +232,11 @@ export default function Quiz({ lessonId, questions = [] }) {
                           flexShrink: 0
                         }}
                       >
-                        {submitted && optIdx === q.correctIndex ? '✓' : String.fromCharCode(65 + optIdx)}
+                        {submitted && (
+                          isMulti
+                            ? Array.isArray(q.correctIndex) && q.correctIndex.includes(optIdx)
+                            : optIdx === q.correctIndex
+                        ) ? '✓' : String.fromCharCode(65 + optIdx)}
                       </span>
                       <span style={{ flex: 1 }}>{option}</span>
                     </button>
@@ -195,7 +264,7 @@ export default function Quiz({ lessonId, questions = [] }) {
                   )}
                   <div style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
                     <strong style={{ color: isCorrect ? 'var(--color-brand-text)' : 'var(--color-error)', display: 'block', marginBottom: '0.2rem' }}>
-                      {isCorrect ? 'Correct!' : 'Not quite right.'}
+                      {isCorrect ? 'Correct!' : 'Review this concept:'}
                     </strong>
                     {q.explanation}
                   </div>
@@ -205,62 +274,45 @@ export default function Quiz({ lessonId, questions = [] }) {
           );
         })}
 
-        {/* Submit or Score Footer */}
-        {!submitted ? (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-              Answered {answeredCount} of {questions.length} question{questions.length > 1 ? 's' : ''}
-            </span>
-            <button
-              type="submit"
-              disabled={!isComplete}
-              className="btn btn-primary"
-              style={{ opacity: isComplete ? 1 : 0.6, cursor: isComplete ? 'pointer' : 'not-allowed' }}
-            >
-              <span>Submit Answers</span>
-            </button>
-          </div>
-        ) : (
-          <div
-            style={{
-              padding: '1.25rem',
-              borderRadius: 'var(--radius-md)',
-              backgroundColor: percentage >= 70 ? 'var(--color-brand-subtle)' : 'var(--color-bg-subtle)',
-              border: '1px solid var(--color-border)',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '1rem'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <Award size={28} style={{ color: percentage >= 70 ? 'var(--color-brand-primary)' : 'var(--color-text-muted)' }} aria-hidden="true" />
-              <div>
-                <h4 style={{ margin: 0, fontSize: '1.1rem' }}>
-                  Score: {score} / {questions.length} ({percentage}%)
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                  {percentage === 100
-                    ? 'Perfect understanding! You have mastered these concepts.'
-                    : percentage >= 70
-                    ? 'Good job! Review the explanations above to solidify any tricky points.'
-                    : 'Good attempt. Review the lesson sections and try again to improve your score.'}
-                </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', borderTop: '1px solid var(--color-border)', paddingTop: '1.25rem' }}>
+          <div>
+            {!submitted ? (
+              <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                {answeredCount} of {questions.length} answered
+              </span>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Award size={20} style={{ color: percentage >= 70 ? 'var(--color-brand-primary)' : 'var(--color-text-muted)' }} />
+                <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--color-text-primary)' }}>
+                  Your Score: {score} / {questions.length} ({percentage}%)
+                </span>
               </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleRetry}
-              className="btn btn-secondary btn-sm"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-            >
-              <RotateCcw size={14} aria-hidden="true" />
-              <span>Try Again</span>
-            </button>
+            )}
           </div>
-        )}
+
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            {submitted ? (
+              <button
+                type="button"
+                onClick={handleRetry}
+                className="btn btn-secondary"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+              >
+                <RotateCcw size={16} />
+                <span>Retry Quiz</span>
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={!isComplete}
+                className="btn btn-primary"
+                style={{ opacity: isComplete ? 1 : 0.5, cursor: isComplete ? 'pointer' : 'not-allowed' }}
+              >
+                Submit Answers
+              </button>
+            )}
+          </div>
+        </div>
       </form>
     </section>
   );

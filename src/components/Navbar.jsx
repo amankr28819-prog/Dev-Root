@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { BookOpen, Layers, Menu, X, Sprout, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Layers, Menu, X, Sprout, Code2, Rocket, Award, Sparkles, CheckCircle2 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { useProgress } from '../context/ProgressContext';
 
@@ -10,6 +10,15 @@ export default function Navbar() {
   const overall = getOverallProgress();
 
   const closeMenu = () => setMobileMenuOpen(false);
+
+  const navLinks = [
+    { to: '/', label: 'Dashboard', icon: Layers, end: true },
+    { to: '/courses', label: 'Courses', icon: BookOpen },
+    { to: '/challenges', label: 'Challenges', icon: Code2 },
+    { to: '/projects', label: 'Projects', icon: Rocket },
+    { to: '/assessments', label: 'Assessments', icon: Award },
+    { to: '/revision', label: 'Revision', icon: Sparkles }
+  ];
 
   return (
     <header
@@ -68,61 +77,35 @@ export default function Navbar() {
           style={{
             display: 'none',
             alignItems: 'center',
-            gap: '1.5rem'
+            gap: '0.75rem'
           }}
           className="desktop-nav"
         >
-          <NavLink
-            to="/"
-            end
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.9rem',
-              fontWeight: isActive ? 600 : 500,
-              color: isActive ? 'var(--color-brand-primary)' : 'var(--color-text-secondary)',
-              padding: '0.4rem 0.6rem',
-              borderRadius: 'var(--radius-sm)'
-            })}
-          >
-            <Layers size={16} aria-hidden="true" />
-            <span>Dashboard</span>
-          </NavLink>
-
-          <NavLink
-            to="/courses"
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.9rem',
-              fontWeight: isActive ? 600 : 500,
-              color: isActive ? 'var(--color-brand-primary)' : 'var(--color-text-secondary)',
-              padding: '0.4rem 0.6rem',
-              borderRadius: 'var(--radius-sm)'
-            })}
-          >
-            <BookOpen size={16} aria-hidden="true" />
-            <span>Courses</span>
-          </NavLink>
-
-          <NavLink
-            to="/case-studies/crp-india"
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.9rem',
-              fontWeight: isActive ? 600 : 500,
-              color: isActive ? 'var(--color-brand-primary)' : 'var(--color-text-secondary)',
-              padding: '0.4rem 0.6rem',
-              borderRadius: 'var(--radius-sm)'
-            })}
-          >
-            <CheckCircle2 size={16} aria-hidden="true" />
-            <span>CRP India Case Study</span>
-          </NavLink>
+          {navLinks.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                style={({ isActive }) => ({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  fontSize: '0.875rem',
+                  fontWeight: isActive ? 600 : 500,
+                  color: isActive ? 'var(--color-brand-primary)' : 'var(--color-text-secondary)',
+                  padding: '0.4rem 0.65rem',
+                  borderRadius: 'var(--radius-sm)',
+                  backgroundColor: isActive ? 'var(--color-brand-subtle)' : 'transparent',
+                  transition: 'all var(--transition-fast)'
+                })}
+              >
+                <Icon size={15} aria-hidden="true" />
+                <span>{item.label}</span>
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* Action Controls & Theme Toggle */}
@@ -188,48 +171,35 @@ export default function Navbar() {
             padding: '1rem 1.5rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.75rem'
+            gap: '0.5rem'
           }}
           className="mobile-drawer"
         >
-          <NavLink
-            to="/"
-            end
-            onClick={closeMenu}
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.65rem 0.75rem',
-              borderRadius: 'var(--radius-md)',
-              fontSize: '0.95rem',
-              fontWeight: isActive ? 600 : 500,
-              backgroundColor: isActive ? 'var(--color-brand-subtle)' : 'transparent',
-              color: isActive ? 'var(--color-brand-primary)' : 'var(--color-text-primary)'
-            })}
-          >
-            <Layers size={18} aria-hidden="true" />
-            <span>Dashboard</span>
-          </NavLink>
-
-          <NavLink
-            to="/courses"
-            onClick={closeMenu}
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.65rem 0.75rem',
-              borderRadius: 'var(--radius-md)',
-              fontSize: '0.95rem',
-              fontWeight: isActive ? 600 : 500,
-              backgroundColor: isActive ? 'var(--color-brand-subtle)' : 'transparent',
-              color: isActive ? 'var(--color-brand-primary)' : 'var(--color-text-primary)'
-            })}
-          >
-            <BookOpen size={18} aria-hidden="true" />
-            <span>Courses</span>
-          </NavLink>
+          {navLinks.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                onClick={closeMenu}
+                style={({ isActive }) => ({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  padding: '0.65rem 0.75rem',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.95rem',
+                  fontWeight: isActive ? 600 : 500,
+                  backgroundColor: isActive ? 'var(--color-brand-subtle)' : 'transparent',
+                  color: isActive ? 'var(--color-brand-primary)' : 'var(--color-text-primary)'
+                })}
+              >
+                <Icon size={18} aria-hidden="true" />
+                <span>{item.label}</span>
+              </NavLink>
+            );
+          })}
 
           <NavLink
             to="/case-studies/crp-india"
@@ -254,11 +224,11 @@ export default function Navbar() {
 
       {/* Style hook to switch between desktop and mobile nav */}
       <style>{`
-        @media (min-width: 769px) {
+        @media (min-width: 900px) {
           .desktop-nav { display: flex !important; }
           .mobile-menu-btn { display: none !important; }
         }
-        @media (max-width: 768px) {
+        @media (max-width: 899px) {
           .desktop-nav { display: none !important; }
           .mobile-menu-btn { display: inline-flex !important; }
         }

@@ -182,3 +182,61 @@ export function validateCurriculum(lessons, courses) {
       : `Found ${allIssues.length} validation errors and ${allWarnings.length} warnings across ${evaluatedLessonsCount} lessons.`
   };
 }
+
+export function validateChallenge(challenge) {
+  const issues = [];
+  if (!challenge.id) issues.push('Challenge missing id');
+  if (!challenge.slug) issues.push('Challenge missing slug');
+  if (!challenge.title) issues.push('Challenge missing title');
+  if (!challenge.problemStatement || challenge.problemStatement.length < 30) {
+    issues.push(`Challenge ${challenge.id} problemStatement too brief`);
+  }
+  if (!Array.isArray(challenge.requirements) || challenge.requirements.length === 0) {
+    issues.push(`Challenge ${challenge.id} must define requirements array`);
+  }
+  if (!challenge.solution) issues.push(`Challenge ${challenge.id} missing reference solution`);
+  if (!challenge.testCriteria) issues.push(`Challenge ${challenge.id} missing testCriteria`);
+  return { valid: issues.length === 0, issues };
+}
+
+export function validateProject(project) {
+  const issues = [];
+  if (!project.id) issues.push('Project missing id');
+  if (!project.slug) issues.push('Project missing slug');
+  if (!project.title) issues.push('Project missing title');
+  if (!project.tier) issues.push('Project missing tier number');
+  if (!Array.isArray(project.milestones) || project.milestones.length === 0) {
+    issues.push(`Project ${project.id} must define milestones array`);
+  } else {
+    project.milestones.forEach((m, idx) => {
+      if (!m.id || !m.title || !m.description) {
+        issues.push(`Project ${project.id} milestone #${idx + 1} incomplete`);
+      }
+    });
+  }
+  return { valid: issues.length === 0, issues };
+}
+
+export function validateAssessment(assessment) {
+  const issues = [];
+  if (!assessment.id) issues.push('Assessment missing id');
+  if (!assessment.slug) issues.push('Assessment missing slug');
+  if (!assessment.title) issues.push('Assessment missing title');
+  if (!Array.isArray(assessment.questions) || assessment.questions.length < 3) {
+    issues.push(`Assessment ${assessment.id} must have at least 3 questions`);
+  } else {
+    assessment.questions.forEach((q, idx) => {
+      if (!q.prompt || !Array.isArray(q.options) || q.options.length < 2) {
+        issues.push(`Assessment ${assessment.id} question #${idx + 1} invalid`);
+      }
+      if (q.correctAnswer === undefined) {
+        issues.push(`Assessment ${assessment.id} question #${idx + 1} missing correctAnswer`);
+      }
+      if (!q.explanation) {
+        issues.push(`Assessment ${assessment.id} question #${idx + 1} missing explanation`);
+      }
+    });
+  }
+  return { valid: issues.length === 0, issues };
+}
+

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { COURSES } from '../data/courses';
 import { LESSONS } from '../data/lessons';
 
@@ -6,8 +6,12 @@ const ProgressContext = createContext();
 
 const STORAGE_KEY = 'devroot_progress_v1';
 
+// Calculate today's date in YYYY-MM-DD format for streak tracking
+const getTodayDateString = () => new Date().toISOString().split('T')[0];
+
 export function ProgressProvider({ children }) {
   const [progress, setProgress] = useState(() => {
+    const today = getTodayDateString();
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
@@ -17,6 +21,13 @@ export function ProgressProvider({ children }) {
           lastOpenedLesson: typeof parsed.lastOpenedLesson === 'string' ? parsed.lastOpenedLesson : null,
           quizScores: parsed.quizScores && typeof parsed.quizScores === 'object' ? parsed.quizScores : {},
           completedExercises: parsed.completedExercises && typeof parsed.completedExercises === 'object' ? parsed.completedExercises : {},
+          completedChallenges: Array.isArray(parsed.completedChallenges) ? parsed.completedChallenges : [],
+          challengeAttempts: parsed.challengeAttempts && typeof parsed.challengeAttempts === 'object' ? parsed.challengeAttempts : {},
+          projectMilestones: parsed.projectMilestones && typeof parsed.projectMilestones === 'object' ? parsed.projectMilestones : {},
+          bookmarkedLessons: Array.isArray(parsed.bookmarkedLessons) ? parsed.bookmarkedLessons : [],
+          flaggedQuestions: Array.isArray(parsed.flaggedQuestions) ? parsed.flaggedQuestions : [],
+          assessmentScores: parsed.assessmentScores && typeof parsed.assessmentScores === 'object' ? parsed.assessmentScores : {},
+          streakData: parsed.streakData && typeof parsed.streakData === 'object' ? parsed.streakData : { currentStreak: 1, lastActiveDate: today },
           lastUpdated: parsed.lastUpdated || Date.now()
         };
       }
@@ -28,10 +39,50 @@ export function ProgressProvider({ children }) {
       lastOpenedLesson: null,
       quizScores: {},
       completedExercises: {},
+      completedChallenges: [],
+      challengeAttempts: {},
+      projectMilestones: {},
+      bookmarkedLessons: [],
+      flaggedQuestions: [],
+      assessmentScores: {},
+      streakData: { currentStreak: 1, lastActiveDate: today },
       lastUpdated: Date.now()
     };
   });
 
+  // Automatically update daily streak
+  useEffect(() => {
+    const today = getTodayDateString();
+    setProgress((prev) => {
+      const { streakData } = prev;
+      if (!streakData || !streakData.lastActiveDate) {
+        return { ...prev, streakData: { currentStreak: 1, lastActiveDate: today } };
+      }
+
+      if (streakData.lastActiveDate === today) {
+        return prev; // Already recorded activity today
+      }
+
+      const lastDate = new Date(streakData.lastActiveDate);
+      const currDate = new Date(today);
+      const diffDays = Math.round((currDate - lastDate) / (1000 * 60 * 60 * 24));
+
+      let newStreak = streakData.currentStreak || 1;
+      if (diffDays === 1) {
+        newStreak += 1; // Consecutive active day
+      } else if (diffDays > 1) {
+        newStreak = 1; // Streak broken
+      }
+
+      return {
+        ...prev,
+        streakData: { currentStreak: newStreak, lastActiveDate: today },
+        lastUpdated: Date.now()
+      };
+    });
+  }, []);
+
+  // Save to localStorage on change
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
@@ -40,6 +91,7 @@ export function ProgressProvider({ children }) {
     }
   }, [progress]);
 
+  // Lesson Completion
   const toggleLessonComplete = useCallback((lessonId) => {
     setProgress((prev) => {
       const exists = prev.completedLessons.includes(lessonId);
@@ -70,12 +122,13 @@ export function ProgressProvider({ children }) {
     });
   }, []);
 
-  const recordQuizScore = useCallback((lessonId, score, total) => {
+  // Quiz Scoring
+  const recordQuizScore = useCallback((lessonId, score, total, detailedAnswers = null) => {
     setProgress((prev) => ({
       ...prev,
       quizScores: {
         ...prev.quizScores,
-        [lessonId]: { score, total, updatedAt: Date.now() }
+        [lessonId]: { score, total, updatedAt: Date.now(), detailedAnswers }
       },
       lastUpdated: Date.now()
     }));
@@ -85,6 +138,7 @@ export function ProgressProvider({ children }) {
     return progress.quizScores ? progress.quizScores[lessonId] || null : null;
   }, [progress.quizScores]);
 
+  // Exercise Checkboxes
   const toggleExerciseComplete = useCallback((exerciseId) => {
     setProgress((prev) => {
       const current = !!prev.completedExercises[exerciseId];
@@ -103,17 +157,129 @@ export function ProgressProvider({ children }) {
     return progress.completedExercises ? !!progress.completedExercises[exerciseId] : false;
   }, [progress.completedExercises]);
 
+  // Coding Challenges
+  const recordChallengeAttempt = useCallback((challengeId, isSuccess, hintsUsed = 0) => {
+    setProgress((prev) => {
+      const prevAttempt = prev.challengeAttempts[challengeId] || { attempts: 0, hintsUsed: 0 };
+      const nextAttempts = prevAttempt.attempts + 1;
+      const nextHints = Math.max(prevAttempt.hintsUsed, hintsUsed);
+
+      const alreadyCompleted = prev.completedChallenges.includes(challengeId);
+      const nextCompleted = (isSuccess && !alreadyCompleted)
+        ? [...prev.completedChallenges, challengeId]
+        : prev.completedChallenges;
+
+      return {
+        ...prev,
+        completedChallenges: nextCompleted,
+        challengeAttempts: {
+          ...prev.challengeAttempts,
+          [challengeId]: {
+            attempts: nextAttempts,
+            hintsUsed: nextHints,
+            completedAt: isSuccess ? Date.now() : prevAttempt.completedAt || null
+          }
+        },
+        lastUpdated: Date.now()
+      };
+    });
+  }, []);
+
+  const isChallengeComplete = useCallback((challengeId) => {
+    return progress.completedChallenges.includes(challengeId);
+  }, [progress.completedChallenges]);
+
+  // Project Milestones
+  const toggleProjectMilestone = useCallback((projectId, milestoneId) => {
+    setProgress((prev) => {
+      const currentMilestones = prev.projectMilestones[projectId] || [];
+      const exists = currentMilestones.includes(milestoneId);
+      const updated = exists
+        ? currentMilestones.filter((m) => m !== milestoneId)
+        : [...currentMilestones, milestoneId];
+
+      return {
+        ...prev,
+        projectMilestones: {
+          ...prev.projectMilestones,
+          [projectId]: updated
+        },
+        lastUpdated: Date.now()
+      };
+    });
+  }, []);
+
+  const isProjectMilestoneComplete = useCallback((projectId, milestoneId) => {
+    const list = progress.projectMilestones[projectId] || [];
+    return list.includes(milestoneId);
+  }, [progress.projectMilestones]);
+
+  const getProjectProgress = useCallback((projectId, totalMilestonesCount) => {
+    const list = progress.projectMilestones[projectId] || [];
+    if (!totalMilestonesCount || totalMilestonesCount === 0) return { completed: list.length, total: 0, percent: 0 };
+    return {
+      completed: list.length,
+      total: totalMilestonesCount,
+      percent: Math.min(100, Math.round((list.length / totalMilestonesCount) * 100))
+    };
+  }, [progress.projectMilestones]);
+
+  // Bookmarks (Revision)
+  const toggleBookmark = useCallback((lessonSlug) => {
+    setProgress((prev) => {
+      const exists = prev.bookmarkedLessons.includes(lessonSlug);
+      const nextBookmarks = exists
+        ? prev.bookmarkedLessons.filter((s) => s !== lessonSlug)
+        : [...prev.bookmarkedLessons, lessonSlug];
+
+      return {
+        ...prev,
+        bookmarkedLessons: nextBookmarks,
+        lastUpdated: Date.now()
+      };
+    });
+  }, []);
+
+  const isBookmarked = useCallback((lessonSlug) => {
+    return progress.bookmarkedLessons.includes(lessonSlug);
+  }, [progress.bookmarkedLessons]);
+
+  // Course Assessment Scoring
+  const recordAssessmentScore = useCallback((assessmentSlug, score, total, breakdown = {}) => {
+    setProgress((prev) => ({
+      ...prev,
+      assessmentScores: {
+        ...prev.assessmentScores,
+        [assessmentSlug]: { score, total, breakdown, date: Date.now() }
+      },
+      lastUpdated: Date.now()
+    }));
+  }, []);
+
+  const getAssessmentScore = useCallback((assessmentSlug) => {
+    return progress.assessmentScores ? progress.assessmentScores[assessmentSlug] || null : null;
+  }, [progress.assessmentScores]);
+
+  // Reset Progress
   const resetProgress = useCallback(() => {
+    const today = getTodayDateString();
     setProgress({
       completedLessons: [],
       lastOpenedLesson: null,
       quizScores: {},
       completedExercises: {},
+      completedChallenges: [],
+      challengeAttempts: {},
+      projectMilestones: {},
+      bookmarkedLessons: [],
+      flaggedQuestions: [],
+      assessmentScores: {},
+      streakData: { currentStreak: 1, lastActiveDate: today },
       lastUpdated: Date.now()
     });
   }, []);
 
-  // Calculates completion percentage for a course based on its AVAILABLE lessons
+  // Course Progress Calculator
   const getCourseProgress = useCallback((courseSlug) => {
     const course = COURSES.find((c) => c.slug === courseSlug);
     if (!course || !course.lessons) return { completed: 0, total: 0, percent: 0 };
@@ -127,7 +293,7 @@ export function ProgressProvider({ children }) {
     return { completed, total: availableLessons.length, percent };
   }, [progress.completedLessons]);
 
-  // Calculates overall completion percentage across all available lessons in the platform
+  // Overall Platform Progress Calculator
   const getOverallProgress = useCallback(() => {
     const totalAvailable = Object.keys(LESSONS).length;
     if (totalAvailable === 0) return { completed: 0, total: 0, percent: 0 };
@@ -140,25 +306,97 @@ export function ProgressProvider({ children }) {
     return { completed, total: totalAvailable, percent };
   }, [progress.completedLessons]);
 
+  // Prerequisite-Aware Next Step Recommender
+  const getRecommendedNextStep = useCallback(() => {
+    for (const course of COURSES) {
+      if (course.status !== 'available' || !course.lessons) continue;
+
+      for (const lessonSummary of course.lessons) {
+        if (!progress.completedLessons.includes(lessonSummary.id)) {
+          const lesson = LESSONS[lessonSummary.slug];
+          return {
+            courseTitle: course.title,
+            courseSlug: course.slug,
+            lessonId: lessonSummary.id,
+            lessonSlug: lessonSummary.slug,
+            lessonTitle: lessonSummary.title,
+            duration: lessonSummary.duration,
+            reason: `Next incomplete lesson in ${course.title}`
+          };
+        }
+      }
+    }
+
+    // All available lessons completed! Recommend a project or challenge
+    return {
+      courseTitle: 'Full-Stack Mastery',
+      courseSlug: 'projects',
+      lessonId: 'capstone',
+      lessonSlug: 'projects/full-stack-municipal-portal',
+      lessonTitle: 'Capstone Project: Full-Stack Municipal Redressal',
+      duration: '4-6 hours',
+      reason: 'All foundation courses complete! Ready for capstone project implementation.'
+    };
+  }, [progress.completedLessons]);
+
+  const value = useMemo(() => ({
+    completedLessons: progress.completedLessons,
+    lastOpenedLesson: progress.lastOpenedLesson,
+    quizScores: progress.quizScores,
+    completedExercises: progress.completedExercises,
+    completedChallenges: progress.completedChallenges,
+    challengeAttempts: progress.challengeAttempts,
+    projectMilestones: progress.projectMilestones,
+    bookmarkedLessons: progress.bookmarkedLessons,
+    flaggedQuestions: progress.flaggedQuestions,
+    assessmentScores: progress.assessmentScores,
+    streakData: progress.streakData,
+    toggleLessonComplete,
+    isLessonComplete,
+    setLastOpenedLesson,
+    recordQuizScore,
+    getQuizScore,
+    toggleExerciseComplete,
+    isExerciseComplete,
+    recordChallengeAttempt,
+    isChallengeComplete,
+    toggleProjectMilestone,
+    isProjectMilestoneComplete,
+    getProjectProgress,
+    toggleBookmark,
+    isBookmarked,
+    recordAssessmentScore,
+    getAssessmentScore,
+    getCourseProgress,
+    getOverallProgress,
+    getRecommendedNextStep,
+    resetProgress
+  }), [
+    progress,
+    toggleLessonComplete,
+    isLessonComplete,
+    setLastOpenedLesson,
+    recordQuizScore,
+    getQuizScore,
+    toggleExerciseComplete,
+    isExerciseComplete,
+    recordChallengeAttempt,
+    isChallengeComplete,
+    toggleProjectMilestone,
+    isProjectMilestoneComplete,
+    getProjectProgress,
+    toggleBookmark,
+    isBookmarked,
+    recordAssessmentScore,
+    getAssessmentScore,
+    getCourseProgress,
+    getOverallProgress,
+    getRecommendedNextStep,
+    resetProgress
+  ]);
+
   return (
-    <ProgressContext.Provider
-      value={{
-        completedLessons: progress.completedLessons,
-        lastOpenedLesson: progress.lastOpenedLesson,
-        quizScores: progress.quizScores,
-        completedExercises: progress.completedExercises,
-        toggleLessonComplete,
-        isLessonComplete,
-        setLastOpenedLesson,
-        recordQuizScore,
-        getQuizScore,
-        toggleExerciseComplete,
-        isExerciseComplete,
-        getCourseProgress,
-        getOverallProgress,
-        resetProgress
-      }}
-    >
+    <ProgressContext.Provider value={value}>
       {children}
     </ProgressContext.Provider>
   );

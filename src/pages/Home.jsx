@@ -1,24 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, ArrowRight, CheckCircle2, Sprout, Terminal, Database, Shield, Server, Compass, Sparkles } from 'lucide-react';
+import {
+  BookOpen,
+  ArrowRight,
+  CheckCircle2,
+  Sprout,
+  Compass,
+  Sparkles,
+  Code2,
+  Rocket,
+  Award,
+  Flame,
+  Bookmark,
+  Server
+} from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { COURSES } from '../data/courses';
-import { CRP_INDIA_CASE_STUDY } from '../data/caseStudies';
+import { challenges } from '../data/challenges';
+import { projects } from '../data/projects';
+import { assessments } from '../data/assessments';
 import Badge from '../components/Badge';
 import ProgressBar from '../components/ProgressBar';
 import Hero3D from '../components/Hero3D';
 import Roadmap3D from '../components/Roadmap3D';
 
 export default function Home() {
-  const { completedLessons, lastOpenedLesson, getOverallProgress } = useProgress();
+  const {
+    completedLessons,
+    lastOpenedLesson,
+    getOverallProgress,
+    completedChallenges,
+    projectMilestones,
+    assessmentScores,
+    bookmarkedLessons,
+    streakData,
+    getRecommendedNextStep
+  } = useProgress();
+
   const overall = getOverallProgress();
+  const nextStep = getRecommendedNextStep();
 
   // Determine continue target: last opened lesson or first lesson of course 1
   const resumeLessonSlug = lastOpenedLesson || 'how-websites-work';
   const hasStarted = completedLessons.length > 0 || lastOpenedLesson !== null;
 
-  const availableCourses = COURSES.filter((c) => c.status === 'available');
-  const plannedCourses = COURSES.filter((c) => c.status === 'planned');
+  // Calculate challenge completion count
+  const solvedChallengesCount = Object.keys(completedChallenges || {}).filter((k) => completedChallenges[k]).length;
+
+  // Calculate project milestones count
+  let completedMilestonesCount = 0;
+  let totalMilestonesCount = 0;
+  projects.forEach((proj) => {
+    totalMilestonesCount += proj.milestones?.length || 0;
+    const completedForProj = Object.keys(projectMilestones || {}).filter(
+      (k) => k.startsWith(`${proj.id}-m`) && projectMilestones[k]
+    ).length;
+    completedMilestonesCount += completedForProj;
+  });
+
+  // Calculate assessments taken count
+  const assessmentsAttemptedCount = Object.keys(assessmentScores || {}).length;
+  const bookmarkedCount = Object.keys(bookmarkedLessons || {}).filter((k) => bookmarkedLessons[k]).length;
 
   return (
     <div className="home-page">
@@ -59,7 +101,7 @@ export default function Home() {
 
             <p style={{ fontSize: '1.15rem', color: 'var(--color-text-secondary)', lineHeight: 1.6, marginBottom: '2rem' }}>
               Master full-stack web development from absolute fundamentals to production-grade architecture.
-              Every concept is taught from first principles and grounded in real-world application code.
+              Solve coding challenges, complete real-world projects, test your knowledge, and study with deep explanations.
             </p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
@@ -68,20 +110,53 @@ export default function Home() {
                 <ArrowRight size={18} aria-hidden="true" />
               </Link>
 
-              <Link to="/courses" className="btn btn-secondary btn-lg">
-                <BookOpen size={18} aria-hidden="true" />
-                <span>Explore All {COURSES.length} Courses</span>
+              <Link to="/challenges" className="btn btn-secondary btn-lg">
+                <Code2 size={18} aria-hidden="true" />
+                <span>Coding Challenges ({challenges.length})</span>
+              </Link>
+
+              <Link to="/projects" className="btn btn-secondary btn-lg">
+                <Rocket size={18} aria-hidden="true" />
+                <span>10-Tier Projects</span>
               </Link>
             </div>
 
             {/* Interactive 3D Web Stack Hero Element */}
             <Hero3D />
 
-            {lastOpenedLesson && (
-              <div style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                <span>Jump back into your last viewed lesson: </span>
-                <Link to={`/lessons/${lastOpenedLesson}`} style={{ fontWeight: 600 }}>
-                  {lastOpenedLesson.replace(/-/g, ' ')} →
+            {/* Recommended Next Step Box */}
+            {nextStep && (
+              <div
+                style={{
+                  marginTop: '2rem',
+                  padding: '1rem 1.5rem',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'var(--color-bg-card)',
+                  border: '1px solid var(--color-brand-border)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  textAlign: 'left',
+                  boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
+                }}
+              >
+                <div style={{ backgroundColor: 'var(--color-brand-subtle)', padding: '0.5rem', borderRadius: '50%', color: 'var(--color-brand-primary)' }}>
+                  <Sparkles size={18} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--color-brand-text)', display: 'block' }}>
+                    Recommended Next Step
+                  </span>
+                  <span style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--color-text-primary)' }}>
+                    {nextStep.title} ({nextStep.courseTitle})
+                  </span>
+                </div>
+                <Link
+                  to={`/lessons/${nextStep.slug}`}
+                  className="btn btn-primary btn-sm"
+                  style={{ marginLeft: '1rem' }}
+                >
+                  Resume →
                 </Link>
               </div>
             )}
@@ -89,10 +164,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Progress & Live Overview Metrics */}
+      {/* Progress & Live Overview Metrics (Phase 5 Upgraded) */}
       <section style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
         <div className="container">
           <div className="grid-cols-4">
+            {/* Completed Lessons Card */}
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Completed Lessons</span>
@@ -104,99 +180,102 @@ export default function Home() {
               <ProgressBar percent={overall.percent} />
             </div>
 
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {/* Coding Challenges Card */}
+            <Link to="/challenges" className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', textDecoration: 'none' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Curriculum Coverage</span>
-                <Compass size={18} style={{ color: 'var(--color-accent-cyan)' }} aria-hidden="true" />
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Coding Challenges</span>
+                <Code2 size={18} style={{ color: 'var(--color-accent-cyan)' }} aria-hidden="true" />
               </div>
               <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--color-text-primary)' }}>
-                {COURSES.length} <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Courses</span>
+                {solvedChallengesCount} <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>/ {challenges.length}</span>
               </div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>From Absolute Zero to Full-Stack</span>
-            </div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-brand-primary)', fontWeight: 600 }}>Solve Challenges →</span>
+            </Link>
 
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {/* 10-Tier Projects Card */}
+            <Link to="/projects" className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', textDecoration: 'none' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Real-World Case Study</span>
-                <Server size={18} style={{ color: 'var(--color-accent-purple)' }} aria-hidden="true" />
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Project Milestones</span>
+                <Rocket size={18} style={{ color: 'var(--color-accent-purple)' }} aria-hidden="true" />
               </div>
               <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--color-text-primary)' }}>
-                160 <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Files Audited</span>
+                {completedMilestonesCount} <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>/ {totalMilestonesCount}</span>
               </div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>CRP India Civic Platform</span>
-            </div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-accent-purple)', fontWeight: 600 }}>10 Progressive Tiers →</span>
+            </Link>
 
+            {/* Learning Streak Card */}
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Learning Model</span>
-                <Sparkles size={18} style={{ color: 'var(--color-warning)' }} aria-hidden="true" />
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Learning Streak</span>
+                <Flame size={18} style={{ color: '#f59e0b' }} aria-hidden="true" />
               </div>
               <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--color-text-primary)' }}>
-                Offline <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>First</span>
+                {streakData.count || 1} <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Day{streakData.count > 1 ? 's' : ''}</span>
               </div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Zero Cloud Accounts or Paywalls</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Consistent Daily Practice</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Recommended Beginner Pathway */}
+      {/* Phase 5 Interactive Ecosystem Showcase */}
       <section style={{ paddingTop: '1.5rem', paddingBottom: '3.5rem' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
             <div>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>Recommended Starting Point</h2>
-              <p style={{ fontSize: '0.95rem' }}>Start here if you are new to web development or want to solidify fundamental mental models.</p>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>Interactive Learning Ecosystem</h2>
+              <p style={{ fontSize: '0.95rem' }}>Practical tools, coding labs, assessments, and revision built directly into your browser.</p>
             </div>
-            <Link to="/courses" className="btn btn-ghost btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-              <span>View Catalogue</span>
-              <ArrowRight size={14} aria-hidden="true" />
-            </Link>
           </div>
 
-          <div
-            className="card"
-            style={{
-              padding: '2rem',
-              borderLeft: '4px solid var(--color-brand-primary)',
-              background: 'linear-gradient(to right, var(--color-brand-subtle) 0%, var(--color-bg-card) 40%)'
-            }}
-          >
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1.5rem' }}>
-              <div style={{ maxWidth: '640px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
-                  <Badge variant="emerald">Available Now</Badge>
-                  <Badge variant="muted">Beginner Level</Badge>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>4 Lessons • 2 Hours</span>
+          <div className="grid-cols-3" style={{ gap: '1.5rem' }}>
+            {/* Box 1: Coding Challenges */}
+            <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'rgba(79, 70, 229, 0.1)', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <Code2 size={24} />
                 </div>
-                <h3 style={{ fontSize: '1.35rem', marginBottom: '0.6rem' }}>Web & Internet Fundamentals</h3>
-                <p style={{ fontSize: '0.95rem', color: 'var(--color-text-secondary)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-                  Learn how the internet really works: client-server communication, DNS resolution, HTTP request/response lifecycles, and how browsers parse code into pixels on screen.
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Hands-On Coding Challenges</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+                  Solve structured problem statements in HTML, CSS, JavaScript, and React with automated tests, instant diagnostic feedback, and progressive hints.
                 </p>
-
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  <Link to="/lessons/how-websites-work" className="btn btn-primary btn-sm">
-                    <span>Lesson 1: How Websites Work</span>
-                    <ArrowRight size={14} aria-hidden="true" />
-                  </Link>
-                  <Link to="/courses/web-internet-fundamentals" className="btn btn-secondary btn-sm">
-                    <span>View Syllabus</span>
-                  </Link>
-                </div>
               </div>
+              <Link to="/challenges" className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-start' }}>
+                Explore Challenges ({challenges.length}) →
+              </Link>
+            </div>
 
-              {/* Progress Summary for Course 1 */}
-              <div style={{ minWidth: '220px', padding: '1rem', backgroundColor: 'var(--color-bg-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
-                  Your Course Progress
+            {/* Box 2: Formal Assessments */}
+            <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <Award size={24} />
                 </div>
-                <ProgressBar percent={overall.percent} height="10px" showLabel labelText="Course Completion" />
-                <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginTop: '0.75rem' }}>
-                  {overall.completed === 0
-                    ? 'No lessons completed yet. Ready to start Lesson 1?'
-                    : `${overall.completed} of ${overall.total} lessons completed.`}
-                </div>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Knowledge Assessments</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+                  Validate your conceptual understanding through course-level evaluations supporting multi-select, code-reading, and diagnostic topic gap identification.
+                </p>
               </div>
+              <Link to="/assessments" className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-start' }}>
+                Take Assessments ({assessments.length}) →
+              </Link>
+            </div>
+
+            {/* Box 3: Revision Hub */}
+            <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <Sparkles size={24} />
+                </div>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Revision Hub & Quick Cards</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+                  Revisit bookmarked lessons ({bookmarkedCount}), review diagnosed weak topics, study high-yield mental model cards, and perform cross-curriculum search.
+                </p>
+              </div>
+              <Link to="/revision" className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-start' }}>
+                Open Revision Hub →
+              </Link>
             </div>
           </div>
         </div>
@@ -218,106 +297,34 @@ export default function Home() {
               Real-World Case Study
             </Badge>
             <h2 style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>
-              Learn from Production Code: {CRP_INDIA_CASE_STUDY.title}
+              Grounded in CRP India Source Code
             </h2>
             <p style={{ fontSize: '1rem', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
-              Instead of relying only on toy examples, Dev-root connects theory to a complete, deployed civic grievance management system.
-              Study real schemas, routes, middleware, and React state in a production repository.
+              Dev-root is paired with CRP India—a production civic grievance redressal platform with 160 audited source files, 5 database models, 21 REST endpoints, and role-based access control.
             </p>
           </div>
 
-          <div className="grid-cols-3">
-            <div className="card">
-              <div style={{ color: 'var(--color-brand-primary)', marginBottom: '0.75rem' }}>
-                <Terminal size={24} aria-hidden="true" />
-              </div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Decoupled Architecture</h3>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-                Inspect a clean separation between React 19 frontend and Node.js Express backend communicating over REST APIs.
-              </p>
-            </div>
-
-            <div className="card">
-              <div style={{ color: 'var(--color-accent-cyan)', marginBottom: '0.75rem' }}>
-                <Shield size={24} aria-hidden="true" />
-              </div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Dual-Portal Auth & RBAC</h3>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-                Examine cryptographic password hashing with bcrypt, JWT token verification, and role guards protecting administrative portals.
-              </p>
-            </div>
-
-            <div className="card">
-              <div style={{ color: 'var(--color-accent-purple)', marginBottom: '0.75rem' }}>
-                <Database size={24} aria-hidden="true" />
-              </div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Mongoose Schemas & Audits</h3>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-                Study subdocuments, atomic reference counters (CRP-2026-XXXXX), and chronological audit trail timelines.
-              </p>
-            </div>
-          </div>
-
-          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <Link to="/case-studies/crp-india" className="btn btn-secondary">
-              <span>Read Full Architecture Deep Dive</span>
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive 3D Learning Roadmap */}
-      <section style={{ paddingTop: '3.5rem', paddingBottom: '1rem' }}>
-        <div className="container">
-          <Roadmap3D />
-        </div>
-      </section>
-
-      {/* Planned Curriculum Path Grid */}
-      <section style={{ paddingTop: '2.5rem', paddingBottom: '3.5rem' }}>
-        <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-            <div>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>The Complete Curriculum Progression</h2>
-              <p style={{ fontSize: '0.95rem' }}>From absolute beginner foundations to deployed full-stack capstone projects.</p>
-            </div>
-            <Link to="/courses" className="btn btn-primary btn-sm">
-              <span>Browse All Paths</span>
-              <ArrowRight size={14} aria-hidden="true" />
-            </Link>
-          </div>
-
-          <div className="grid-cols-3">
-            {COURSES.slice(0, 6).map((course) => (
-              <div key={course.id} className="card card-interactive" style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                  <Badge variant={course.status === 'available' ? 'emerald' : 'muted'}>
-                    {course.status === 'available' ? 'Available' : 'Planned'}
-                  </Badge>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{course.level}</span>
-                </div>
-
-                <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>{course.title}</h3>
-                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, flex: 1, marginBottom: '1.25rem' }}>
-                  {course.description}
+          <div className="card" style={{ padding: '2rem', maxWidth: '840px', margin: '0 auto' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.4rem' }}>
+                  Citizen Redressal Platform (CRP India)
+                </h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', margin: 0 }}>
+                  Explore how production municipal apps handle ticket SLAs, JWT security cookies, Prisma database migrations, and responsive tables.
                 </p>
-
-                <div style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{course.duration}</span>
-                  <Link
-                    to={`/courses/${course.slug}`}
-                    style={{ fontSize: '0.85rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
-                  >
-                    <span>View Path</span>
-                    <ArrowRight size={14} aria-hidden="true" />
-                  </Link>
-                </div>
               </div>
-            ))}
+              <Link to="/case-studies/crp-india" className="btn btn-primary">
+                <span>Inspect Architecture</span>
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Interactive 3D Roadmap Journey */}
+      <Roadmap3D />
     </div>
   );
 }

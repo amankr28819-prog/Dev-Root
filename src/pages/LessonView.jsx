@@ -26,7 +26,13 @@ import BoxModel3D from '../components/BoxModel3D';
 
 export default function LessonView() {
   const { slug } = useParams();
-  const { isLessonComplete, toggleLessonComplete, setLastOpenedLesson } = useProgress();
+  const {
+    isLessonComplete,
+    toggleLessonComplete,
+    setLastOpenedLesson,
+    toggleBookmark,
+    isBookmarked
+  } = useProgress();
 
   const lesson = LESSONS[slug];
 
@@ -85,8 +91,8 @@ export default function LessonView() {
             {lesson.summary}
           </p>
 
-          {/* Completion Toggle Button */}
-          <div style={{ marginTop: '1.5rem' }}>
+          {/* Completion & Bookmark Action Buttons */}
+          <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <button
               type="button"
               onClick={() => toggleLessonComplete(lesson.id)}
@@ -105,6 +111,25 @@ export default function LessonView() {
                   <span>Mark Lesson Complete</span>
                 </>
               )}
+            </button>
+
+            {/* Bookmark for Revision Toggle */}
+            <button
+              type="button"
+              onClick={() => toggleBookmark && toggleBookmark(lesson.id)}
+              className="btn btn-ghost"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                border: '1px solid var(--color-border)',
+                backgroundColor: isBookmarked && isBookmarked(lesson.id) ? 'rgba(234, 179, 8, 0.12)' : 'transparent',
+                color: isBookmarked && isBookmarked(lesson.id) ? '#ca8a04' : 'var(--color-text-secondary)'
+              }}
+              aria-label={isBookmarked && isBookmarked(lesson.id) ? 'Bookmarked for Revision' : 'Bookmark for Revision'}
+            >
+              <Lightbulb size={16} style={{ color: isBookmarked && isBookmarked(lesson.id) ? '#ca8a04' : 'var(--color-text-muted)' }} />
+              <span>{isBookmarked && isBookmarked(lesson.id) ? '★ Bookmarked for Revision' : '☆ Bookmark for Revision'}</span>
             </button>
           </div>
         </header>
